@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.apps.tsgxx.dao.TSGXXMapper">
+
+	<select id="queryTSGXX" resultType="com.hrbwmxx.hrbu.apps.tsgxx.vo.TSGXXCustom">
+	select 
+    dztm,
+    kwj,
+    ywj,
+    qfk,
+    qpk
+	from V_GETUSERINFOR
+	where dztm=#{obj.dztm} 
+	</select>
+	
+	
+</mapper>

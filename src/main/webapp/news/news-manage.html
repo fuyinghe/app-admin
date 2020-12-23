@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>新闻管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+		<link rel="stylesheet" href="../js/umeditor/themes/default/css/umeditor.min.css" />
+        <script type="text/javascript" src="../js/umeditor/umeditor.custom.js" ></script>
+	</head>
+	
+	<body>
+		<div id="manage-content" class="container-fluid has-shadow"></div>
+<script>
+	
+			$("#manage-content").modelManager({
+				modelApi:[
+					{field:"columnid",title:"栏目",mappingField:"columnName",cols:3,visible:1,formType:"select",search:2,isRequired:1,valueConfig:{url:"../newsColumn/queryNewsColumnList.do?state=Y",dataField:"newColumnList","textKey":"columnName","valueKey":"id"}},
+					{field:"title",title:"新闻标题",cols:6,visible:1,formType:"text",search:2,isRequired:1,valueConfig:{}},
+					//{field:"pic",title:"图片",mappingField:"list_file_pic",cols:12,visible:0,formType:"img",maxSize:1,search:0,isRequired:0,valueConfig:{url:"FileService/upload.do"}},
+					//{field:"attachmentfile",title:"附件",mappingField:"list_file_attachment",cols:12,visible:0,formType:"file",maxSize:1,search:0,isRequired:0,valueConfig:{url:"FileService/upload.do"}},
+					{field:"source",title:"来源",cols:4,visible:0,formType:"text",search:0,isRequired:0,valueConfig:{}},
+					{field:"topState",title:"置顶",defaultValue:"N",cols:4,visible:1,formType:"select",search:0,isRequired:1,valueConfig:{list:[{text:"置顶",value:"Y"},{text:"不置顶",value:"N"}]}},
+					{field:"topOrderNumber",title:"置顶序号",defaultValue:"0",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+					//{field:"viewDate",title:"显示时间",defaultValue:$.unixToDate(new Date(),2),mappingField:"",cols:5,visible:1,formType:"date",search:0,isRequired:1,valueConfig:{}},
+					{field:"context",title:"新闻内容",cols:12,visible:0,formType:"editor",search:0,isRequired:0,valueConfig:{url:"../FileService/upload.do"}},
+					{field:"state",title:"发布状态",cols:12,visible:1,isHidden:1,formType:"select",search:0,isRequired:0,valueConfig:{list:[{text:"已发布",value:"Y"},{text:"未发布",value:"N"},]}},
+				],
+				idKey:"id",
+				listApi:"../news/queryNewsListPage.do",
+				addApi:"../news/saveNewsData.do",
+				deleteApi:"../news/deleteNewsDataById.do",
+				editApi:"../news/updateNewsData.do",
+				viewApi:"../news/queryNewsById.do",
+				viewDataField:"newsCustom",
+				advSearchBtnText:"",
+				/* btnGroupInline:true, */
+				/* viewBtn:function(row,index){
+					if(row.state == "N"){
+						return false;
+					}else{
+						return true;
+					}
+				}, */
+				editBtn:function(row,index){
+					if(row.state == "Y"){
+						return false;
+					}else{
+						return true;
+					}
+				},
+				deleteBtn:function(row,index){
+					if(row.state == "Y"){
+						return false;
+					}else{
+						return true;
+					}
+				},
+				formatter:{
+					"title":function(value,row,index){
+						return $.formatLength(value,20)
+					},
+					"state":function(value,row,index){
+						switch(row.state){
+							case "Y":
+								return '<span class="text-success">已发布</span>'
+							break;
+							case "N":
+								return '<span class="text-danger">编辑中</span>'
+							break;
+							default:
+								return "-"
+						}
+					}
+				},
+				oprateAdd:function(row,index){
+					var html = ""
+					if(row.state == "N"){
+						html += ' <button class="btn btn-primary btn-xs push"><span class="glyphicon glyphicon-saved"></span> 发布</button>'
+					}else{
+						html += ' <button class="btn btn-danger btn-xs pull"><span class="glyphicon glyphicon-repeat"></span> 撤回</button>'
+					}
+					return html;
+				},
+				oprateEventsAdd:{
+					"click button.push":function(e,value,row,index){
+						$.confirm("确定发布当前新闻？",function(){
+							$.ajax({
+								url:"../news/publishNewsData.do",
+								data:{
+									"id":row.id
+								},
+								suc:function(data){
+									$.alert(data.errmsg,"success",function(){
+										$("#manage-content").modelManager("refreshList")
+									})
+								}
+							});
+						},false)
+					},
+					"click button.pull":function(e,value,row,index){
+						$.confirm("确定撤回当前新闻？",function(){
+							$.ajax({
+								url:"../news/cancelPublishNewsData.do",
+								data:{
+									"id":row.id
+								},
+								suc:function(data){
+									$.alert(data.errmsg,"success",function(){
+										$("#manage-content").modelManager("refreshList")
+									})
+								}
+							});
+						},false)
+					}
+				}
+			})
+		
+</script>
+	</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>接口文档</title>
+		<link rel="stylesheet" href="css/global.css" />
+		<link rel="stylesheet" href="css/apidoc.css" />
+		<script type="text/javascript" src="js/lib.js"></script>
+		<script type="text/javascript" src="js/model.js" ></script>
+		<script type="text/javascript" src="js/jquery.nicescroll.min.js" ></script>
+		<!--<script type="text/javascript" src="js/canvas.js"></script>-->
+		<script type="text/javascript" src="js/apidoc.js"></script>
+	</head>
+	<body>
+		<div class="container-fluid api-doc">
+			<div class="left-menu">
+				<div class="menuManagerBtn"><a href="#/menu"><span class="glyphicon glyphicon-cog"></span></a></div>
+				<ul>
+					
+				</ul>
+			</div>
+			<div class="row">
+				<div class="default-page content-page">
+					<div class="container-fluid pos-rel">
+						<h1 class="text-center">接口文档 v1.1</h1>
+						<div class="default-img text-center">
+							<img src="img/bg.jpg">
+						</div>
+					</div>
+				</div>
+				
+				<div class="view-doc content-page">
+					<div class="container-fluid">
+						<div class="header form-group form-group-lg">
+							<h3>
+								<span class="value" name="name">文档名称</span>
+								<span class="pull-right">
+									<a class="edit-doc" href="#"><span class="glyphicon glyphicon-edit"></span></a>
+									<a class="delete-doc" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+								</span>
+							</h3>
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-12">
+								<label class="pull-left">接口地址：</label>
+								<div class="col-sm-10 value" name="apiUrl">
+								
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<div><label>接口说明：</label></div>
+							<div class="col-sm-12 value" name="apiDesc">
+								
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div><label>请求数据：</label></div>
+							<pre class="value" name="fromData">
+								
+							</pre>
+						</div>
+						<div class="form-group table-container">
+							<div><label>参数说明</label></div>
+							<table class="fromDataFieldDesc table table-hover table-striped text-center">
+								<thead>
+									<tr>
+										<th class="col-sm-3">参数</th>
+										<th class="col-sm-1">必填</th>
+										<th class="col-sm-8">说明</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!--
+									<tr>
+										<td>name</td>
+										<td>是否</td>
+										<td>aaaa</td>
+									</tr>
+									-->
+								</tbody>
+							</table>
+						</div>
+						<div class="form-group">
+							<div><label>返回结果</label></div>
+							<pre class="value" name="getData">
+								
+							</pre>
+						</div>
+						<div class="form-group table-container">
+							<div><label>参数说明</label></div>
+							<table class="getDataFieldDesc table table-hover table-striped text-center">
+								<thead>
+									<tr>
+										<th class="col-sm-3">参数</th>
+										<th class="col-sm-9">说明</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!--
+									<tr>
+										<td>name</td>
+										<td>afsdasdf</td>
+									</tr>
+									-->
+								</tbody>
+							</table>
+						</div>
+						
+					</div>
+				</div>
+				
+				<div class="add-doc content-page">
+					<div class="container-fluid">
+						<div class="row header">
+							<h3 class="col-sm-6">添加文档</h3>
+							<div class="col-sm-6 pull-right text-right">
+								<button class="btn btn-default btn-lg btn-bph" id="cancel">取消</button>
+								<button class="btn btn-success btn-lg btn-bph" id="saveForm">保存</button>
+							</div>
+						</div>
+						<div class="form-group form-group-lg">
+							<input type="text" class="form-control" name="apiName" placeholder="接口名称">
+						</div>
+						<div class="row form-group">
+							<div class="col-sm-2"><label>接口地址：</label></div>
+							<div class="col-sm-10">
+							<input type="text" class="form-control" name="apiUrl" placeholder="接口地址">
+							</div>
+						</div>
+						<div class="form-group">
+							<p><label>接口说明：</label></p>
+							<textarea class="form-control" name="apiDesc" placeholder="接口说明"></textarea>
+						</div>
+						<div class="form-group">
+							<p><label>请求数据：</label><button class="btn btn-info pull-right customFromField">自定义数据</button></p>
+							<textarea class="form-control" name="fromData" placeholder="请求包体"></textarea>
+						</div>
+						<div class="form-group table-container">
+							<p><label>参数说明</label></p>
+							<table class="fromDataFieldDesc table table-hover table-striped text-center">
+								<thead>
+									<tr>
+										<th class="col-sm-3">参数</th>
+										<th class="col-sm-1 text-center">必填</th>
+										<th class="col-sm-7">说明</th>
+										<th class="col-sm-1 text-center">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!--
+									<tr>
+										<td>name</td>
+										<td><input name="isRequired" type="checkbox" value="是"></td>
+										<td><textarea class="form-control field-desc"></textarea></td>
+									</tr>
+									-->
+								</tbody>
+							</table>
+						</div>
+						<div class="form-group">
+							<p><label>返回结果</label><button class="btn btn-info pull-right customGetField">自定义数据</button></p>
+							<textarea class="form-control" name="getData" placeholder="返回结果"></textarea>
+						</div>
+						<div class="form-group table-container">
+							<p><label>参数说明</label></p>
+							<table class="getDataFieldDesc table table-hover table-striped text-center">
+								<thead>
+									<tr>
+										<th class="col-sm-3">参数</th>
+										<th class="col-sm-8">说明</th>
+										<th class="col-sm-1">操作</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!--
+									<tr>
+										<td>name</td>
+										<td><input name="isRequired" type="checkbox" value="是"></td>
+										<td><textarea class="form-control field-desc"></textarea></td>
+									</tr>
+									-->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				
+				</div>
+				
+				
+			</div>
+		</div>
+		<div class="menu-manager container-fluid has-shadow">
+			<div class="row border-title pb15 mb15">
+				<div class="col-sm-12">
+					<button class="btn btn-default close-menu-menager"><span class="glyphicon glyphicon-backward"></span> 返回</button>
+				</div>
+			</div>
+			<div id="menu-manager"></div>
+		</div>
+	</body>
+
+</html>

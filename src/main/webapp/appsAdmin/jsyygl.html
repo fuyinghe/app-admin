@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>系统信息维护</title>
+<!--基础库-->
+<link rel="stylesheet" href="../css/global.css" />
+<script type="text/javascript" src="../js/lib.js"></script>
+<!--模型库-->
+<script type="text/javascript" src="../js/model.js"></script>
+<!--editor组件-->
+<link href="../js/umeditor/themes/default/css/umeditor.min.css"
+	type="text/css" rel="stylesheet">
+<script type="text/javascript" charset="utf-8"
+	src="../js/umeditor/umeditor.min.js"></script>
+<script>
+			$(function(){
+				$(".container-fluid").modelManager({
+					method:"post",
+					idKey:"ID",
+					addBtnText:"新增应用",
+					modelApi:"../yyglkz/queryModelMete.do",
+					listApi:"../yygl/queryListData.do",
+					addApi:"../yygl/addOneData.do",
+					deleteApi:"../yygl/deleteOneData.do",
+					editApi:"../yygl/updateOneData.do",
+					viewApi:"../yygl/queryViewData.do",
+					formatter:{
+						ROLES:function(value,row,index){
+							var html = '';
+							if(row.roles){
+								
+								$.each(row.roles,function(index,value){
+									
+									html += '<p class="text-center"><span class="text-left" style="width:100px;display:inline-block;">'+value.name+'</span> <button data-appid="'+row.ID+'" data-jsid="'+value.id+'" class="btn btn-xs btn-danger delete-role"><span class="glyphicon glyphicon-remove"></span> 取消</button></p>'
+								})
+							}
+							return html
+						},
+						STATE:function(value,row,index){
+							if(value==1)
+								return '<span>已启用</span><button class="btn btn-danger btn-xs change-state" data-appid="'+row.ID+'" data-state="'+value+'"></span>下线</button>'
+							return '<span>已停用</span><button class="btn btn-success btn-xs change-state" data-appid="'+row.ID+'"  data-state="'+value+'"></span>上线</button>'
+						}
+					},
+					oprateAdd:function(){
+						return ' <button class="btn btn-success btn-xs add-role"><span class="glyphicon glyphicon-user"></span>应用授权</button>'
+					},
+					oprateEventsAdd:{
+						"click .add-role":function(e,value,row,index){
+							rolePickerLoaded(function(){
+								rolePicker(function(info){
+									$.ajax({
+										url:"../jsyy/add.do",
+										data:{
+											appId:row.ID,
+											roleId:info.ID
+										},
+										suc:function(data){
+											$.alert(data.errmsg,"success");
+											$(".container-fluid").modelManager("refreshList")
+										},
+										hasAlert:true,
+										loadingContainer:$("body")
+									})
+									
+								},row.ID)
+							})
+						}
+					}
+				}).on("click",".delete-role",function(){
+					$.ajax({
+						url:"../jsyy/del.do",
+						data:{
+							appId:$(this).attr("data-appid"),
+							roleId:$(this).attr("data-jsid")
+						},
+						suc:function(data){
+							$.alert(data.errmsg,"success");
+							$(".container-fluid").modelManager("refreshList")
+						},
+						hasAlert:true,
+						loadingContainer:$("body")
+					})
+				}).on("click",".change-state",function(){
+					console.log($(this))
+					$.ajax({
+						url:"../yygl/chstate.do",
+						data:{
+							appId:$(this).attr("data-appid"),
+							state:$(this).attr("data-state")
+						},
+						suc:function(data){
+							$.alert(data.errmsg,"success");
+							$(".container-fluid").modelManager("refreshList")
+						},
+						hasAlert:true,
+						loadingContainer:$("body")
+					})
+				})
+				//打开窗口
+				function rolePickerLoaded(callback){
+					if(window.$rolePicker){
+						callback();		
+					}else{
+						$.ajax({
+							url:"./role/role-picker.html",
+							success:function(data){
+								$("body").append(data);
+								callback();
+							}
+						});
+					}
+				}
+				
+			})
+		</script>
+</head>
+<body>
+	<div class="container-fluid bgfff has-shadow"></div>
+</body>
+</html>

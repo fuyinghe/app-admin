@@ -1,0 +1,37 @@
+{
+	"errcode":"0",
+	"errmsg":"",
+	"model":[
+		{
+			"field":"field",
+			"title":"名称",
+			"isHidden": 0,
+	      	"align":"left",
+			"visible": 1
+		},{
+			"field":"type",
+			"title":"类型",
+			"isHidden": 0,
+	      	"align":"left",
+			"visible": 1
+		},{
+			"field":"default",
+			"title":"默认值",
+			"isHidden": 0,
+	     	"align":"left",
+			"visible": 1
+		},{
+			"field":"desc",
+			"title":"描述",
+			"isHidden": 0,
+	      	"align":"left",
+			"visible": 1
+		},{
+			"field":"date",
+			"title":"更新时间",
+			"isHidden": 0,
+	      	"align":"center",
+			"visible": 1
+		}
+	]
+}

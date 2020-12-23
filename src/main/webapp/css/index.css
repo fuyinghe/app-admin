@@ -1,0 +1,389 @@
+@import url("http://cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css");
+body {
+	height: 100%;
+	min-width: 1280px;
+	background: #ffffff;
+	padding:inherit;
+}
+
+.row{
+	margin:0;
+}
+
+.index-header {
+	height: 70px;
+	width: 100%;
+	border-bottom: 2px solid #1bbc9b;
+}
+
+.index-container {
+	width: 100%;
+	height: calc(100% - 72px);
+}
+
+.index-sidebar {
+	width: 220px;
+	background: #34495e;
+	height: 100%;
+}
+
+.index-content {
+	width: calc(100% - 220px);
+	height: 100%;
+	margin-left: 220px;
+	overflow: hidden;
+	position: relative;
+}
+
+.index-tabs {
+	height: 40px;
+	width: 100%;
+	position: relative;
+}
+
+.tab-left,
+.tab-right {
+	color: #9b9b99;
+	line-height: 40px;
+	width: 40px;
+	text-align: center;
+	cursor: pointer;
+	position: absolute;
+	top: 0;
+	background: #fff;
+	z-index: 10;
+}
+
+.tab-left {
+	left: 0;
+}
+
+.tab-right {
+	right: 120px;
+}
+
+.tab-close {
+	position: absolute;
+	top: 0;
+	;
+	right: 0px;
+	z-index: 10;
+	width: 120px;
+	height: 40px;
+	text-align: center;
+	line-height: 40px;
+	display: inline-block;
+	color: #9b9a98;
+	font-size: 14px;
+	cursor: pointer;
+	background: #f5f5f5;
+}
+
+.tab-close a {
+	color: #9b9a98;
+	text-decoration: none;
+	cursor: pointer;
+	display: block;
+}
+
+.tab-list {
+	width: 100000px;
+	height: 40px;
+	background: #f5f5f5;
+	overflow: hidden;
+	position: relative;
+	margin-left: 40px
+}
+
+#menu-list {
+	position: absolute;
+}
+
+.tab-list a {
+	color: #9d9c9a;
+	background: #ffffff;
+	border-radius: 0;
+	border: none;
+	font-size: 14px;
+	margin-right: 0;
+	height: 40px;
+	display: block;
+	padding: 0 10px 0px 20px;
+	float: left;
+	line-height: 40px;
+	outline: 0;
+	cursor: pointer;
+	transition: background .3s;
+}
+
+.tab-list a.main {
+	padding: 0px 20px;
+}
+
+.tab-list a:hover {
+	background: #17a68a;
+	color: #FFFFFF;
+	border: none;
+}
+
+.tab-list a i {
+	margin-left: 3px;
+}
+
+.tab-list a i:hover {}
+
+.tab-list a.active i {
+	background: #FFFFFF;
+	color: #17a68a;
+	border-radius: 50%;
+	padding: 1px 2px;
+	margin-left: 3px;
+}
+
+.tab-list a.active,
+.nav-tabs a.active:focus,
+.nav-tabs a.active:hover {
+	background: #17a68a;
+	color: #FFFFFF;
+	cursor: pointer;
+	border: none;
+}
+
+.index-tab-content {
+	height: calc(100% - 70px);
+	border-top: 2px solid #2f4050;
+}
+
+.index-tab-content .iframe-content {
+	width: 100%;
+	height: 100%;
+	border: 0;
+	display: none;
+}
+
+.index-tab-content .iframe-content.active {
+	display: block;
+}
+
+.index-footer {
+	height: 30px;
+	background: #34495e;
+	line-height: 30px;
+	color: #ffffff;
+}
+
+.index-footer a {
+	color: #ffffff;
+}
+
+.sidebar-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	height: calc(100% - 30px);
+}
+
+.sidebar-menu>li {
+	position: relative;
+	margin: 0;
+	padding: 0;
+}
+
+.sidebar-menu>li>a {
+	padding: 12px 5px 12px 15px;
+	display: block;
+	border-left: 3px solid transparent;
+	color: #b8c7ce;
+}
+
+.sidebar-menu>li>a>.fa {
+	width: 20px;
+}
+
+.sidebar-menu>li:hover>a,
+.sidebar-menu>li.active>a {
+	color: #fff;
+	border-left-color: #1bbc9b;
+}
+
+.sidebar-menu>li>.treeview-menu {
+	margin: 0 1px;
+}
+
+.sidebar-menu>li .label,
+.sidebar-menu>li .badge {
+	margin-top: 3px;
+	margin-right: 5px;
+}
+
+.sidebar-menu li.header {
+	padding: 10px 25px 10px 15px;
+	font-size: 12px;
+	color: #4b646f;
+}
+
+.sidebar-menu li>a>.fa-angle-left {
+	width: auto;
+	height: auto;
+	padding: 0;
+	margin-right: 10px;
+	margin-top: 3px;
+}
+
+.sidebar-menu li.active>a>.fa-angle-left {
+	transform: rotate(-90deg);
+}
+
+.sidebar-menu li.active>.treeview-menu {
+	display: block;
+}
+
+.sidebar-menu a {
+	color: #b8c7ce;
+	text-decoration: none;
+}
+
+.sidebar-menu .treeview-menu {
+	display: none;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	padding-left: 5px;
+}
+
+.sidebar-menu .treeview-menu .treeview-menu {
+	padding-left: 20px;
+}
+
+.sidebar-menu .treeview-menu>li {
+	margin: 0;
+}
+
+.sidebar-menu .treeview-menu>li>a {
+	padding: 5px 5px 5px 15px;
+	display: block;
+	font-size: 14px;
+	color: #8aa4af;
+}
+
+.sidebar-menu .treeview-menu>li>a>.fa {
+	width: 20px;
+}
+
+.sidebar-menu .treeview-menu>li>a>.fa-angle-left,
+.sidebar-menu .treeview-menu>li>a>.fa-angle-down {
+	width: auto;
+}
+
+.sidebar-menu .treeview-menu>li.active>a,
+.sidebar-menu .treeview-menu>li>a:hover {
+	color: #fff;
+}
+.container-fluid{
+	padding: 0;
+}
+#loginfrom{
+    overflow: hidden;
+}
+/*login page*/
+.tq{
+	margin-top: 35px;
+    padding: 10px 0;
+    color: #2797a6;
+    text-align: center;
+}
+.copyright{
+	text-align: center;
+    background: #e9e9e9;
+    color: #656565;
+    padding: 10px 0;
+    border-top: 1px solid #d0d0d0;
+}
+
+.banner {
+	margin: 0 auto;
+	height: 100%;
+	background-image: url(../images/bj.jpg);
+	background-repeat: no-repeat;
+	background-position: center bottom;
+}
+.login-form{
+	background: url(../images/dlk-bj.png) no-repeat;
+    float: right;
+    margin-top: 90px;
+    width: 352px;
+    height: 330px;
+}
+.form-control1 {
+	width: 100%;
+	height: 34px;
+	color: #555;
+	line-height: 1.4285;
+	font-size: 14px;
+	border-top-color: #ccc;
+	border-right-color: #ccc;
+	border-bottom-color: #ccc;
+	border-left-color: #ccc;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	padding-top: 6px;
+	padding-right: 12px;
+	padding-bottom: 6px;
+	padding-left: 12px;
+	box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.form-control1:focus {
+	color: #2797a6;
+	border-top-color: #2797a6;
+	border-right-color: #2797a6;
+	border-bottom-color: #2797a6;
+	border-left-color: #2797a6;
+	border-top-width: 1px;
+	border-right-width: 1px;
+	border-bottom-width: 1px;
+	border-left-width: 1px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	outline-width: 0px;
+	outline-style: none;
+	outline-color: invert;
+}
+
+.kg {
+	line-height: 35px;
+}
+.sbj {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+.login {
+    color: #2797a6;
+    font-size: 24px;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+.ssk input {
+    background: #f8f8f8;
+    width: 280px;
+    height: 50px;
+    border-radius: 0;
+    margin-left: -20px;
+}
+.qd {
+    color: #fff;
+    background-color: #2697A5;
+    padding: 10px 15px;
+    font-size: 16px;
+    text-align: center;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.framework.dao.ExcelModelMapper">
+   <!-- 查询存在临时表中的数据 -->
+  <select id="existsData"  resultType="java.util.Map" >
+  	select ${columnCode} from ${tableName} 
+  	where exists (${keySqlCode })   
+  	    and czr=#{czr}
+  		<if test="uuid!=null and uuid!=''"> and  uuid=#{uuid} </if>
+  </select>
+   <!-- 查询不存在临时表中的数据 -->
+  <select id="notExistsData" resultType="java.util.Map">
+   select ${columnCode} from ${tableName} 
+   where not exists (${keySqlCode })
+        and czr=#{czr}
+  		<if test="uuid!=null and uuid!=''"> and  uuid=#{uuid} </if>
+  </select>
+  <!-- 查询模块中英文绑定字段 -->
+  <select id="queryBingColumn" resultType="com.webmos.framework.model.ColumnProperty">
+   	 SELECT   COLUMN_EN, COLUMN_CN   
+	 FROM MO_COLUMN
+	 WHERE GUISHU=#{modid}
+  </select>
+   <!-- 查询模块中所有外键数据 -->
+  <select id="queryFkValuesMap" resultType="java.util.Map" >
+  		<foreach collection="list" item="obj" separator=" union all ">
+ 			 select value,text from (${obj.DMB_SQLCODE}  )
+  		</foreach>
+ </select>
+  <!-- 查询模块中所有校验字段 -->
+ <resultMap id="VerifyEntityModeResultMap" type="com.webmos.framework.model.VerifyEntity">
+		<id property="column_id" column="wid" />
+		<result property="field" column="COLUMN_EN"/>
+		<result property="title" column="COLUMN_CN"/>
+		<result property="isRequired" column="V_MUSTINPUT"/>
+		<result property="valueType" column="CHECKTYPE"/>
+		<result property="maxValue" column="V_MAX"/>
+		<result property="minValue" column="V_MIN"/>
+		<result property="maxSize" column="V_MAXLEN"/>
+		<result property="minSize" column="V_MINLEN"/>
+		<result property="formType" column="V_TYPE"/>
+		
+	</resultMap>
+	<select id="queryVerifyEntityModel" resultMap="VerifyEntityModeResultMap">
+		select *
+		from mo_column
+		where state != 2
+		and V_ISIMP = 1 
+		and V_ISHIDE=0 and guishu = #{moid} 
+   </select>
+   	
+	<!-- 
+	获取导入模板模型
+	返回List<com.webmos.framework.model.Model>
+	-->
+	<resultMap id="ImpTempModeResultMap" type="com.webmos.framework.model.ImpModel">
+		<id property="column_id" column="wid" />
+		<result property="checkType" column="CHECKTYPE"/>
+		<result property="isKey" column="ISKEY"/>
+		<result property="field" column="COLUMN_EN"/>
+		<result property="title" column="COLUMN_CN"/>
+		<result property="isRequired" column="V_MUSTINPUT"/>
+	</resultMap>
+	<select id="queryImpTempMode" resultMap="ImpTempModeResultMap">
+		select sx.wid, sx.COLUMN_EN, sx.COLUMN_CN, sx.V_MUSTINPUT,sx.ISKEY,sx.CHECKTYPE
+		from mo_column sx
+		where sx.state != 2
+		and sx.V_ISIMP = 1 and guishu = #{moid} 
+	</select>
+   <select id="queryModelFkRrelations" resultType="java.util.Map">
+ 	 select mo_column.column_en as model_field,
+       mo_column.column_cn as model_title,
+       mo_column.v_type    as model_formType,
+       mo_xxbz.id          as dmb_id,
+       mo_xxbz.title       as dmb_title,
+       mo_xxbz.sql_code    as dmb_sqlcode,
+       mo_column.state
+	  from mo_column
+	  left join mo_xxbz
+	    on mo_column.v_selectrange = mo_xxbz.id
+	 where   mo_column.state = 1
+	    and mo_column.guishu = #{modid}
+	  and mo_column.state &lt; 2
+	   and (mo_column.v_type = 'select' or mo_column.v_type = 'radio' or
+	       mo_column.v_type = 'checkbox')
+	   and mo_column.v_selectrange is not null
+ 	 
+ </select>
+  <select id="queryBingTable" resultType="java.util.Map">
+  select wid, mo_name, mo_table, mo_table||'_IMP' t_table, mo_des 
+  from mo_sys
+  where wid = #{modid}
+ </select>
+
+  <insert id="addTemplateData">
+		   insert into ${tableName} ( ${columns}) 
+		   <foreach item="valueStr"  collection="list" separator="  union all">
+				  select ${valueStr}  from dual
+		   </foreach>	
+  </insert>
+  <update id="updateTemplateDataFkRrelation">
+  		
+  		<foreach collection="list" item="column" open="begin "  separator=""  close="end;">
+	  		update  ${tableName}  set  ${column}  
+  		</foreach>
+  </update>
+  <delete id="deleteModel">
+  	delete from ${tableName} where czr=#{czr}
+  	<if test="uuid!=null and uuid!=''"> and  uuid=#{uuid} </if>
+  </delete>
+</mapper>

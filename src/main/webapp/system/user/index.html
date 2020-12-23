@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#user-manager").modelManager({
+					modelApi:[
+						{"field":"yhId","mappingField":"","title":"用户ID","defaultValue":"","isRequired":"0","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":"1","cols":"4","visible":"0","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","dataField":"rows","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"},
+						{"field":"xm","mappingField":"","title":"用户名称","defaultValue":"","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"2","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"},
+						{"field":"userName","mappingField":"","title":"登录名称","defaultValue":"","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"2","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"},
+						{"field":"xh","mappingField":"","title":"序号","defaultValue":"0","isRequired":"0","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"},
+						{"field":"zt","mappingField":"","title":"状态","defaultValue":"1","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"select","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[{"value":"1","text":"使用中"},{"value":"0","text":"未使用"}],},"lbId":"T_"},
+						{"field":"js","mappingField":"","title":"角色","defaultValue":"","isRequired":"0","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":1,"cols":"12","visible":"1","isOnlyread":2,"sortable":"0","search":"0","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"}
+					],
+					listApi:"../../yh/queryYHListPage.do",
+					addApi:"../../yh/saveYH.do?token=''",
+					deleteApi:"../../yh/deleteYH.do",
+					editApi:"../../yh/updateYH.do",
+					viewApi:"../../yh/queryYHListPage.do",
+					viewBtn:false,
+					formatter:{
+						js:function(value,row,index){
+							var html = '';
+							if(row.jsmcList && row.jsidList){
+								var jsmclist = row.jsmcList.split(",")
+								var jsidList = row.jsidList.split(",")
+								$.each(jsmclist,function(index,value){
+									html += '<p class="text-center"><span class="text-left" style="width:100px;display:inline-block;">'+value+'</span> <button data-yhid="'+row.yhId+'" data-jsid="'+jsidList[index]+'" class="btn btn-xs btn-danger delete-role"><span class="glyphicon glyphicon-remove"></span> 取消</button></p>'
+								})
+							}
+							return html
+						}
+					},
+					oprateAdd:function(){
+						return ' <button class="btn btn-success btn-xs add-role"><span class="glyphicon glyphicon-user"></span> 增加角色</button>'+
+						' <button class="btn btn-success btn-xs reset-pass"><span class="glyphicon glyphicon-user"></span> 重置密码</button>'
+					},
+					oprateEventsAdd:{
+						"click .reset-pass":function(e,value,row,index){
+							$.ajax({
+								url:"../../yh/resetPassword.do",
+								data:{
+									userId:row.yhId
+								},
+								suc:function(data){
+									$.alert(data.errmsg,"success");
+									$("#user-manager").modelManager("refreshList")
+								},
+								hasAlert:true,
+								loadingContainer:$("body")
+							})
+						},
+						
+						"click .add-role":function(e,value,row,index){
+							rolePickerLoaded(function(){
+								rolePicker(function(info){
+									$.ajax({
+										url:"../../js/addUnSelectRole.do",
+										data:{
+											yhId:row.yhId,
+											jsId:info.jsId
+										},
+										suc:function(data){
+											$.alert(data.errmsg,"success");
+											$("#user-manager").modelManager("refreshList")
+										},
+										hasAlert:true,
+										loadingContainer:$("body")
+									})
+									
+								},row.yhId)
+							})
+						}
+					},
+					viewDataField:"rows",
+					idKey:"yhId",
+					advSearchBtnText:""
+					
+				})
+			}).on("click",".delete-role",function(){
+				$.ajax({
+					url:"../../js/deleteSelectedRole.do",
+					data:{
+						yhId:$(this).attr("data-yhid"),
+						jsId:$(this).attr("data-jsid")
+					},
+					suc:function(data){
+						$.alert(data.errmsg,"success");
+						$("#user-manager").modelManager("refreshList")
+					},
+					hasAlert:true,
+					loadingContainer:$("body")
+				})
+			})
+			function rolePickerLoaded(callback){
+				if(window.$rolePicker){
+					callback();		
+				}else{
+					$.ajax({
+						url:"../role/role-picker.html",
+						success:function(data){
+							$("body").append(data);
+							callback();
+						}
+					});
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<div id="user-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

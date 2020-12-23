@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context.xsd" >
+	
+	<context:annotation-config />
+		<context:component-scan base-package="com.hrbwmxx" ></context:component-scan>
+		<context:component-scan base-package="com.webmos" ></context:component-scan>
+	
+	<import resource="applicationContext-jdbc.xml"/>
+	<import resource="applicationContext-mybatis.xml"/>
+	<import resource="applicationContext-common.xml"/>
+	<!--<import resource="applicationContext-security.xml"/> -->
+	<import resource="applicationContext-dao.xml"/>
+	<import resource="applicationContext-ehcache.xml"/>
+	<!--<import resource="applicationContext-task.xml"/>-->
+	
+</beans>

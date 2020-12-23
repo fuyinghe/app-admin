@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>意见反馈管理</title>
+<link rel="stylesheet" href="../css/global.css" />
+<script type="text/javascript" src="../js/lib.js"></script>
+<script type="text/javascript" src="../js/model.js"></script>
+<script>
+	$(function() {
+		$(".container-fluid").modelManager({
+							method : "post",
+							idKey : "ID",
+							addBtn:false,
+							modelApi : "../yjfkgl/queryModelMete.do",
+							listApi : "../yjfkgl/queryListData.do",
+							addApi : "../yjfkgl/addOneData.do",
+							deleteApi : "../yjfkgl/deleteOneData.do",
+							editApi : "../yjfkgl/updateOneData.do",
+							viewApi : "../yjfkgl/queryViewData.do",
+							deleteBtnText:"已阅",
+							editBtn:function(row,index){return false;}
+						})
+						//页面提示信息
+						function tips(){
+							if(!$(".fixed-table-toolbar")) {
+								tips();
+								return;
+							}
+							var tipstr = 
+								'<div class="columns columns-right btn-group pull-left">'+
+									'以下为用户在客户端提交的反馈信息，您可以根据用户提出的反馈意见进行app改进与升级！'+
+								'</div>';
+							$(".fixed-table-toolbar").prepend(tipstr);
+						}
+						setTimeout(tips,100);  
+	})
+</script>
+</head>
+<body>
+	<div class="container-fluid bgfff has-shadow"></div>
+</body>
+</html>

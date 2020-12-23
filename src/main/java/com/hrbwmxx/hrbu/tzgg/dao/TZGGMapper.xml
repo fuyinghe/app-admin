@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.tzgg.dao.TZGGMapper">
+   
+	<sql id="query_field">
+		select 
+		TZID ,
+        BT ,
+        WJLJ1 ,
+        WJLJ2,
+        ZT ,
+        BJSJ,
+        BJYHID ,
+        FBSJ ,
+        FBYHID ,
+        YDRS,
+        cityCode,
+         (select username from t_yh where t_yh.yhid= BJYHID) as editUser,
+		 (select username from t_yh where t_yh.yhid= FBYHID) as  publishUser
+	</sql>
+	<sql id="query_condition">
+		from t_tz 
+		 <where>
+		 <if test="obj.ydrs!=null and obj.ydrs!=''">
+				 and YDRS=#{obj.ydrs}
+			</if>
+			<if test="obj.tzid!=null and obj.tzid!=''">
+				 and tzid=#{obj.tzid}
+			</if>
+			<if test="obj.cityCode!=null and obj.cityCode!=''">
+				 and cityCode=#{obj.cityCode}
+			</if>
+			<if test="obj.bt!=null and obj.bt!=''">
+				  and bt like CONCAT(CONCAT('%',#{obj.bt}),'%')
+			</if>
+			<if test="obj.zt!=null and obj.zt!=''">
+				 and zt=#{obj.zt}
+			</if>
+		</where> 
+		ORDER BY bjsj desc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryAllTzggForPage" resultType="com.hrbwmxx.hrbu.tzgg.vo.TZGGCustom">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryTZggForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryTzggById" resultType="com.hrbwmxx.hrbu.tzgg.vo.TZGGCustom">
+		<include refid="query_field" />
+		 <include refid="query_condition"/>
+	</select>
+	<!-- 根据数据不包含分页 -->
+	<select id="queryTZggList" resultType="com.hrbwmxx.hrbu.tzgg.vo.TZGGCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 保存数据 -->
+	<insert id="saveTZggData"  >
+		INSERT INTO t_tz
+		   (tzid,bt,wjlj1,wjlj2,zt,
+            ydrs,bjsj,bjyhid,fbsj,
+            fbyhid,cityCode)
+			VALUES
+				(#{tzid,jdbcType=VARCHAR},#{bt,jdbcType=VARCHAR},
+				#{wjlj1,jdbcType=VARCHAR},#{wjlj2,jdbcType=VARCHAR},
+				#{zt,jdbcType=VARCHAR},#{ydrs,jdbcType=VARCHAR},
+				#{bjsj,jdbcType=VARCHAR},#{bjyhid,jdbcType=VARCHAR},
+				#{fbsj,jdbcType=VARCHAR}, 
+  				#{fbyhid,jdbcType=VARCHAR},
+  				#{cityCode,jdbcType=VARCHAR}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateTZggData">
+		UPDATE t_tz
+			<set>
+				<if test="tzid != null and tzid != ''">
+				  tzid = #{tzid,jdbcType=VARCHAR},
+				</if>
+				<if test="bt != null and bt != ''">
+				 bt = #{bt,jdbcType=VARCHAR},
+				</if>
+				<if test="zt != null and zt != ''">
+				  zt = #{zt,jdbcType=VARCHAR} ,
+				</if>
+				<if test="ydrs != null and ydrs!=''">
+				 ydrs = #{ydrs,jdbcType=VARCHAR} ,
+				</if>
+				<if test="bjsj != null and bjsj != ''">
+				  bjsj = #{bjsj,jdbcType=VARCHAR},
+				</if>
+				<if test="bjyhid!= null">
+				  bjyhid = #{bjyhid,jdbcType=VARCHAR},
+				</if>
+				<if test="fbsj != null ">
+				   fbsj= #{fbsj,jdbcType=VARCHAR},
+				</if>
+				<if test="fbyhid!= null">
+				  fbyhid = #{fbyhid,jdbcType=VARCHAR},
+				</if>
+			
+				<if test="cityCode != null">
+				  cityCode= #{cityCode,jdbcType=VARCHAR},
+				</if>
+				<if test="wjlj1 != null">
+				  wjlj1 = #{wjlj1,jdbcType=VARCHAR},
+				</if>
+				<if test="wjlj2 != null and wjlj2 != ''">
+				  wjlj2 = #{wjlj2,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE tzid = #{tzid}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteTZggDataById">
+		DELETE FROM t_tz   WHERE tzid = #{tzid}
+	</delete>
+	
+	
+</mapper>

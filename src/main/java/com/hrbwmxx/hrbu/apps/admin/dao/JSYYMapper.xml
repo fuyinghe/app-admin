@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.apps.admin.dao.JSYYMapper">
+
+
+	<!-- 根据APP查询关系关联 -->
+	<select id="queryAllJSYY" resultType="com.hrbwmxx.hrbu.apps.admin.vo.JSYYVo">
+		select a.app_id as
+		appId,a.role_id as roleId,b.name as name,b.des as des from
+		t_role_app
+		a,t_role b where
+		a.role_id=b.id
+	</select>
+
+
+	<!-- 根据APP查询关系关联 -->
+	<select id="findByCondition" resultType="com.hrbwmxx.hrbu.apps.admin.model.JSYY">
+		select app_id as
+		appId,role_id as roleId
+		from t_role_app
+		where
+		app_id=#{appId,jdbcType=VARCHAR} and
+		role_id=#{roleId,jdbcType=VARCHAR}
+	</select>
+
+
+
+
+	<!-- 根据APP查询关系关联 -->
+	<insert id="insert" parameterType="com.hrbwmxx.hrbu.apps.admin.model.JSYY">
+		insert into t_role_app (
+		app_id,
+		role_id)
+		values (
+		#{appId,jdbcType=VARCHAR},
+		#{roleId,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<!-- 根据APP查询关系关联 -->
+	<delete id="delete">
+		delete from t_role_app where
+		app_id=#{appId,jdbcType=VARCHAR} and
+		role_id=#{roleId,jdbcType=VARCHAR}
+	</delete>
+
+	<!-- 更新应用上线 -->
+	<update id="updateYYState1">
+		update t_app set state=1 where
+		id=#{appId,jdbcType=VARCHAR}
+	</update>
+
+	<!-- 更新应用下线 -->
+	<update id="updateYYState0">
+		update t_app set state=0 where
+		id=#{appId,jdbcType=VARCHAR}
+	</update>
+
+
+</mapper>

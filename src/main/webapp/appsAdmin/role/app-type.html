@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>应用类型管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#menu-manager").modelManager({
+					modelApi:[
+						{field:"app_type",title:"应用类型管理名称",visible:1,formType:"text",search:2,labelCols:2,cols:12},
+						{field:"des",title:"描述",visible:1,formType:"text",search:0,cols:4},
+						{field:"px",title:"排序",visible:0,formType:"text",cols:4,valueType:"num",defaultValue:"0"},
+						{field:"state",title:"状态",visible:1,isRequired:1,formType:"select",cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
+					],
+					listApi:"../../app/queryAppTypeListPage.do",
+					addApi:"../../app/saveAppTypeValue.do",
+					deleteApi:"../../app/deleteAppTypeValue.do",
+					editApi:"../../app/updateAppTypeValue.do",
+					viewApi:"../../app/queryAppTypeValueOne.do",
+					viewDataField:"custom",
+					idKey:"id",
+					formatter:{
+						zt:function(value,row,index){
+							switch(value){
+								case "0":
+									return '<span class="text-danger">已停用</div>'
+								break;
+								case "1":
+									return '<span class="text-success">使用中</div>'
+								break;
+							}
+						}
+					},
+					advSearchBtnText:"",
+					onModelLoaded:function(obj){
+						obj.formModal.find(".modal-body").append('<div class="col-sm-4 col-sm-offset-5">序号越大排名越靠前</div>')
+					}
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="menu-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

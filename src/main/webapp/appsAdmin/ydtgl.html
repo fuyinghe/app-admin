@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>引导图管理</title>
+<link rel="stylesheet" href="../css/global.css" />
+<script type="text/javascript" src="../js/lib.js"></script>
+<script type="text/javascript" src="../js/model.js"></script>
+<script>
+	$(function() {
+
+		$(".container")
+				.modelManager(
+						{
+							method : "post",
+							idKey : "ID",
+							modelApi : "../ydtgl/queryModelMete.do",
+							listApi : "../ydtgl/queryListData.do",
+							addApi : "../ydtgl/addOneData.do",
+							deleteApi : "../ydtgl/deleteOneData.do",
+							editApi : "../ydtgl/updateOneData.do",
+							viewApi : "../ydtgl/queryViewDataImger.do",
+							formatter : {
+								PHOTO : function(value, row, index) {
+									return "<img src='/hrbu/Attachment/attachmentDownload.do?attachId="
+											+ value
+											+ "' style='height:100px;width:150px;'/>";
+								}
+							}
+						})
+		/*
+		$("#simple").modelManager("edit",{
+			method:"get",
+			modelApi:"demo/mate.json",
+			saveApi:"demo/add.json",
+			viewApi:"demo/view.json",
+			saveBtn:$("#save"),
+			callback:function(data){
+				
+			}
+		})*/
+
+	})
+</script>
+</head>
+<body>
+	<div class="container bgfff has-shadow"></div>
+</body>
+</html>

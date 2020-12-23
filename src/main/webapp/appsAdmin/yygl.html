@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>应用管理</title>
+<link rel="stylesheet" href="../css/global.css" />
+<script type="text/javascript" src="../js/lib.js"></script>
+<script type="text/javascript" src="../js/model.js"></script>
+<script>
+	$(function() {
+
+		$(".container")
+				.modelManager(
+						{
+							method : "post",
+							idKey : "ID",
+							modelApi : "../yygl/queryModelMete.do",
+							listApi : "../yygl/queryListData.do",
+							addApi : "../yygl/addOneData.do",
+							deleteApi : "../yygl/deleteOneData.do",
+							editApi : "../yygl/updateOneData.do",
+							viewApi : "../yygl/queryViewData.do",
+							formatter : {
+							}
+						})
+	
+
+	})
+</script>
+</head>
+<body>
+	<div class="container bgfff has-shadow"></div>
+</body>
+</html>

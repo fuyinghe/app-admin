@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.framework.dao.ModelDMBMapper">
+	
+	
+	<!-- 获取mo_xxbz表中对应的代码sql语句 -->
+	<select id="queryDdmSQLCode" resultType="string">
+		<if test="dmbId !=null and dmbId!=''">
+			select sql_code from mo_xxbz where id=#{dmbId}
+		</if>
+	</select>
+	
+	<!-- 根据SQL语句返回所对应的代码集合-->
+	<select id="sqlCodeToDmbList" resultType="com.webmos.framework.model.ModelDMB">
+		<!-- 传入完整SQL代码 -->
+		${sqlcode}
+	</select>
+	
+	<!-- 
+		根据传入的codesql集合，进行遍历组装sql，返回代码表集合对象 
+	-->
+	<select id="queryCodeCollection" parameterType="java.util.List" resultMap="resultMap_CodeCollection">
+		<foreach item="codesql_item" index="key" collection="codesqllist"  open=" " separator=" union all " close="">
+			<if test="codesql_item.dmb_sqlcode !=null and codesql_item.dmb_sqlcode !=''">
+				select value,text,'${codesql_item.model_field}' AS id,'${codesql_item.model_formType}' AS formType
+				from (
+				${codesql_item.dmb_sqlcode}
+				)
+			</if>
+		</foreach>
+	</select>
+	<!-- 返回代码表集合对象 -->
+	<resultMap id="resultMap_CodeCollection" type="com.webmos.framework.model.CodeCollection">  
+	    <id property="id" column="id"/>
+	    <result property="formType" column="formType"/>
+	    <collection property="dmbList" column="id" ofType="com.webmos.framework.model.ModelDMB">   
+	        <result property="value" column="value"/>  
+	        <result property="text" column="text"/>  
+	    </collection>  
+	</resultMap>
+  
+	<!-- 
+  	根据传入的模块id，返回该模块中配置了select 、radio两种类型的属性关联的代码表ID对应的代码表信息；
+  	将查询结果映射到代码表配置类的集合中
+  	目前select 、radio、checkbox使用此种方式处理
+	-->
+	<select id="queryCodeSQLList" resultType="com.webmos.framework.model.CodeSql">
+	select mo_column.column_en as model_field,
+	      mo_column.column_cn as model_title,
+	      mo_column.v_type as model_formType,
+	      mo_xxbz.id as dmb_id,
+	      mo_xxbz.title as dmb_title,
+	      mo_xxbz.sql_code as dmb_sqlcode
+	  from mo_column
+	  left join mo_xxbz on mo_column.v_selectrange = mo_xxbz.id
+	 where 
+	   mo_column.state=1 
+	   and mo_column.guishu=#{moid}
+	   and <![CDATA[ mo_column.state < 2 ]]>
+	   and (mo_column.v_type = 'select' or mo_column.v_type = 'radio' or mo_column.v_type = 'checkbox' or mo_column.v_type = 'img' or mo_column.v_type = 'file')
+	   and mo_column.v_selectrange is not null
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.jgtstz.dao.JgtstzMapper">
+
+<!-- 查询教工所有部门 -->
+<select id="queryJgbm" resultType="com.hrbwmxx.hrbu.jgtstz.vo.Jgbm">
+   select * from t_bmdmb
+</select>
+
+<!-- 查询每个部门的人数 -->
+<select id="queryZgjg" resultType="java.lang.Integer" >
+   select count(*)  from t_bzjg where bmdm=#{obj.bmdm}
+</select>
+
+<!-- 根据通知推送wid查询出部门代码 -->
+<select id="queryTsbmdm" resultType="com.hrbwmxx.hrbu.jgtstz.vo.TsTz" >
+		select * from T_TSTZ where  state &lt; 2
+		  <if test="obj.wid !=null and obj.wid !=''">
+		  	and wid = #{obj.wid} 
+		  </if>
+</select>
+
+<!-- 根据部门代码查询出教工人员信息 -->	
+<select id="queryJgxx" resultType="com.hrbwmxx.hrbu.jgtstz.vo.Jgxx" >
+		select * from t_bzjg where
+		  <if test="obj.bmdm !=null and obj.bmdm !=''">
+		  	bmdm = #{obj.bmdm} 
+		  </if>
+</select>	
+
+<!-- 把教工号和推送id号存入教工临时表中 -->
+<insert id="saveJglsb">
+	    insert into t_tstz_jglsb (tsid,jgdm,xm,ydsj) values (#{obj.tsid},#{obj.jgdm},#{obj.xm},#{obj.ydsj}) 
+</insert>
+<!-- 修改推送通知是否推送状态 -->
+<update id="updateTstzzt">
+	    update t_tstz set sfts='1' where wid=#{obj.wid}
+</update>
+<!-- 查询阅读教工 -->
+<select id="queryYdjg" resultType="com.hrbwmxx.hrbu.jgtstz.vo.Jglsb" >
+		select * from t_tstz_jglsb where tsid = #{obj.tsid} and zt='1'
+</select>
+<!-- 查询阅读教工总数 -->
+<select id="queryYdZs" resultType="java.lang.Integer" >
+		select count(*)  from t_tstz_jglsb where tsid = #{obj.tsid} and zt='1' 
+</select>
+<!-- 查询未读总数 -->
+<select id="queryWdZs" resultType="java.lang.Integer" >
+		select count(*)  from t_tstz_jglsb where tsid = #{obj.tsid} and zt='0'
+</select>
+<!-- 查询未读教工 -->	
+<select id="queryWdjg" resultType="com.hrbwmxx.hrbu.jgtstz.vo.Jglsb" >
+		select * from t_tstz_jglsb where tsid = #{obj.tsid} and zt='0'
+</select>
+<!-- 只能本人进行伪删除 -->
+<update id="updateTszt">
+	update T_TSTZ set state='2' where wid=#{obj.wid} and userid=#{obj.userid}
+	</update>
+</mapper>

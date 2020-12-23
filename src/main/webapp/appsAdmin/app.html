@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>APP管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#menu-manager").modelManager({
+					modelApi:[
+						
+						{field:"name",title:"应用名称",visible:1,formType:"text",search:2,cols:4},
+						{field:"app_type_id",title:"应用类型",mappingField:"app_type",visible:1,formType:"select",search:2,cols:4,valueConfig:{url:"../app/queryAppTypeListPage.do",textKey:"app_type",valueKey:"id",dataField:"rows"}},
+						{field:"sys_type",title:"应用中心",defaultValue:0,mappingField:"",visible:1,formType:"select",search:2,cols:4,valueConfig:{list:[{text:"是",value:"0"},{text:"否",value:"1"}]}},
+						{field:"firstplace",title:"首页头部",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"secondplace",title:"首页中部",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"thirdplace",title:"首页中部广告",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"adplace",title:"首页下部广告",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"apple",title:"苹果上架",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"adr",title:"安卓上架",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"wx",title:"公众号上架",visible:0,defaultValue:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+
+						{field:"open_type",title:"打开类型",mappingField:"openname",visible:1,formType:"select",search:0,cols:4,valueConfig:{url:"../app/queryCodeValue.do?fhdm=app_opentype",textKey:"mc",valueKey:"bzdm",dataField:"rows"}},
+						{field:"need_login",title:"需要登录",visible:0,formType:"select",search:0,cols:4,valueConfig:{list:[{text:"需要",value:"1"},{text:"不需要",value:"0"}]}},
+						{field:"citycode",title:"城市授权",visible:1,formType:"text",isOnlyread:1 ,isHidden:1, mappingField: "cityname",search:0,cols:4},
+						{field:"state",title:"状态",visible:1,formType:"select",cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
+						{field:"urltype",title:"图片类型",mappingField:"urltypename",visible:1,formType:"select",search:0,cols:4,valueConfig:{url:"../app/queryCodeValue.do?fhdm=app_urltype",textKey:"mc",valueKey:"bzdm",dataField:"rows"}},
+						{field:"weight",title:"排序",visible:0,formType:"text",search:0,cols:4},
+						{field:"ispay",title:"是否是缴费项",visible:0,formType:"select",cols:4,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+						{field:"paytype",title:"缴费类型",mappingField:"paytypemc",visible:0,formType:"select",search:0,cols:4,valueConfig:{url:"../payType/queryPayTypeListPage.do",textKey:"mc",valueKey:"dm",dataField:"rows"}},
+						{field:"link",title:"访问链接",visible:0,formType:"text",search:0,cols:12},
+						{field:"icon",title:"图标链接",visible:0,formType:"text",search:0,cols:12},
+						{field:"attachId",title:"图标链接",mappingField:"list_file_pic",cols:12,visible:0,formType:"img",maxSize:1,search:0,isRequired:0,valueConfig:{url:"../FileService/serverUpload.do"}},
+						],
+					listApi:"../app/queryAppListPage.do",
+					addApi:"../app/saveAppValue.do",
+					deleteApi:"../app/deleteAppValue.do",
+					editApi:"../app/updateAppValue.do",
+					viewApi:"../app/queryAppValueOne.do",
+					viewDataField:"custom",
+					idKey:"id",
+					//advSearchBtnText: "高级查询",
+					//btnGroupInline:true,
+					oprateAdd:function(row,index){
+						return ' <button class="btn btn-xs btn-primary add-city"><span class=""></span> 城市授权</button>'
+						
+					},
+					onViewDataLoaded:function(obj){
+						obj.container
+						if(obj.data.urltype == "2"){
+							obj.container.find("[data-field=icon]").hide()
+							obj.container.find("[data-field=attachId]").show()
+						}else if(obj.data.urltype == "1"){
+							obj.container.find("[data-field=icon]").show()
+							obj.container.find("[data-field=attachId]").hide()
+						}else{
+							obj.container.find("[data-field=icon]").hide()
+							obj.container.find("[data-field=attachId]").hide()
+						}
+						if(obj.data.ispay == "1"){//是缴费项
+							obj.container.find("[data-field=link]").hide()
+						}else{
+							obj.container.find("[data-field=link]").show()
+						}
+					},
+					//,.form-control[name=adplace],.form-control[name=thirdplace]
+					onModelLoaded:function(obj){
+						obj.formModal.find(".form-control[name=ispay]").on("modelFormChange",function(){
+							/* var a = obj.formModal.find(".form-control[name=paytype]")
+							if($(this).val() == "1"){
+								obj.formModal.find("[data-field=link]").hide();
+								a.prop("disabled",false)
+							}else{
+								obj.formModal.find("[data-field=link]").show();
+								a.val("").prop("disabled",true)
+							} */
+							
+						
+						})
+						obj.formModal.find("[data-field=attachId]").hide();
+						obj.formModal.find("[data-field=icon]").hide();
+						obj.formModal.find(".form-control[name=urltype]").on("modelFormChange",function(){
+							if($(this).val() == "2"){
+								//网络
+								obj.formModal.find("[data-field=attachId]").show();
+								obj.formModal.find("[data-field=icon]").hide();
+							}else if($(this).val() == "1"){
+								//本地
+								obj.formModal.find("[data-field=icon]").show();
+								obj.formModal.find("[data-field=attachId]").hide();
+							}else{
+								obj.formModal.find("[data-field=attachId]").hide();
+								obj.formModal.find("[data-field=icon]").hide();
+							}
+						})
+						
+						
+						
+						obj.formModal.find(".form-control[name=sys_type]").on("change",function(){
+							/* var a = obj.formModal.find(".form-control[name=firstplace],.form-control[name=secondplace]")
+							if($(this).val() == "1"){
+								a.val("0").prop("disabled",true)
+							}else{
+								a.prop("disabled",false)
+							} */
+							var b = obj.formModal.find(".form-control[name=adplace],.form-control[name=thirdplace],.form-control[name=firstplace]")
+							if($(this).val() == "0"){
+								b.val("0").prop("disabled",true)
+							}else{
+								b.prop("disabled",false)
+							}
+							
+						}),
+						obj.formModal.find(".form-control[name=firstplace]").on("change",function(){
+							var a = obj.formModal.find(".form-control[name=secondplace],.form-control[name=adplace],.form-control[name=thirdplace]")
+							if($(this).val() == "1"){
+								a.val("0").prop("disabled",true)
+							}else{
+								a.prop("disabled",false)
+							}
+							
+						}),
+						obj.formModal.find(".form-control[name=secondplace]").on("change",function(){
+							var a = obj.formModal.find(".form-control[name=firstplace],.form-control[name=adplace],.form-control[name=thirdplace]")
+							if($(this).val() == "1"){
+								a.val("0").prop("disabled",true)
+							}else{
+								a.prop("disabled",false)
+							}
+							
+						}),
+						obj.formModal.find(".form-control[name=thirdplace]").on("change",function(){
+							var a = obj.formModal.find(".form-control[name=adplace]")
+							if($(this).val() == "1"){
+								a.val("0").prop("disabled",true)
+							}else{
+								a.prop("disabled",false)
+							}
+							
+						}),
+						obj.formModal.find(".form-control[name=adplace]").on("change",function(){
+							var a = obj.formModal.find(".form-control[name=thirdplace]")
+							if($(this).val() == "1"){
+								a.val("0").prop("disabled",true)
+							}else{
+								a.prop("disabled",false)
+							}
+							
+						})
+						
+					},
+					oprateEventsAdd:{
+						"click .add-city":function(e,value,row,index){
+							rolePickerLoaded(function(){
+								rolePicker(function(info){
+									$.ajax({
+										url:"../app/saveCityCodeForApp.do",
+										data:{
+											appId:row.id,
+											cityId:info.bzdm
+										},
+										suc:function(data){
+											$.alert(data.errmsg,"success");
+											$(".container-fluid").modelManager("refreshList")
+										},
+										hasAlert:true,
+										loadingContainer:$("body")
+									})
+									
+								},row.id)
+							})
+						}
+					},
+					formatter:{
+						citycode:function(value,row,index){
+							var html = row.cityname || "";
+							if(row.cityname){
+								html+= ' <button class="btn btn-xs btn-danger delete-city" data-id="'+row.id+'"><span class="glyphicon glyphicon-remove"></span> 取消</button>'
+							}
+									
+							//var html = '<p class="text-center"><span class="text-left" style="width:100px;display:inline-block;">'+row.cityname+'</span> <button  class="btn btn-xs btn-danger delete-role"><span class="glyphicon glyphicon-remove"></span> 取消</button></p>'
+								
+							return html
+						},
+						state:function(value,row,index){
+							switch(value){
+								case "0":
+									return '<span class="text-danger">已停用</div> <button data-state="1" data-id="'+row.id+'" class="btn btn-xs sxx btn-success">上线</button>'
+								break;
+								case "1":
+									return '<span class="text-success">使用中</div> <button data-state="0" data-id="'+row.id+'" class="btn btn-xs sxx btn-danger">下线</button>'
+								break;
+							}
+						}
+					
+					},
+					advSearchBtnText:""
+				}).on("click","button.sxx",function(){
+					$.ajax({
+						url:"../app/updateAppValue.do",
+						data:{
+							state:$(this).attr("data-state"),
+							id:$(this).attr("data-id")
+						},
+						suc:function(data){
+							$("#menu-manager").modelManager("refreshList")
+						},
+						hasAlert:true,
+						loadingContainer:$("body")
+						
+					})
+				}).on("click",".delete-city",function(){
+					$.ajax({
+						url:"../app/deleteCityCodeForApp.do",
+						data:{
+							id:$(this).attr("data-id")
+						},
+						suc:function(data){
+							$.alert(data.errmsg,"success");
+							$(".container-fluid").modelManager("refreshList")
+						},
+						hasAlert:true,
+						loadingContainer:$("body")
+					})
+				})
+				//打开窗口
+				function rolePickerLoaded(callback){
+					if(window.$rolePicker){
+						callback();		
+					}else{
+						$.ajax({
+							url:"./role/city-picker.html",
+							success:function(data){
+								$("body").append(data);
+								callback();
+							}
+						});
+					}
+				}
+				
+			})
+		</script>
+	</head>
+	<body>
+		<div id="menu-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

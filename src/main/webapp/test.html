@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!--基础库-->
+		<link rel="stylesheet" href="css/global.css" />
+		<script type="text/javascript" src="js/lib.js"></script>
+		
+		<!--模型库-->
+		<script type="text/javascript" src="js/model.js"></script>
+		
+		<!--editor组件-->
+	    <link href="js/umeditor/themes/default/css/umeditor.min.css" type="text/css" rel="stylesheet">
+	    <script type="text/javascript" charset="utf-8" src="js/umeditor/umeditor.min.js"></script>
+	    
+		<title>黑龙江中医药大学 学工管理平台</title>
+	</head>
+	<body>
+		<script>
+			$(function(){
+				var modelData = [
+						{"field":"img","mappingField":"","title":"图片","defaultValue":"","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"img","isHidden":"0","cols":"12","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","other":{"lbId":"t_jxjsb","sxid":"38a5421e-eff2-4ec9-aad8-571db7000143"},"valueConfig":{"url":"Attachment/attachmentUpload.do?attachType=demo&ownerId=1","valueKey":"dm","textKey":"mc","dataField":"rows","enable":0,"list":[],"lastSelectField":"","lastFieldQueryKey":"id"}},
+						{"field":"fj","mappingField":"","title":"附件","defaultValue":"","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"file","isHidden":"0","cols":"12","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","other":{"lbId":"t_jxjsb","sxid":"38a5421e-eff2-4ec9-aad8-571db7000143"},"valueConfig":{"url":"Attachment/attachmentUpload.do?attachType=demo&ownerId=2","valueKey":"dm","textKey":"mc","dataField":"rows","enable":0,"list":[],"lastSelectField":"","lastFieldQueryKey":"id"}},
+						{"field":"content","mappingField":"","title":"内容","defaultValue":"请输入","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"editor","isHidden":"0","cols":"12","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","other":{"lbId":"t_jxjsb","sxid":"38a5421e-eff2-4ec9-aad8-571db7000143"},"valueConfig":{"url":"propertyvalue/upload.do","valueKey":"dm","textKey":"mc","dataField":"rows","enable":0,"list":[],"lastSelectField":"","lastFieldQueryKey":"id"}}
+					]
+				var viewData = {
+						img:[{
+								attachId:"7ff54fa009574ee4b2f2f811e910c12e",
+								code:"student",
+								downloadUrl:"http://127.0.0.1:8080/zyy/propertyvalue/download.do?attachId=7ff54fa009574ee4b2f2f811e910c12e",
+								len:"51711",
+								name:"7ff54fa009574ee4b2f2f811e910c12e.jpg",
+								originalName:"asdf.jpg",
+								physicalPath:"D:/file/student/2018-04-11/21076324727577.jpg",
+								state:"SUCCESS",
+								type:".png",
+								url:"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1523440357495&di=478665386d9524ca61189887e64f40b7&imgtype=0&src=http%3A%2F%2F09.imgmini.eastday.com%2Fmobile%2F20180408%2F20180408000951_9747284ecd94b0484fb51201e7240266_6.jpeg"
+							},{"attachId":"5ff9ac22-5172-4396-bddc-fec5a8b9758e","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5ff9ac22-5172-4396-bddc-fec5a8b9758e","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5ff9ac22-5172-4396-bddc-fec5a8b9758e","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5ff9ac22-5172-4396-bddc-fec5a8b9758e","name":"IMG_3387.PNG","type":"image/png","fileSize":"80065","createTime":"2018-04-15 23:02:20"},{"attachId":"5424e747-53c9-4dcf-bb38-32041335913b","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5424e747-53c9-4dcf-bb38-32041335913b","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5424e747-53c9-4dcf-bb38-32041335913b","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=5424e747-53c9-4dcf-bb38-32041335913b","name":"xltp.png","type":"image/png","fileSize":"183931","createTime":"2018-04-15 23:02:25"},{"attachId":"dc477b8d-c547-4fe9-9bbc-1f3467078df6","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=dc477b8d-c547-4fe9-9bbc-1f3467078df6","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=dc477b8d-c547-4fe9-9bbc-1f3467078df6","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=dc477b8d-c547-4fe9-9bbc-1f3467078df6","name":"xltp.png","type":"image/png","fileSize":"183931","createTime":"2018-04-15 23:02:29"},{"attachId":"1dc88616-09d9-448a-8c07-800ba5a6bc78","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=1dc88616-09d9-448a-8c07-800ba5a6bc78","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=1dc88616-09d9-448a-8c07-800ba5a6bc78","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=1dc88616-09d9-448a-8c07-800ba5a6bc78","name":"宿舍选寝统计.png","type":"image/png","fileSize":"88920","createTime":"2018-04-15 23:02:33"},{"attachId":"cfefdcd5-7322-4b46-a40e-b26e3e6ae3c5","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfefdcd5-7322-4b46-a40e-b26e3e6ae3c5","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfefdcd5-7322-4b46-a40e-b26e3e6ae3c5","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfefdcd5-7322-4b46-a40e-b26e3e6ae3c5","name":"1111.png","type":"image/png","fileSize":"312384","createTime":"2018-04-15 22:49:51"}],
+						fj:[{
+								name:"27825680329304.xlsx",
+								attachId:"691915b7741347768ad3dc2af9a9ae60",
+								code:"student",
+								downloadUrl:"http://127.0.0.1:80/zyy/propertyvalue/download.do?attachId=691915b7741347768ad3dc2af9a9ae60",
+								errcode:"0",
+								errmsg:"上传成功",
+								originalName:"综合测评-导入模板.xlsx",
+								len:"819712",
+								physicalPath:"D:/file/student/2018-04-02/27825680329304.xlsx",
+								state:"0",
+								url:"",
+							},{
+								name:"27825680329304.xlsx",
+								attachId:"691915b7741347768ad3dc2af9a9ae60",
+								code:"student",
+								downloadUrl:"http://127.0.0.1:80/zyy/propertyvalue/download.do?attachId=691915b7741347768ad3dc2af9a9ae60",
+								errcode:"0",
+								errmsg:"上传成功",
+								originalName:"综合测评-导入模板.xlsx",
+								len:"819712",
+								physicalPath:"D:/file/student/2018-04-02/27825680329304.xlsx",
+								state:"0",
+								url:"",
+						},{"attachId":"cfe1e719-63f3-4018-a26d-d1f7b02ec574","downloadUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfe1e719-63f3-4018-a26d-d1f7b02ec574","viewUrl":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfe1e719-63f3-4018-a26d-d1f7b02ec574","url":"http://127.0.0.1:8080/hrbu/Attachment/attachmentDownload.do?attachId=cfe1e719-63f3-4018-a26d-d1f7b02ec574","name":"4月考勤.xlsx","type":"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","fileSize":"12196","len":"12196","createTime":"2018-04-16 00:58:25","originalName":"4月考勤.xlsx"}],
+						content:"文本编辑器内容"
+					}
+				$("#form").modelManager("edit",{
+					saveBtn:$("#send"),
+					saveApi:"../test.html",
+					modelApi:modelData,
+					viewApi:viewData
+				})
+				
+				
+				
+				$("#view").modelManager("view",{
+					modelApi:modelData,
+					viewApi:viewData
+				})
+			})
+		</script>
+		<div class="container-fluid has-shadow">
+			<div class="border-title mb30"><h4>view展示</h4></div>
+			<div id="view"></div>
+			<div class="border-title mb30"><h4>form展示</h4></div>
+			<div id="form"></div>
+			
+			<button id="send" class="btn btn-success">SEND</button>
+			
+			
+			<div id="formdata"></div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,19 @@
+{
+	"errcode":"0",
+	"errmsg":"操作成功",	
+	"id":"1",
+	"num":3,
+	"email":"diankun2008@126.com",
+	"mobile":"15663499001",
+	"idcard":"230101200001010101",
+	"select":2,
+	"selectName":"第二个",
+	"datetime":"2018-01-22 15:45:00",
+	"date":"2018-01-22",
+	"time":"15:45:00",
+	"radio":1,
+	"radioName":"是",
+	"checkbox":"1,2",
+	"checkboxName":"水费,电费,网费",
+	"textarea":"文本框"
+}

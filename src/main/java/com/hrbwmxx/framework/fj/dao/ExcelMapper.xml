@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.framework.fj.dao.ExcelMapper">
+	<insert id="saveBatchList" >
+		insert into t_fj
+  		(fjid, xzlj, xmc, fkid, ymc, wjqlj, dm, tplj, xmlj, rksj,zt)
+	 	 <foreach collection="list" item="item" separator=" union all ">
+	  	 select 
+	  	 sys_guid(), 
+	  	 #{item.xzlj,jdbcType=VARCHAR}, 
+	  	 #{item.xmc,jdbcType=VARCHAR}, 
+	  	 #{item.fkid,jdbcType=VARCHAR},
+	  	 #{item.ymc,jdbcType=VARCHAR},
+	  	 #{item.wjqlj,jdbcType=VARCHAR},
+	  	 #{item.dm,jdbcType=VARCHAR},
+	  	 #{item.tplj,jdbcType=VARCHAR},
+	  	 #{item.xmlj,jdbcType=VARCHAR},
+	  	 sysdate,
+	  	 #{item.zt,jdbcType=CHAR}
+	  	 from dual
+	  	 </foreach>
+	</insert>
+</mapper>

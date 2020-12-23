@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>代码类型管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#menu-manager").modelManager({
+					modelApi:[
+						{field:"dm",title:"类型代码",visible:1,formType:"text",isRequired:1,search:2,cols:4},
+						{field:"mc",title:"类型名称",visible:1,formType:"text",isRequired:1,search:2,cols:4},
+						{field:"fhdm",title:"返回代码",visible:1,formType:"text",isRequired:1,search:2,cols:4},
+						{field:"px",title:"排序",visible:0,formType:"text",cols:4,valueType:"num",defaultValue:"0"},
+						{field:"state",title:"状态",visible:1,formType:"select",cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
+					],
+					listApi:"../../codeType/queryCodeTypeListPage.do",
+					addApi:"../../codeType/saveCodeTypeValue.do",
+					deleteApi:"../../codeType/deleteCodeTypeValue.do",
+					editApi:"../../codeType/updateCodeTypeValue.do",
+					viewApi:"../../codeType/queryCodeTypeFieldById.do",
+					viewDataField:"codeTypeCustom",
+					idKey:"id",
+					formatter:{
+						zt:function(value,row,index){
+							switch(value){
+								case "0":
+									return '<span class="text-danger">已停用</div>'
+								break;
+								case "1":
+									return '<span class="text-success">使用中</div>'
+								break;
+							}
+						}
+					},
+					advSearchBtnText:""
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="menu-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

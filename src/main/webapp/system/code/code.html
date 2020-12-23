@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>代码表管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js"></script>
+		<script>
+			$(function(){
+				$("#menu-manager").modelManager({
+					modelApi:[
+						{field:"dmlx",title:"代码类型",mappingField:"lxmc",visible:1,isRequired:1,formType:"select",search:2,cols:4,valueConfig:{url:"../../code/selectTypeValueForCode.do",textKey:"mc",valueKey:"dm",dataField:"rows"}},
+						{field:"mc",title:"名称",visible:1,formType:"text",isRequired:1,search:2,cols:4},
+						{field:"sjdm",title:"上级代码",visible:0,formType:"text",search:0,cols:4},
+						{field:"sjz",title:"上级值",visible:0,formType:"text",search:0,cols:4},
+						{field:"bzdm",title:"标准代码",visible:0,isRequired:1,formType:"text",search:0,cols:4},
+						//{field:"lxfhdm",title:"代码类型返回代码",visible:0,formType:"text",search:0,cols:4},
+						{field:"state",title:"状态",visible:1,formType:"select",cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
+						{field:"px",title:"排序",visible:0,formType:"text",cols:4,valueType:"num",defaultValue:"0"},
+
+					],
+					listApi:"../../code/queryCodeListPage.do",
+					addApi:"../../code/saveCodeValue.do",
+					deleteApi:"../../code/deleteCodeValue.do",
+					editApi:"../../code/updateCodeValue.do",
+					viewApi:"../../code/queryCodeById.do",
+					viewDataField:"codeCustom",
+					idKey:"dm",
+					btnGroupInline:true,
+					formatter:{
+						sfsy:function(value,row,index){
+							switch(value){
+								case "0":
+									return '<span class="text-danger">已停用</div>'
+								break;
+								case "1":
+									return '<span class="text-success">使用中</div>'
+								break;
+							}
+						}
+					},
+					advSearchBtnText:""
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="menu-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

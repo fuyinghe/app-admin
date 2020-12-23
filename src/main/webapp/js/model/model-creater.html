@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>模型生成器</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../model.js" ></script>
+		<style>
+			.model{ border: 1px solid #ccc; padding:15px 30px; border-radius: 10px; margin-bottom: 15px; overflow: hidden;}
+			.model.min .model-title{ height: 34px; line-height: 34px; overflow: hidden;}
+			.model.min .model-body{ height: 0px; overflow: hidden;}
+			.model.open{}
+			.model.open .model-title{ height: 0px; overflow: hidden;}
+			.model.open .model-body{ height: auto;}
+			.pre-container{}
+			#pre{ min-height: 100vh}
+		</style>
+		<script>
+			(function(){
+				$.fn.open = function(){
+					$(this).removeClass("min").addClass("open");
+				}
+				$.fn.close = function(){
+					$(this).removeClass("open").addClass("min");
+				}
+			})()
+			
+			$(function(){
+				$.verInit();
+				var valueConfig = {
+					"url": "",//验证唯一性的时候需要的url / 高级select请求的接口 / 联动select第一个select请求数据的接口
+					"valueKey": "dm", //高级select或联动select请求接口数据中list中每条作为option的value的key
+					"textKey" : "mc", //高级select或联动select请求接口数据中list中每条作为option的text的key
+					"dataField" : "rows",
+					"enable": 0, //高级select中，单选或者多选
+					"list": [
+					/*
+						{
+							"value": "",
+							"text": ""
+						}, {
+							"value": "",
+							"text": ""
+						}
+					*/
+					],//所有select返回的option优先检查list，没有则请求url， /radio/checkbox的list
+					"lastSelectField": "",//联动select下一个联动select的field
+					"lastFieldQueryKey": "id"
+				};
+				var otherDefault = {
+					//"lbId":"T_JXJSB",
+					//"sxid":""
+				}
+				$(".model-list .model textarea[name=valueConfig]").val(JSON.stringify(valueConfig, null, 2))
+				$(".model-list .model textarea[name=other]").val(JSON.stringify(otherDefault, null, 2))
+				var modelHtml = $(".model-list").html(),$modelList = $(".model-list"),modelList = [];
+				$(document).on("click",".add-model",function(){
+					if(!verModel()){
+						return false;
+					};
+					$modelList.find(".model.open").close();
+					$modelList.append(modelHtml);
+					$(".model-list .model.open textarea[name=valueConfig]").val(JSON.stringify(valueConfig, null, 2))
+					$(".model-list .model textarea[name=other]").val(JSON.stringify(otherDefault, null, 2))
+				}).on("click",".hide-model",function(){
+					if(!verModel()){
+						return false;
+					}
+					$(this).parents(".model").close()
+				}).on("click",".show-model",function(){
+					$modelList.find(".model.open").close();
+					$(this).parents(".model").open();
+				}).on("click",".delete-model",function(){
+					
+				}).on("keyup","input[name=field]",function(){
+					$(this).parents(".model").find(".field").text($(this).val())
+				}).on("keyup","input[name=title]",function(){
+					$(this).parents(".model").find(".title").text($(this).val())
+				}).on("click","button.create",function(){
+					if(!verModel()){
+						return false;
+					}
+					modelList = [];
+					$modelList.find(".model").each(function(){
+						var $this = $(this);
+						var obj = {}
+						$this.find(".form-control").each(function(){
+							obj[$(this).attr("name")] = $(this).val();
+						})
+						obj["valueConfig"] = $.strToJson(obj["valueConfig"]);
+						obj["other"] = $.strToJson(obj["other"])
+						modelList.push(obj);
+					})
+					$("#pre").html(JSON.stringify(modelList, null, 2))
+				})
+				
+				
+				//验证当前模型
+				function verModel(){
+					var vc = $modelList.find(".model.open textarea[name=valueConfig]").val()
+					try{
+						JSON.stringify(vc, null, 2);
+						
+						if(!$.ver($modelList.find(".model.open .form-control.required"))){
+							return false;
+						}
+						return true;
+					}catch(e){
+						return false;
+					}
+				}
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid bgfff has-shadow">
+			<div class="col-md-6">
+				<div class="row mb15 text-right">
+					<h4 class="pull-left" style="font-size: 25px;">模型创建器</h4>
+					<button class="btn btn-lg btn-success create"><span class="glyphicon glyphicon-send"></span> 生成</button>
+				</div>
+				<div class="row model-list">
+					<div class="model open">
+						<div class="model-title transition">
+							<span class="show-model pull-right pointer"><span class="glyphicon glyphicon-chevron-down"></span> 展开</span>
+							<span class="delete-model pull-right pointer"><span class="glyphicon glyphicon-remove"></span> 删除</span>
+							<span class="field"></span>
+							<span class="title"></span>
+						</div>
+						<div class="model-body transition">
+							<div class="row border-title mb15">
+								<span class="hide-model pull-right pointer"><span class="glyphicon glyphicon-chevron-up"></span> 收起</span>
+								<h4>数据结构</h4>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">字段名</label>
+								<div class="col-md-4"><input type="text" class="form-control required" name="field"></div>
+								<label class="label-control col-md-2">映射字段</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="mappingField"></div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">中文名</label>
+								<div class="col-md-4"><input type="text" class="form-control required" name="title"></div>
+								<label class="label-control col-md-2">默认值</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="defaultValue"></div>
+							</div>
+							<div class="row border-title mb15"><h4>校验格式</h4></div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">必填</label>
+								<div class="col-md-4">
+									<select name="isRequired" class="form-control">
+										<option value="0">否</option>
+										<option value="1">是</option>
+									</select>
+								</div>
+								<label class="label-control col-md-2">校验类型</label>
+								<div class="col-md-4">
+									<select name="valueType" class="form-control">
+										<option value="">&lt;不验证&gt;</option>
+										<option value="int">整数</option>
+										<option value="number">数字</option>
+										<option value="email">邮箱</option>
+										<option value="mobile">手机号</option>
+										<option value="idcard">身份证号</option>
+										<option value="only">唯一验证</option>
+									</select>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">最大值</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="maxValue"></div>
+								<label class="label-control col-md-2">最小值</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="minValue"></div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">最大长度</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="maxSize"></div>
+								<label class="label-control col-md-2">最小长度</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="minSize"></div>
+							</div>
+							<div class="row border-title mb15"><h4>布局结构</h4></div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">显示类型</label>
+								<div class="col-md-4">
+									<select name="formType" class="form-control">
+										<option value="text">Text</option>
+										<option value="radio">Radio</option>
+										<option value="checkbox">Checkbox</option>
+										<option value="textarea">Textarea</option>
+										<option value="editor">Editor</option>
+										<option value="hidden">Hidden</option>
+										<option value="datetime">datetime</option>
+										<option value="date">date</option>
+										<option value="time">time</option>
+										<option value="select">select</option>
+										<option value="advSelect">advSelect</option>
+										<option value="linSelect">linSelect</option>
+									</select>
+								</div>
+								<label class="label-control col-md-2">是否隐藏</label>
+								
+								<div class="col-md-4">
+								<select name="isHidden" class="form-control">
+									<option value="0">不隐藏</option>
+									<option value="1">隐藏</option>
+								</select>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">列宽</label>
+								<div class="col-md-4">
+									<select name="cols" class="form-control">
+										<option value="3">3/12</option>
+										<option value="4" selected="selected">4/12</option>
+										<option value="5">5/12</option>
+										<option value="6">6/12</option>
+										<option value="7">7/12</option>
+										<option value="8">8/12</option>
+										<option value="9">9/12</option>
+										<option value="10">10/12</option>
+										<option value="11">11/12</option>
+										<option value="12">12/12</option>
+									</select>
+								</div>
+								<label class="label-control col-md-2">列表显示</label>
+								<div class="col-md-4">
+									<select name="visible" class="form-control">
+										<option value="0" selected="selected">不显示</option>
+										<option value="1">默认显示</option>
+										<option value="2">默认不显示</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row form-group">
+								<label class="label-control col-md-2">是否已读</label>
+								<div class="col-md-4">
+									<select name="isOnlyread" class="form-control">
+										<option value="0">否</option>
+										<option value="1">只读状态</option>
+										<option value="2">显示状态</option>
+									</select>
+								</div>
+								<label class="label-control col-md-2">允许排序</label>
+								<div class="col-md-4">
+									<select name="sortable" class="form-control">
+										<option value="0">禁止</option>
+										<option value="1">允许</option>
+									</select>
+								</div>
+							</div>
+							
+							
+							<div class="row border-title mb15"><h4>查询</h4></div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">允许查询</label>
+								<div class="col-md-4">
+									<select name="search" class="form-control">
+										<option value="0">禁止</option>
+										<option value="2">简单查询</option>
+										<option value="1">高级查询</option>
+									</select>
+								</div>
+								<label class="label-control col-md-2">查询类型</label>
+								<div class="col-md-4">
+									<select name="searchType" class="form-control">
+										<option value="">&lt;同显示类型&gt;</option>
+										<option value="text">Text</option>
+										<option value="radio">Radio</option>
+										<option value="checkbox">Checkbox</option>
+										<option value="textarea">Textarea</option>
+										<option value="editor">Editor</option>
+										<option value="hidden">Hidden</option>
+										<option value="datetime">datetime</option>
+										<option value="date">date</option>
+										<option value="time">time</option>
+										<option value="select">select</option>
+										<option value="advSelect">advSelect</option>
+										<option value="linSelect">linSelect</option>
+									</select>
+								</div>
+							</div>
+							
+							<div class="row border-title mb15"><h4>其他</h4></div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">输入提示</label>
+								<div class="col-md-4"><input type="text" class="form-control" name="placeholder"></div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">其他属性</label>
+								<div class="col-md-10">
+									<textarea rows="5" class="form-control" name="other"></textarea>
+								</div>
+							</div>
+							<div class="row form-group">
+								<label class="label-control col-md-2">其他配置</label>
+								<div class="col-md-10">
+									<textarea rows="20" class="form-control" name="valueConfig"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+					
+				</div>
+				<div class="row text-right">
+					<button class="btn btn-default add-model"><span class="glyphicon glyphicon-plus"></span> 增加</button>
+				</div>
+			</div>
+			
+			<div class="col-md-6 pre-container">
+				<pre id="pre"></pre>
+			</div>
+		</div>
+	</body>
+</html>

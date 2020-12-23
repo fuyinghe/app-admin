@@ -1,0 +1,63 @@
+{
+	"errcode": 0,
+	"errmsg": "操作成功",
+	"model": [
+		{
+			//数据结构
+			"field": "test", //英文名
+			"mappingField":"testName",
+			"title": "测试", //中文名
+			"defaultValue": "",//默认值
+			//校验格式
+			"isRequired": 1,//是否必填。0否1是。
+			"valueType": "number",//检查类型，int:整数/number:数字，包括整数和小数/email:邮件/mobile:手机号/date/datetime/time/idcard:身份证号/only,only是验证地址在valueConfig中；因为formType中有时间控件，date/datetime/time时前端不做验证，只需后端验证
+			"maxValue": "",//为数字时的最大值，为空字符串不限制
+			"minValue": "",//为数字时的最小值，为空字符串不限制
+			"maxSize": 0,//最大长度，0或空字符串不限制
+			"minSize": 0,//最小长度，0或空字符串不限制
+			//布局结构
+			"formType": "text",//显示类型，file/text/radio/checkbox/textarea/editor/datetime/date/time/select:静态数据select/advSelect:高级select/linSelect:联动select
+			"isHidden": 0,//是否隐藏，增改查是否隐藏
+			"isOnlyread": 1,//是否已读,如果只读，增改表单中不显示，但查看显示。
+			"cols": 4,//布局比例，12列占几列，最小3，最大12
+			"wrap": 1,//值为1，输出表单时强制换行
+			"visible": 0,//是否可浏览，表格中是否显示，0不允许，1允许，2允许但默认隐藏
+			//导入导出
+			"isImport": 1,
+			"isExport": 1,
+			//排序
+			"sortable": 1,//是否可以按此列排序，请求list接口时附加orderBy=该列field desc/asc
+			//高级查询
+			"search": 1,//高查启用，0禁止按此字段搜索，1只可在高级搜索中搜索，2简单搜索中也显示
+			"searchType": "",//查询类型 text/radio/select:静态数据select/advSelect:高级select/linSelect:联动select/datetime/date/time/dateslot:时间段，日期~日期。
+
+			//其他
+			"placeholder": "",//输入提示
+			"other":{
+				"lbId":"",
+				"sxid":""
+			},
+			"valueConfig": {
+				"url": "",//验证唯一性的时候需要的url / 高级select请求的接口 / 联动select第一个select请求数据的接口
+				"valueKey": "value", //高级select或联动select请求接口数据中list中每条作为option的value的key
+				"textKey": "text", //高级select或联动select请求接口数据中list中每条作为option的text的key
+				"dataField":"list",//异步接口返回data中list字段名
+				"lastSelectField": "",//lastSelectField字段change会触发当前select刷新数据
+				"lastFieldQueryKey": "", //lastSelectField字段change会把value作为lastFieldQueryKey字段请求url，触发当前select刷新数据
+				"enable": 0, //高级select中，单选或者多选
+				"list": [
+					{
+						"value": "",
+						"text": ""
+					}, {
+						"value": "",
+						"text": ""
+					}
+				]//所有select返回的option优先检查list，没有则请求url， /radio/checkbox的list
+				
+			}
+		}, {
+			"...": "..."
+		}
+	]
+}

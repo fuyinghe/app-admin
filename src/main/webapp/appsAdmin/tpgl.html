@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>图片管理</title>
+<link rel="stylesheet" href="../css/global.css" />
+<script type="text/javascript" src="../js/lib.js"></script>
+<script type="text/javascript" src="../js/model.js"></script>
+<script>
+	$(function() {
+
+		$(".container-fluid")
+				.modelManager(
+						{
+							method : "post",
+							idKey : "ID",
+							modelApi : "../tpgl/queryModelMete.do",
+							listApi : "../tpgl/queryListData.do",
+							addApi : "../tpgl/addOneData.do",
+							deleteApi : "../tpgl/deleteOneData.do",
+							editApi : "../tpgl/updateOneData.do",
+							viewApi : "../tpgl/queryViewDataImger.do",
+							formatter : {
+								IMG_LINK : function(value, row, index) {
+								
+									return "<img src='/app-admin/Attachment/attachmentDownload.do?attachId="
+											+ value
+											+ "' style='height:100px;width:150px;'/>";
+								}
+							},
+							search:false
+						})
+						//页面提示信息
+						function tips(){
+							if(!$(".fixed-table-toolbar")) {
+								tips();
+								return;
+							}
+							var tipstr = 
+								'<div class="columns columns-right btn-group pull-left">'+
+									'注意：轮播图是客户端首页展示内容，请在上传时使用标准尺寸上传，其他尺寸可能会造成显示错位情况！'+
+								'</div>';
+							$(".fixed-table-toolbar").prepend(tipstr);
+						}
+						setTimeout(tips,100);
+	})
+</script>
+</head>
+<body>
+	<div class="container-fluid bgfff has-shadow"></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>校历类型标准信息维护管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+		<script>
+			$(function(){
+				
+				$(".container-fluid").modelManager({
+					method:"post",
+					idKey:"ID",
+					modelApi:"../apptype/queryModelMete.do",
+					listApi:"../apptype/queryListData.do",
+					addApi:"../apptype/addOneData.do",
+					deleteApi:"../apptype/deleteOneData.do",
+					editApi:"../apptype/updateOneData.do",
+					viewApi:"../apptype/queryViewData.do",
+					formatter:{
+						email:function(value,row,index){
+							return '<span class="glyphicon glyphicon-envelope"></span> '+value
+						},
+						mobile:function(value,row,index){
+							return '<span class="glyphicon glyphicon-user"></span> '+value
+						}
+					}
+				})
+				/*$("#simple").modelManager("edit",{
+					method:"get",
+					modelApi:"demo/mate.json",
+					saveApi:"demo/add.json",
+					viewApi:"demo/view.json",
+					saveBtn:$("#save"),
+					callback:function(data){
+						
+					}
+				})*/
+				
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid bgfff has-shadow">				
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.framework.dao.FileModelMapper">
+	<select id="queryAttrList" resultType="java.util.Map">
+			select 
+			attachid  as "attachId", 
+			downloadurl as "downloadUrl", 
+			url as "url", 
+			originalName as "originalName", 
+			name as "name", 
+			code as "code", 
+			foreignkeyid as "foreignKeyId", 
+			physicalpath as "physicalPath", 
+			to_char(addtime,'yyyy-mm-dd hh24:mi:ss') as "addTime", 
+			state as  "state",
+			len as "len",
+			len as "size"
+			from t_file
+			 <where>
+			 	<if test="attachId!=null">
+			 		attachId=#{attachId}
+			 	</if>
+			 	<if test="foreignKeyId!=null">
+			 		foreignkeyid=#{foreignKeyId}
+			 	</if>
+			 </where>
+	</select>
+  	<insert id="saveFileInfoData">
+		insert into t_file
+  		 (attachid,len, downloadurl, url, originalName, name, code, foreignkeyid, physicalpath, addtime, state)
+  		values
+  		(
+  		 #{ attachId,jdbcType=VARCHAR}, 
+  		 #{ len,jdbcType=VARCHAR}, 
+	  	 #{ downloaduUrl,jdbcType=VARCHAR}, 
+	  	 #{ url,jdbcType=VARCHAR}, 
+	  	 #{ originalName,jdbcType=VARCHAR},
+	  	 #{ name,jdbcType=VARCHAR},
+	  	 #{ code,jdbcType=VARCHAR},
+	  	 #{ foreignKeyId,jdbcType=VARCHAR},
+	  	 #{ physicalPath,jdbcType=VARCHAR},
+	  	 sysdate,
+	  	 #{ state,jdbcType=CHAR}
+  		)  	
+  	</insert>
+  	
+  	<update id="updateFileInfoData">
+		update t_file  
+		<set>
+			<if test="downloadUrl!=null">downloadUrl=#{downloadUrl},</if>
+			<if test="url!=null">url=#{url},</if>
+			<if test="originalName!=null">originalName=#{originalName},</if>
+			<if test="name!=null">name=#{name},	</if>
+			<if test="code!=null">code=#{code},</if>
+			<if test="foreignkeyid!=null">foreignkeyid=#{foreignKeyId},</if>
+			<if test="physicalpath!=null">physicalPath=#{physicalPath},</if>
+			<if test="state!=null">state=#{state},</if>
+		</set> 
+		<where>
+			<if test="attachId!=null">
+				attachId=#{attachId},
+			</if>
+			<if test="foreignKeyId!=null">
+				foreignKeyId=#{foreignKeyId},
+			</if>
+		</where>
+	</update>
+	<!-- 参数配置信息 -->
+ 
+	<select id="queryFileParamBycode" resultType="java.util.Map">
+		<include refid="queryFileParamListPage_filed"/>
+		<include refid="queryFileParamListPage_condition"/>
+	</select>
+	<select id="queryFileParamListPage" resultType="java.util.Map">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryFileParamListPage_filed"/>
+		<include refid="queryFileParamListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryFileParamListPageCount" resultType="int">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryFileParamListPage_filed"/>
+		<include refid="queryFileParamListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<insert id="saveFileParam">
+		insert into t_filet_param (id, name, code, remark, state)
+ 		values
+   		(#{obj.id}, #{obj.name}, #{obj.code}, remark, #{obj.state}) 
+	
+	</insert>
+	
+	<sql id="queryFileParamListPage_filed">
+		select id as "id", name as "name", code as "code", remark as "remark", state as "state"
+	</sql>
+	<sql id="queryFileParamListPage_condition">
+	  	from t_filet_param
+		 <where>
+		 	<if test="obj.code!=null">
+		 		code=#{obj.code}
+		 	</if>
+		 	<if test="obj.state!=null">
+		 		state=#{obj.state}
+		 	</if>
+		 </where>
+	</sql>
+</mapper>

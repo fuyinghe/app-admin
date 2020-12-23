@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.log.dao.LogMapper">
+   
+	<sql id="query_field">
+		select rzid,ycdm,ycxx,czsj,czrq
+	</sql>
+	<sql id="query_condition">
+		from t_rz 
+		 <where>
+		 <if test="obj.rzid!=null and obj.rzid!=''">
+				 and rzid=#{obj.rzid}
+			</if>
+			<if test="obj.ycdm!=null and obj.ycdm!=''">
+				 and ycdm=#{obj.ycdm}
+			</if>
+			<if test="obj.ycxx!=null and obj.ycxx!=''">
+				 and ycxx=#{obj.ycxx}
+			</if>
+			
+			<if test="obj.beginTime!=null and obj.beginTime!=''">
+			  <if test="obj.endTime!=null and obj.endTime!=''">
+			     and czrq   between #{obj.beginTime} and #{obj.endTime}
+			  </if>
+			  <if test="obj.endTime==null or obj.endTime==''">
+				 and czrq >=#{obj.beginTime}
+			  </if>
+			</if>
+		</where> 
+		ORDER BY czrq desc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryAllLogForPage" resultType="com.hrbwmxx.hrbu.log.model.Log">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryLogForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	
+	<!-- 保存数据 -->
+	<insert id="addLog"  >
+		insert into t_rz (rzid,ycdm,ycxx,czsj,czrq)
+		values(#{rzid,jdbcType=VARCHAR},#{ycdm,jdbcType=VARCHAR},#{ycxx,jdbcType=VARCHAR},#{czsj,jdbcType=VARCHAR},#{czrq,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 根据Id删除数据 -->
+	<delete id="delLog">
+		DELETE FROM t_rz   WHERE rzid = #{rzid}
+	</delete>
+	
+	
+</mapper>

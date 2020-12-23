@@ -1,0 +1,110 @@
+{
+	"errmsg":"ok",
+	"errcode":"0",
+	"totalCount":30,
+	"pageSize":100,
+	"pageNo":1,
+  	"rows": [
+   		{
+			"field": "field",
+			"type": "String",
+			"desc": "字段名称",
+			"date": "2018-02-06"
+   		},{
+			"field": "mappingField",
+			"type": "String",
+			"desc": "映射字段",
+			"date": "2018-02-06"
+   		},{
+			"field": "title",
+			"type": "String",
+			"desc": "中文名",
+			"date": "2018-02-06"
+   		},{
+			"field": "defaultValue",
+			"type": "String",
+			"desc": "默认值",
+			"date": "2018-02-06"
+   		},{
+			"field": "required",
+			"type": "0|1",
+			"desc": "是否必填",
+			"date": "2018-02-06"
+   		},{
+			"field": "valueType",
+			"type": "String",
+			"desc": "校验类型",
+			"date": "2018-02-06"
+   		},{
+			"field": "maxValue",
+			"type": "Number",
+			"desc": "最大值",
+			"date": "2018-02-06"
+   		},{
+			"field": "minValue",
+			"type": "Number",
+			"desc": "最小值",
+			"date": "2018-02-06"
+   		},{
+			"field": "maxSize",
+			"type": "Int",
+			"desc": "最大长度",
+			"date": "2018-02-06"
+   		},{
+			"field": "minSize",
+			"type": "Int",
+			"desc": "最小长度",
+			"date": "2018-02-06"
+   		},{
+			"field": "formType",
+			"type": "String",
+			"desc": "显示类型",
+			"date": "2018-02-06"
+   		},{
+			"field": "isHidden",
+			"type": "0|1",
+			"desc": "是否隐藏",
+			"date": "2018-02-06"
+   		},{
+			"field": "cols",
+			"type": "3~12",
+			"desc": "列宽",
+			"date": "2018-02-06"
+   		},{
+			"field": "visible",
+			"type": "0|1|2",
+			"desc": "列表显示",
+			"date": "2018-02-06"
+   		},{
+			"field": "isReadonly",
+			"type": "0|1|2",
+			"desc": "是否只读",
+			"date": "2018-02-06"
+   		},{
+			"field": "sortable",
+			"type": "允许排序",
+			"desc": "0|1",
+			"date": "2018-02-06"
+   		},{
+			"field": "search",
+			"type": "0|1|2",
+			"desc": "允许查询",
+			"date": "2018-02-06"
+   		},{
+			"field": "searchType",
+			"type": "String",
+			"desc": "查询类型",
+			"date": "2018-02-06"
+   		},{
+			"field": "placehoder",
+			"type": "String",
+			"desc": "输入提示",
+			"date": "2018-02-06"
+   		},{
+			"field": "valueConfig",
+			"type": "Object",
+			"desc": "",
+			"date": "2018-02-06"
+   		}
+    ]
+ }

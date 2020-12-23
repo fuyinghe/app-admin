@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>model.js扩展组件demo</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../lib.js"></script>
+		<script type="text/javascript" src="../model.js" ></script>
+		<script>
+			$(function(){
+				
+				$("#simple").modelManager({
+					method:"get",
+					idKey:"id",
+					modelApi:"demo/mate.json",
+					addModelApi:"demo/addModel.json",
+					listApi:"demo/list.json",
+					addApi:"demo/add.json",
+					deleteApi:"demo/delete.json",
+					editApi:"demo/edit.json",
+					viewApi:"demo/view.json",
+					formatter:{
+						email:function(value,row,index){
+							return '<span class="glyphicon glyphicon-envelope"></span> '+ value
+						},
+						mobile:function(value,row,index){
+							return '<span class="glyphicon glyphicon-user"></span> '+ value
+						}
+					}
+				})
+				/*$("#simple").modelManager("edit",{
+					method:"get",
+					modelApi:"demo/mate.json",
+					saveApi:"demo/add.json",
+					viewApi:"demo/view.json",
+					saveBtn:$("#save"),
+					callback:function(data){
+						
+					}
+				})*/
+				
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container bgfff has-shadow">
+			<div class="row"><button id="save" class="btn btn-success pull-right">保存</button></div>
+			<div id="simple">
+				
+			</div>
+		</div>
+	</body>
+</html>

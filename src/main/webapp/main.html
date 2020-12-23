@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>应用访问趋势</title>
+		<link rel="stylesheet" href="css/global.css" />
+		<!-- -->
+		<script type="text/javascript" src="js/lib.js"></script>
+		<script type="text/javascript" src="js/model.js" ></script>
+		
+		<script type="text/javascript" src="js/echarts4/echarts.minAll.js"></script>
+		<script type="text/javascript" src="js/echarts4/macarons.js"></script>
+	</head>
+	<body>
+			
+			<div class="bgfff has-shadow" style="width:100%;height:450px;float:left;">
+				<div id="class_echarts" style="width:100%;height:400px;padding-top:20px;"></div>
+			</div>
+		
+	</body>
+</html>
+<script language="javascript" type="text/javascript">
+	
+	//动态绑定下拉框项  
+	function addnotice() {  
+		var myDate = new Date();
+		//获取当前年份
+		var yar =myDate.getFullYear();
+		fun(yar);
+	}; 
+
+//拆分数组
+function split_array(arr,len){ //arr 需要拆分的原数组,len小数包含多个元素
+	var a_len = arr.length;
+	var result = []; //结果数组
+	for(var i = 0 ; i<a_len ; i+=len){
+		result.push(arr.slice(i,i+len));//循环取原数组N个元素,每次从上次取
+	}
+	return result; //结果是一个数组,里面的元素就是拆分的小数组
+}
+//series
+function functionName(data){
+	 
+     var serie = [];
+	 var labelStr = [];
+	 var applist = data.ggyyappList;
+  	 for (var i = 0; i < applist.length; i++) {
+	     if($.inArray(applist[i].apptype,labelStr) < 0){
+	    	 labelStr.push(applist[i].apptype)
+	     }
+    } 
+    var result = split_array(applist ,12);
+    var  a_len = result.length;
+   for(var i = 0; i < a_len; i++){
+	 	var item = {
+       	 name: labelStr[i],
+       	 type: 'line',
+       	 smooth: true,
+       	 data: result[i]
+         }
+        serie.push(item ); 
+   }
+     return serie;
+}
+//下拉方法	
+function fun(yar) {
+    var newdata_type = [];
+    var newdata_x = [];
+    $.ajax({
+        type: 'POST',
+        url: 'appcount/getApptimes.do',
+        data:{
+        	  "year":yar,
+        	  "citycode":"230281"
+        	  },
+        success: function(data) {
+        	console.log(data);
+ 
+            //将所有状态组成一个新数组
+            for (var i = 0; i < data.ggyyappList.length; i++) {
+            	if($.inArray(data.ggyyappList[i].apptype,newdata_type) < 0){
+            		 newdata_type.push(data.ggyyappList[i].apptype)
+            	}
+               
+            	if($.inArray(data.ggyyappList[i].name,newdata_x) < 0){
+            		newdata_x.push(data.ggyyappList[i].name)
+           		}
+            	
+            }
+            var echartBar = echarts.init(document.getElementById('class_echarts'),'macarons');
+            echartBar.setOption({
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                        type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                legend: {
+                	type: 'scroll',
+                    selectedMode: true,
+                    legend: 'center',
+                    data: newdata_type
+                },
+                toolbox: {
+                    show: true,
+                    feature: {
+                        magicType: {
+                            show: true,
+                            title: {
+                                line: 'Line',
+                                bar: 'Bar',
+                                stack: 'Stack',
+                                tiled: 'Tiled'
+                            },
+                            type: ['line', 'bar', 'stack', 'tiled']
+                        },
+                        restore: {
+                            show: true,
+                            title: "Restore"
+                        },
+                        saveAsImage: {
+                            show: true,
+                            title: "Save Image"
+                        }
+                    }
+                },
+                calculable: false,
+                xAxis: [{
+                    name: '月份',
+                    type: 'category',
+                    nameTextStyle: {
+                        fontSize: 8,
+                    },
+                    boundaryGap: true,
+                    data: newdata_x,
+                    axisTick: {
+                        show: true
+                    },
+                    splitLine: {
+                        show: true
+                    },
+                }],
+                yAxis: [{
+                    name: '点击次数',
+                    type: 'value'
+                }],
+                series: functionName(data)
+            });
+        }
+    });
+}
+
+		
+window.onload=addnotice; //页面加载完自动加载		
+		
+</script>

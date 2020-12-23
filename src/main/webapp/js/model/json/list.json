@@ -1,0 +1,255 @@
+{
+	"errmsg":"ok",
+	"errcode":"0",
+	"totalCount":30,
+	"pageSize":100,
+	"pageNo":1,
+  "rows": [
+    {
+      "field": "method",
+      "type": "String",
+      "default": "&quot;post&quot;",
+      "desc": "&quot;post&quot; | &quot;get&quot; 请求列表数据，发送表单的方式",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "modelApi",
+      "type": "String url  | Jsonlist",
+      "default": "null",
+      "desc": "主模型、list模型或者模型api，必填；<br>类型为jsonlist时值即为模型，类型为string时为模型api；以下模型api同。",
+      "date": "2018-02-23"
+    },
+    {
+      "field": "listApi",
+      "type": "String url",
+      "default": "null",
+      "desc": "数据接口，必填；",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "addApi",
+      "type": "String url",
+      "default": "null",
+      "desc": "add接口；",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editApi",
+      "type": "String url",
+      "default": "null",
+      "desc": "edit接口；",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "deleteApi",
+      "type": "String url",
+      "default": "null",
+      "desc": "delete接口；",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "viewApi",
+      "type": "String url",
+      "default": "null",
+      "desc": "查询单条接口；",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "addModelApi",
+      "type": "String url | Jsonlist",
+      "default": "null",
+      "desc": "增加表单模型api,如果为空，则使用主模型",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editModelApi",
+      "type": "String url | Jsonlist",
+      "default": "null",
+      "desc": "修改表单模型api,如果为空，则使用主模型",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editModelViewApi",
+      "type": "String url | Jsonlist",
+      "default": "null",
+      "desc": "修改表单模型提供数据回显的api，如果为不设置则取viewApi",
+      "date": "<span style='color:red;'>2018-02-02</span>"
+    },
+    {
+      "field": "viewModelApi",
+      "type": "String url | Jsonlist",
+      "default": "null",
+      "desc": "显示模型api，如果为空，则使用主模型",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "searchModelApi",
+      "type": "String url | Jsonlist",
+      "default": "null",
+      "desc": "搜索表单模型api,如果为空，则使用主模型",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "idKey",
+      "type": "String",
+      "default": "&quot;id&quot;",
+      "desc": "查询/删除/修改依赖主键",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "checkbox",
+      "type": "Boolean",
+      "default": "false",
+      "desc": "表格第一列是否显示checkbox",
+      "date": "<span style='color:red;'>2018-02-09</span>"
+    },
+    {
+      "field": "showRefresh",
+      "type": "Boolean",
+      "default": "true",
+      "desc": "表格右上角是否显示'刷新'按钮",
+      "date": "<span style='color:red;'>2018-02-11</span>"
+    },
+    {
+      "field": "showColumns",
+      "type": "Boolean",
+      "default": "true",
+      "desc": "表格右上角是否显示'列选择'按钮",
+      "date": "<span style='color:red;'>2018-02-11</span>"
+    },
+    {
+      "field": "formatter",
+      "type": "Object",
+      "default": "{}",
+      "desc": "根据条件（value,row,index）自定义表格内容<br><code language='javascript'>{<br>[fieldName]:function(value,row,index){<br> return value;<br> },<br>[fieldName]:function(value,row,index){<br> return value;<br> }<br>}</code>",
+      "date": "<span style='color:red;'>2018-03-02</span>"
+    },
+    {
+      "field": "search",
+      "type": "Boolean",
+      "default": "true",
+      "desc": "是否开启搜索",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "searchBtnText",
+      "type": "String",
+      "default": "&quot;搜索&quot;",
+      "desc": "查询按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "advSearchBtnText",
+      "type": "String",
+      "default": "&quot;高级搜索&quot;",
+      "desc": "高级查询按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "addBtn",
+      "type": "boolean",
+      "default": "true",
+      "desc": "是否显示增加按钮",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "addBtnText",
+      "type": "String",
+      "default": "&quot;增加&quot;",
+      "desc": "增加按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "addModalTitle",
+      "type": "String",
+      "default": "&quot;增加&quot;",
+      "desc": "增加模态框标题",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "viewBtn",
+      "type": "Function",
+      "default": "<code language='javascript'>function(row,index){<br> return true;<br> }</code>",
+      "desc": "每行查看按钮显示策略",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "viewModalTitle",
+      "type": "String",
+      "default": "&quot;查看&quot;",
+      "desc": "查看模态框标题",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "viewBtnText",
+      "type": "String",
+      "default": "&quot;查看&quot;",
+      "desc": "查看按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editBtn",
+      "type": "Function",
+      "default": "<code language='javascript'>function(row,index){<br> return true;<br> }</code>",
+      "desc": "每行修改按钮显示策略",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editModalTitle",
+      "type": "String",
+      "default": "&quot;编辑&quot;",
+      "desc": "编辑模态框标题",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "editBtnText",
+      "type": "String",
+      "default": "&quot;编辑&quot;",
+      "desc": "编辑按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "deleteBtn",
+      "type": "Function",
+      "default": "<code language='javascript'>function(row,index){<br> return true;<br> }</code>",
+      "desc": "每行删除按钮显示策略",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "deleteBtnText",
+      "type": "String",
+      "default": "&quot;删除&quot;",
+      "desc": "删除按钮文字",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "oprate",
+      "type": "Boolean",
+      "default": "true",
+      "desc": "是否开启操作列",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "oprateAdd",
+      "type": "Function",
+      "default": "<code language='javascript'>function(row,index){<br> return &quot;&quot;;<br> }</div>",
+      "desc": "返回操作列附加HTML</code>",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "oprateEventsAdd",
+      "type": "Object",
+      "default": "{}",
+      "desc": "操作列附加事件<br>使用方法示例：<br><code language='javascript'>{<br>&quot;click .class&quot;:function(e,value,row,index){<br>console.log(e)<br>console.log(row)<br>console.log(index)<br>}<br>}</code>",
+      "date": "2018-01-31"
+    },
+    {
+      "field": "btnAddList",
+      "type": "Array",
+      "default": "[]",
+      "desc": "按钮附加list，和搜索显示在一排<br>使用方法示例：<br><code language='javascript'>[<br>{&quot;class&quot;:&quot; btn btn-default&quot;,<br>&quot;text&quot; : &quot;测试附加按钮&quot;,<br>&quot;css&quot; : &quot;&quot;,<br>&quot;icon&quot; : &quot;&quot;,<br>&quot;events&quot;:{<br>&quot;click&quot; : function(){}<br>}<br>}<br>]<br></code>",
+      "date": "2018-02-09"
+    }
+    ]
+ }
+ 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.framework.fj.dao.FJMapper">
+	<select id="queryFJList" resultType="com.hrbwmxx.framework.fj.vo.FJCustom">
+		 select fjid, xzlj, xmc, fkid, ymc, wjqlj, dm, tplj, xmlj, rksj,zt from t_fj
+		 <where>
+		 	<if test="fjId!=null">
+		 		fjid=#{fjId}
+		 	</if>
+		 	<if test="fkId!=null">
+		 		fkid=#{fkId}
+		 	</if>
+		 </where>
+	</select>
+	<insert id="saveBatcFJList" parameterType="java.util.List">
+		insert into t_fj
+  		(fjid, xzlj, xmc, fkid, ymc, wjqlj, dm, tplj, xmlj, rksj,zt)
+	 	 <foreach collection="list" item="item" separator=" union all ">
+	  	 select 
+	  	 sys_guid(), 
+	  	 #{item.xzlj,jdbcType=VARCHAR}, 
+	  	 #{item.xmc,jdbcType=VARCHAR}, 
+	  	 #{item.fkid,jdbcType=VARCHAR},
+	  	 #{item.ymc,jdbcType=VARCHAR},
+	  	 #{item.wjqlj,jdbcType=VARCHAR},
+	  	 #{item.dm,jdbcType=VARCHAR},
+	  	 #{item.tplj,jdbcType=VARCHAR},
+	  	 #{item.xmlj,jdbcType=VARCHAR},
+	  	 sysdate,
+	  	 #{item.zt,jdbcType=CHAR}
+	  	 from dual
+	  	 </foreach>
+	</insert>
+	<insert id="saveFJ">
+		insert into t_fj
+  		(fjid, xzlj, xmc, fkid, ymc, wjqlj, dm, tplj, xmlj, rksj,zt)
+  		values
+  		(
+  		 #{ fjId,jdbcType=VARCHAR}, 
+	  	 #{ xzlj,jdbcType=VARCHAR}, 
+	  	 #{ xmc,jdbcType=VARCHAR}, 
+	  	 #{ fkId,jdbcType=VARCHAR},
+	  	 #{ ymc,jdbcType=VARCHAR},
+	  	 #{ wjqlj,jdbcType=VARCHAR},
+	  	 #{ dm,jdbcType=VARCHAR},
+	  	 #{ tplj,jdbcType=VARCHAR},
+	  	 #{ xmlj,jdbcType=VARCHAR},
+	  	 sysdate,
+	  	 #{ zt,jdbcType=CHAR}
+  		)
+	</insert>
+	<update id="updateFj">
+		update t_fj  
+		<set>
+			<if test="xzlj!=null">xzlj=#{xzlj},</if>
+			<if test="xmc!=null">xmc=#{xmc},</if>
+			<if test="fkId!=null">fkId=#{fkId},</if>
+			<if test="ymc!=null">ymc=#{ymc},	</if>
+			<if test="wjqlj!=null">wjqlj=#{wjqlj},</if>
+			<if test="dm!=null">dm=#{dm},</if>
+			<if test="tplj!=null">tplj=#{tplj},</if>
+			<if test="xmlj!=null">xmlj=#{xmlj},</if>
+			<if test="zt!=null">zt=#{zt},</if>
+		</set> 
+		<where>
+			<if test="fkId!=null">
+				fkId=#{fkId},
+			</if>
+			<if test="fjId!=null">
+				fjId=#{fjId},
+			</if>
+		</where>
+	</update>
+</mapper>

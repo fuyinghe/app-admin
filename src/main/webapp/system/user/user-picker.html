@@ -1,0 +1,47 @@
+<div id="user-picker" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" style="margin-top:50px;" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+				<h4 class="modal-title" id="myModalLabel">选择用户</h4>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	window.$userPicker = $("#user-picker")
+	window.userPicker = function(callback,jsId){
+		openPicker();
+		function openPicker(){
+			$userPicker.modal("show").find(".modal-body").modelManager("destroy").modelManager({
+				modelApi:[
+					{"field":"xm","mappingField":"","title":"用户名称","defaultValue":"","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"text","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"2","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[],"nextSelectField":"","nextSelectUrl":"","nextSelectQueryKey":"id"},"lbId":"T_"},
+					{"field":"zt","mappingField":"","title":"状态","defaultValue":"1","isRequired":"1","valueType":"","maxValue":"","minValue":"","maxSize":"","minSize":"","formType":"select","isHidden":"0","cols":"4","visible":"1","isOnlyread":"0","sortable":"0","search":"0","searchType":"","placeholder":"","valueConfig":{"url":"","valueKey":"value","textKey":"text","enable":0,"list":[{"value":"1","text":"使用中"},{"value":"0","text":"未使用"}],},"lbId":"T_"},
+				],
+				listApi:jsId ? "../../js/findUnseleteYhByJsId.do?jsId="+jsId : "../../yh/queryYHListPage.do",
+				idKey: "yhId",
+				addBtn:false,
+				viewBtn:false,
+				editBtn:false,
+				deleteBtn:false,
+				advSearchBtnText: "",
+				oprateAdd:function(row,index){
+					return '<button class="btn btn-success btn-xs select"><span class="glyphicon glyphicon-ok"></span> 选择</button>';
+				},
+				oprateEventsAdd:{
+					"click .select":function(e,value,row,index){
+						$userPicker.modal("hide");
+						if(callback && $.isFunction(callback)){
+							callback(row)
+						}
+					}
+				}
+			});
+		}
+	}
+</script>

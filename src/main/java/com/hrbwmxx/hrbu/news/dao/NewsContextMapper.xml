@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.news.dao.NewsContextMapper">
+    <select id="getNRListByID"  resultType="com.hrbwmxx.hrbu.news.entity.NewsContext">
+	    SELECT 
+		    NRID   as id,
+		    XH as count ,
+		    NR as context
+		from t_nr_xx 
+		where NRID = #{id,jdbcType=VARCHAR} 
+		order by xh 
+	</select>
+	<insert id="saveContext" parameterType="com.hrbwmxx.hrbu.news.entity.NewsContext">
+	   insert into 
+	   t_nr_xx (nrid,xh,nr) 
+	   values(
+	   #{id,jdbcType=VARCHAR},
+	   #{count,jdbcType=VARCHAR},
+	   #{context,jdbcType=VARCHAR}
+	   )
+	</insert>	
+	<delete id="deleteContext">
+	  delete from t_nr_xx where nrid=#{id,jdbcType=VARCHAR}
+	</delete>	
+</mapper>

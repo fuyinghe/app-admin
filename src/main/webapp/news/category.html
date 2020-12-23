@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>栏目管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+        <script>
+        $(function(){
+       $("#manage-content").modelManager({
+	     modelApi:[
+		{field:"columnName",title:"栏目名称",mappingField:"",cols:4,visible:1,formType:"text",search:2,isRequired:1,valueConfig:{}},
+		{field:"prentid",title:"上级栏目",mappingField:"prentName",cols:4,visible:1,formType:"select",search:2,isRequired:0,valueConfig:{url:"../newsColumn/queryNewsColumnList.do?state=Y&prentid=0",defaultValue:"0",dataField:"newColumnList","textKey":"columnName","valueKey":"id"}},
+		{field:"level",title:"级别",mappingField:"",defaultValue:"1",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+		{field:"url",title:"url地址",defaultValue:"",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+		{field:"orderNumber",title:"排序",defaultValue:"0",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+		{field:"state",title:"状态",cols:4,visible:1,formType:"select",search:0,isRequired:1,valueConfig:{list:[{text:"使用",value:"Y"},{text:"停用",value:"N"},]}},
+		{field:"releaseState",title:"发布状态",cols:4,visible:1,formType:"select",search:2,isRequired:1,valueConfig:{list:[{text:"发布",value:"Y"},{text:"编辑",value:"N"},]}}
+		],
+		addModelApi:[
+			{field:"columnName",title:"栏目名称",mappingField:"",cols:4,visible:1,formType:"text",search:2,isRequired:1,valueConfig:{}},
+			{field:"prentid",title:"上级栏目",mappingField:"prentName",cols:4,visible:1,formType:"select",search:2,isRequired:0,valueConfig:{url:"../newsColumn/queryNewsColumnList.do?state=Y&prentid=0",defaultValue:"0",dataField:"newColumnList","textKey":"columnName","valueKey":"id"}},
+			{field:"level",title:"级别",mappingField:"",defaultValue:"1",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+			{field:"url",title:"url地址",defaultValue:"",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+			{field:"orderNumber",title:"排序",defaultValue:"0",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+			],
+	idKey:"id",
+	listApi:"../newsColumn/queryNewsColumnListPage.do",
+	listDataField:"newsColumnList",
+	addApi:"../newsColumn/saveNewsColumnData.do",
+	deleteApi:"../newsColumn/deleteNewsColumnDataById.do",
+	editApi:"../newsColumn/updateNewsColumnData.do",
+	viewApi:"../newsColumn/queryNewsColumnById.do",
+	viewDataField:"newColumn",
+	advSearchBtnText:"",
+	/* btnGroupInline:true, */
+	viewBtn:function(row,index){
+		if(row.state == "N"){
+			return false;
+		}else{
+			return true;
+		}
+	},
+	editBtn:function(row,index){
+		if(row.releaseState == "Y"){
+			return false;
+		}else{
+			return true;
+		}
+	},
+	deleteBtn:function(row,index){
+		if(row.releaseState == "Y"){
+			return false;
+		}else{
+			return true;
+		}
+	},
+	formatter:{
+		"columnName":function(value,row,index){
+			return $.formatLength(value,20)
+		},
+		"releaseState":function(value,row,index){
+			switch(row.releaseState){
+				case "Y":
+					return '<span class="text-success">已发布</span>'
+				break;
+				case "N":
+					return '<span class="text-danger">编辑中</span>'
+				break;
+				default:
+					return "-"
+			}
+		}
+	},
+	oprateAdd:function(row,index){
+		var html = ""
+		if(row.releaseState == "N"){
+			html += ' <button class="btn btn-primary btn-xs push"><span class="glyphicon glyphicon-saved"></span> 发布</button>'
+		}else{
+			html += ' <button class="btn btn-danger btn-xs pull"><span class="glyphicon glyphicon-repeat"></span> 撤回</button>'
+		}
+		return html;
+	},
+	oprateEventsAdd:{
+		"click button.push":function(e,value,row,index){
+			$.confirm("确定发布当前栏目吗？",function(){
+				$.ajax({
+					url:"../newsColumn/updateNewsColumnData.do",
+					data:{
+						"id":row.id,
+						"releaseState":"Y"
+					},
+					suc:function(data){
+						$.alert(data.errmsg,"success",function(){
+							$("#manage-content").modelManager("refreshList")
+						})
+					}
+				});
+			},false)
+		},
+		"click button.pull":function(e,value,row,index){
+			$.confirm("确定撤回当前栏目吗？",function(){
+				$.ajax({
+					url:"../newsColumn/updateNewsColumnData.do",
+					data:{
+						"id":row.id,
+						"releaseState":"N"
+					},
+					suc:function(data){
+						$.alert(data.errmsg,"success",function(){
+							$("#manage-content").modelManager("refreshList")
+						})
+					}
+				});
+			},
+			false)
+		}
+	}
+})
+})	
+</script>
+</head>
+<body>
+<div id="manage-content" class="container-fluid has-shadow"></div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<div id="role-picker" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" style="width: 850px;margin-top:50px;" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+				<h4 class="modal-title" id="myModalLabel">选择城市</h4>
+			</div>
+			<div class="modal-body">
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	window.$rolePicker = $("#role-picker")
+	window.rolePicker = function(callback,yhId){
+		openPicker();
+		function openPicker(){
+			$rolePicker.modal("show").find(".modal-body").modelManager("destroy").modelManager({
+				modelApi:[
+					{field:"smc",title:"省名称",visible:1,formType:"text",search:0,cols:4},
+					{field:"xmc",title:"市名称",visible:1,formType:"text",search:2,cols:4},
+				],
+				listApi:"../app/queryCityCodeValue.do",
+				idKey: "dm",
+				addBtn:false,
+				viewBtn:false,
+				editBtn:false,
+				deleteBtn:false,
+				advSearchBtnText: "",
+				oprateAdd:function(row,index){
+					return '<button class="btn btn-success btn-xs select"><span class="glyphicon glyphicon-ok"></span>选择</button>';
+				},
+				oprateEventsAdd:{
+					"click .select":function(e,value,row,index){
+						$rolePicker.modal("hide");
+						
+						if(callback && $.isFunction(callback)){
+							callback(row)
+						}
+					}
+				}
+			});
+		}
+	}
+</script>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.framework.dao.ModelMapper">
+	
+	<!-- 定义mete列表返回字段 -->
+	<sql id="query_field">
+	   select
+	   wid,
+	   COLUMN_EN,
+	   COLUMN_CN,
+	   C_DEFAULT,
+	   V_MUSTINPUT,
+	   CHECKTYPE,
+	   V_MAX,
+	   V_MIN,
+	   V_MAXLEN,
+	   V_MINLEN,
+	   V_TYPE,
+	   V_ISHIDE,
+	   V_ISREADONLY,
+	   V_LAYOUT,
+	   V_AlIGN,
+	   V_ISBROWSE,
+	   V_ISIMP,
+	   V_ISEXP,
+	   V_ISORDER,
+	   Q_STATE,
+	   Q_TYPE,
+	   V_PROMPT,
+	   V_GROUPNAME,
+	   C_PX,
+	   V_SELECTRANGE,
+	   URL,
+	   NEXTSELECTFIELD,
+	   NEXTSELECTURL,
+	   NEXTSELECTQUERYKEY
+	</sql>
+	<!-- 定义查询条件 -->
+	<sql id="query_condition">
+		from mo_column
+		<where>
+			STATE =1 
+		  <if test="moid !=null and moid !=''">
+		  	and guishu = #{moid}
+		  </if>
+		</where>
+		 order by C_PX asc
+	</sql>
+	<!-- 映射关系 -->
+	<resultMap id="modelResultMap" type="com.webmos.framework.vo.ModelMeteCustom">
+		<id property="column_id" column="wid" />
+		<result property="field" column="COLUMN_EN"/>
+		<result property="title" column="COLUMN_CN"/>
+		<result property="defaultValue" column="C_DEFAULT"/>
+		<result property="isRequired" column="V_MUSTINPUT"/>
+		<result property="valueType" column="CHECKTYPE"/>
+		<result property="maxValue" column="V_MAX"/>
+		<result property="minValue" column="V_MIN"/>
+		<result property="maxSize" column="V_MAXLEN"/>
+		<result property="minSize" column="V_MINLEN"/>
+		<result property="formType" column="V_TYPE"/>
+		<result property="isHidden" column="V_ISHIDE"/>
+		<result property="isOnlyread" column="V_ISREADONLY"/>
+		<result property="cols" column="V_LAYOUT"/>
+		<result property="visible" column="V_ISBROWSE"/>
+		<result property="align" column="V_ALIGN"/>
+		<result property="isImport" column="V_ISIMP"/>
+		<result property="isExport" column="V_ISEXP"/>
+		<result property="sortable" column="V_ISORDER"/>
+		<result property="search" column="Q_STATE"/>
+		<result property="searchType" column="Q_TYPE"/>
+		<result property="placeholder" column="V_PROMPT"/>
+		<result property="fieldgroupName" column="V_GROUPNAME"/>
+		<association property="valueConfig" resultMap="ValueConfigResultMap"></association>
+	</resultMap>
+	
+	<resultMap id="ValueConfigResultMap" type="com.webmos.framework.model.ValueConfig">
+		 	<result property="url" column="URL"/>
+		    <result property="nextSelectField" column="NEXTSELECTFIELD"/>
+		    <result property="nextSelectUrl" column="NEXTSELECTURL"/>
+		    <result property="nextSelectQueryKey" column="NEXTSELECTQUERYKEY"/>
+	</resultMap>
+	
+	<!-- 获取模型mate信息sql -->
+	<select id="queryModelMeteList" resultMap="modelResultMap">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	
+	<!-- 
+	获取指定模块的列表展现字段 
+	返回字段：开启状态+列表允许显示+列表允许显示但隐藏+主键
+	-->
+	<select id="queryNotHiddenlColumns"  resultType="String">
+		select wmsys.wm_concat(COLUMN_EN) name from mo_column
+		where state=1 and (V_ISBROWSE=1 or V_ISBROWSE=2 or ISKEY=1) and guishu = #{moid} 
+	</select>
+	<!-- 获取指定模块的列表展现字段 -->
+	<select id="queryAllColumns"  resultType="String">
+		select wmsys.wm_concat(COLUMN_EN) name from mo_column
+		where state=1 and guishu = #{moid} 
+	</select>
+	<!-- 
+	获取指定模块的表单展现字段数组
+	返回字段：开启状态+表单未隐藏
+	 -->
+	<select id="queryFormColumns"  resultType="String">
+		select wmsys.wm_concat(COLUMN_EN) name from mo_column
+		where state=1 and v_ishide = 0 and guishu = #{moid} 
+	</select>
+	
+	<!-- 获取指定模块的高级查询条件内容，返回list数据项为实体类-->
+	<select id="queryAdvancedSearchMode"  resultType="com.webmos.framework.model.AdvancedSearch">
+		select 
+		COLUMN_EN as column_en,
+		COLUMN_CN as column_cn,
+		Q_TYPE as query_type
+		from mo_column
+		where state != 2 and  Q_STATE=1  and guishu = #{moid} 
+	</select>
+	
+	<!-- 
+	获取指定模块的from表单显示模型，
+	返回list数据项为实体类
+	字段V_ISHIDE：0 为显示到form中，1 为隐藏
+	-->
+	<resultMap id="fromModelResultMap" type="com.webmos.framework.model.FormModel">
+		<id property="column_id" column="wid" />
+		<result property="field" column="COLUMN_EN"/>
+		<result property="title" column="COLUMN_CN"/>
+		<result property="defaultValue" column="C_DEFAULT"/>
+		<result property="isRequired" column="V_MUSTINPUT"/>
+		<result property="valueType" column="CHECKTYPE"/>
+		<result property="maxValue" column="V_MAX"/>
+		<result property="minValue" column="V_MIN"/>
+		<result property="maxSize" column="V_MAXLEN"/>
+		<result property="minSize" column="V_MINLEN"/>
+		<result property="formType" column="V_TYPE"/>
+		<result property="isHidden" column="V_ISHIDE"/>
+		<result property="isOnlyread" column="V_ISREADONLY"/>
+		<result property="cols" column="V_LAYOUT"/>
+		<result property="visible" column="V_ISBROWSE"/>
+		<result property="align" column="V_ALIGN"/>
+		<result property="isImport" column="V_ISIMP"/>
+		<result property="isExport" column="V_ISEXP"/>
+		<result property="sortable" column="V_ISORDER"/>
+		<result property="search" column="Q_STATE"/>
+		<result property="searchType" column="Q_TYPE"/>
+		<result property="placeholder" column="V_PROMPT"/>
+	</resultMap>
+	<select id="queryFormMode" resultMap="fromModelResultMap">
+		select *
+		from mo_column
+		where state != 2 and  V_ISHIDE=0  and guishu = #{moid} 
+	</select>
+	
+	<!-- 获取指定模块信息-->
+	<select id="queryModeInfo"  resultType="com.webmos.framework.model.ModelTable">
+		select 
+		MO_NAME as model_Name,
+		MO_TABLE as model_Table,
+		MO_PAGES as model_pageSize,
+		MO_KEY as model_Key,
+		ZDY_PX as model_order,
+		MO_FOREIGN as model_foreign
+		from MO_SYS
+		where state != 2 and WID = #{moid} 
+	</select>
+
+	
+	<!-- 
+	获取某模块的数据校验模型 queryVerifyEntityModel
+	具体应该是使用该模块的from模型
+	毕竟数据新增与数据更新提交的时候，使用校验。
+	 -->
+	<resultMap id="VerifyEntityModeResultMap" type="com.webmos.framework.model.VerifyEntity">
+		<id property="column_id" column="wid" />
+		<result property="field" column="COLUMN_EN"/>
+		<result property="title" column="COLUMN_CN"/>
+		<result property="isRequired" column="V_MUSTINPUT"/>
+		<result property="valueType" column="CHECKTYPE"/>
+		<result property="maxValue" column="V_MAX"/>
+		<result property="minValue" column="V_MIN"/>
+		<result property="maxSize" column="V_MAXLEN"/>
+		<result property="minSize" column="V_MINLEN"/>
+		<result property="formType" column="V_TYPE"/>
+		
+	</resultMap>
+	<select id="queryVerifyEntityModel" resultMap="VerifyEntityModeResultMap">
+		select *
+		from mo_column
+		where state != 2
+		and V_ISHIDE=0 and guishu = #{moid} 
+	</select>
+</mapper>

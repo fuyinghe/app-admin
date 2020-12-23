@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>model.js文档</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../lib.js"></script>
+		<script type="text/javascript" src="../model.js" ></script>
+		<script>
+			$(function(){
+				$("#table").modelManager({
+					modelApi:"json/model.json",
+					listApi:"json/list.json",
+					viewBtn:function(){return false;},
+					deleteBtn:function(){return false;},
+					editBtn:function(){return false;},
+					addBtn:false,
+					search:false,
+					oprate:false,
+					pageSize:100,
+					method:"get",
+					showRefresh: false,
+					showColumns: false,
+					pagination : false
+				})
+				$("#table2").modelManager({
+					modelApi:"json/model2.json",
+					listApi:"json/list2.json",
+					viewBtn:function(){return false;},
+					deleteBtn:function(){return false;},
+					editBtn:function(){return false;},
+					addBtn:false,
+					search:false,
+					oprate:false,
+					pageSize:100,
+					method:"get",
+					showRefresh: false,
+					showColumns: false,
+					pagination : false
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container bgfff has-shadow">
+			<div class="row">
+				<ul class="nav nav-tabs border-tabs pl30">
+				  <li class="active"><a href="#tab1" data-toggle="tab">前端模型函数文档</a></li>
+				  <li><a href="#tab2" data-toggle="tab">模型json标准</a></li>
+				</ul>
+			</div>
+			<div class="tab-content">
+				<div id="tab1" class="tab-pane fade in active">
+					<h1 class="text-center">前端模型函数文档</h1>
+					<div class="border-title mb30"><h4>一、使用方法</h4></div>
+					<div class="mb30">
+						<p>1，在指定的容器中生成模型数据</p>
+						<code language="javascript">
+							$().modelManager([Object])
+						</code>
+						<p></p>
+						<p>2，销毁</p>
+						<code language="javascript">
+							$().modelManager('destroy')
+						</code>
+						<p></p>
+						<p>3，配置checkbox为true时，获得选择行，返回一个jsonlist,list中每个json返回当前行所有数据</p>
+						<code language="javascript">
+							$().modelManager('getSelections')
+						</code>
+						<p></p>
+						<p>4，单独使用模块（提供add/edit/view）</p>
+						<code language="javascript">
+							$().modelManager('add/edit/view',{<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;method:"post",<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;modelApi:"",<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;saveApi:"",<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;viewApi:"",<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;saveBtn:null,//将为页面上的该元素绑定保存事件<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;callback:function(data){<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//成功弹出框点击确定之后的回调事件<br>
+							&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+							})<br>
+						</code>
+						<p></p>
+					</div>
+					<div class="border-title mb30"><h4>二、配置字段</h4></div>
+					<div id="table"></div>
+				</div>
+				
+				<div id="tab2" class="tab-pane fade">
+					<h1 class="text-center">模型json标准</h1>
+					<div class="border-title mb30"><h4>一、接口返回示例</h4></div>
+					<div class="mb30">
+<pre>
+{
+	"errcode": 0,
+	"errmsg": "操作成功",
+	"model": [
+		[Object],
+		[Object]
+	]
+}
+</pre>
+					</div>
+					<div class="border-title mb30"><h4>二、配置字段</h4></div>
+					<div id="table2"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+    http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+	
+	<util:properties id="aplicationConstants" location="classpath:applicationConstants.properties"/>
+    
+    <bean name="traceInterceptor" class="org.springframework.aop.interceptor.CustomizableTraceInterceptor">
+    	<property name="hideProxyClassNames" value="true"/>
+    	<property name="enterMessage" value="[$[targetClassName]] : Entering method $[methodName]"/>
+    	<property name="exitMessage" value="[$[targetClassName]] : Exiting method $[methodName]"/>
+    </bean>
+    <bean id="crudDao" class="com.hrbwmxx.framework.dao.MybatisDaoImpl">
+		 <constructor-arg index="0" ref="sqlSessionTemplate"/>
+	</bean>
+	<bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">  
+	    <property name="objectMapper">
+        	<bean class="com.fasterxml.jackson.databind.ObjectMapper">
+            	<!-- 设置不输出null字段-->
+            	<property name="serializationInclusion" value="NON_NULL"/>
+        	</bean>
+    	</property>
+	    <property name="supportedMediaTypes">  
+	        <list>  
+	            <value>application/json;charset=UTF-8</value>  
+	       </list>  
+	    </property>
+	</bean>
+    <!-- Spring MVC JSON -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">    
+		<property name="messageConverters">    
+			<list>    
+				<ref bean="mappingJacksonHttpMessageConverter" />    
+			</list>    
+		</property>    
+	</bean>	
+
+	
+	<task:annotation-driven scheduler="qbScheduler" mode="proxy"/>  
+    <task:scheduler id="qbScheduler" pool-size="10"/>  
+</beans>

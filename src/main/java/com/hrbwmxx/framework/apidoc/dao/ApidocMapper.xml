@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.framework.apidoc.dao.ApidocMapper">
+
+	<sql id="query_field">
+		SELECT 
+		  id,
+		  pid,
+		  name,
+		  config 
+	</sql>
+	<sql id="query_condition">
+		FROM  T_APIDOC 
+	</sql>
+	 
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryApidocForPage" resultType="apidoc">
+		<!-- 框架-分页头 -->
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<!-- 框架-分页尾 -->
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryApidocForCount" resultType="java.lang.Integer">
+		<!-- 框架-分页统计 -->
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryApidocById" resultType="apidoc">
+		<include refid="query_field" />
+		FROM T_APIDOC  WHERE id = #{id}
+	</select>
+	<!-- 保存数据 -->
+	<insert id="saveApidocData" keyProperty="id" >
+		INSERT INTO T_APIDOC
+                (id, pid, name, config)
+			VALUES
+  				(#{id,jdbcType=NUMERIC}, 
+  				#{pid,jdbcType=NUMERIC}, 
+  				#{name,jdbcType=VARCHAR}, 
+  				#{config,jdbcType=CLOB}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateApidocData" >
+		UPDATE T_APIDOC
+			<set>
+				<if test="pid != null and pid != ''">
+				  pid = #{pid,jdbcType=NUMERIC},
+				</if>
+				<if test="name != null and name != ''">
+				  name = #{name,jdbcType=VARCHAR},
+				</if>
+				<if test="config != null and config != ''">
+				  config = #{config,jdbcType=CLOB} 
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteApidocDataById">
+		DELETE FROM T_APIDOC   WHERE id = #{id}
+	</delete>
+	<select id="queryApidocList" resultType="apidoc">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据pid查询 -->
+	<select id="queryApidocByPid" resultType="apidoc">
+		SELECT 
+		  id,
+		  pid,
+		  name
+		<include refid="query_condition" />
+		where pid = #{pid} 
+		ORDER BY id asc
+	</select>
+	<!-- 查询下条ID -->
+	<select id="queryNextSeqId" resultType="java.math.BigDecimal">
+			select SEQ_APIDOC_KEY.nextval from dual
+	</select>
+</mapper>

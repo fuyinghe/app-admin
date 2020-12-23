@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.tzgg.dao.TZNRMapper">
+    <select id="getNRListByID"  resultType="com.hrbwmxx.hrbu.tzgg.model.TZNR">
+	    SELECT 
+		    tzid  ,
+		    XH ,
+		    NR 
+		from t_tz_nr
+		where tzid = #{tzid,jdbcType=VARCHAR} 
+		order by xh 
+	</select>
+	<insert id="saveContext" parameterType="com.hrbwmxx.hrbu.tzgg.model.TZNR">
+	   insert into 
+	   t_tz_nr (tzid,xh,nr) 
+	   values(
+	   #{tzid,jdbcType=VARCHAR},
+	   #{xh,jdbcType=VARCHAR},
+	   #{nr,jdbcType=VARCHAR}
+	   )
+	</insert>	
+	<delete id="deleteContext">
+	  delete from t_tz_nr where tzid=#{tzid,jdbcType=VARCHAR}
+	</delete>	
+</mapper>

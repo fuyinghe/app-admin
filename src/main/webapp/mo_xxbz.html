@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>信息标准映射维护</title>
+		<link rel="stylesheet" href="css/global.css" />
+		<script type="text/javascript" src="js/lib.js"></script>
+		<script type="text/javascript" src="js/model.js" ></script>
+		<script>
+			$(function(){
+				
+				$("#m1").modelManager({
+					modelApi:"xxbzmanager/queryModelMete.do", //模型接口
+					listApi:"xxbzmanager/queryListData.do", //列表接口
+					addApi:"xxbzmanager/addOneData.do", //增加接口
+					editApi:"xxbzmanager/updateOneData.do", //修改接口
+					deleteApi:"xxbzmanager/deleteOneData.do", //删除接口
+					viewApi:"xxbzmanager/queryViewDataDisplay.do", //查看接口
+					idKey:"ID",
+					method:"post",
+					search:false,
+					pageSize:100,
+					deleteBtn:function(row,index){
+						return false;
+					},
+					viewBtn:function(row,index){
+						return false;
+					},
+					addBtnText:"新增信息标准"
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container-fluid bgfff has-shadow" id="m1" >
+		
+		</div>
+		
+	</body>
+</html>

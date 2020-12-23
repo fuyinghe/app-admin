@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+        <script>
+        $(function(){
+       $("#manage-content").modelManager({
+	     modelApi:[
+		{field:"ycdm",title:"异常代码",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+		{field:"ycxx",title:"异常信息",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:0,valueConfig:{}},
+		{field:"czrq",title:"发生日期",mappingField:"",defaultValue:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}},
+		{field:"czsj",title:"发生时间",defaultValue:"",mappingField:"",cols:4,visible:1,formType:"text",search:0,isRequired:1,valueConfig:{}}
+		],
+		searchModelApi:[
+			{field:"date",title:"起止日期",mappingField:"",cols:6,visible:1,search:2,formType:"dateBetween",isRequired:1,valueConfig:{}},
+		],
+	idKey:"rzid",
+	listApi:"../log/queryAllLogForPage.do",
+	listDataField:"rows",
+	deleteApi:"../log/delLog.do",
+	advSearchBtnText:"",
+	btnGroupInline:true,
+	addBtn:false,
+	editBtn:false,
+	deleteBtn:function(row,index){
+		if(row.releaseState == "Y"){
+			return false;
+		}else{
+			return true;
+		}
+	}
+})
+})	
+</script>
+</head>
+<body>
+<div id="manage-content" class="container-fluid has-shadow"></div>
+</body>
+</html>

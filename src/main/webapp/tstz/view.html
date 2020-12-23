@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>通知</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+		<link rel="stylesheet" href="../css/weui.min.css" />
+		<link rel="stylesheet" href="../css/jquery-weui.min.css" />
+		<script src="../js/zepto.min.js" type="text/javascript"></script>
+		<script src="../js/jquery-weui.min.js" type="text/javascript"></script>
+		<style>
+			
+			.rich_media_title{
+				font-size: 26px;
+			    line-height: 1.4;
+			    margin-bottom: 14px;
+			    padding: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="page">
+			<h1 class="rich_media_title" id="TZBT"></h1>
+	        <div class="weui-cells__title"><span>发布人：<span id="FBR"></span></span> <span id="FBSJ" style="float:right">2018-05-15</span></div>
+	        
+	        <article class="weui-article" id="TZNR">
+	
+	                
+	        </article>
+	    
+			<div class="weui-cells__title fj-title">
+				附件内容：
+	        </div>
+		    <div class="weui-cells" id="TZFJ">
+	        	<!--
+	            <a class="weui-cell weui-cell_access" href="javascript:;" target="_blank">
+	                <div class="weui-cell__bd"><p>学生上报课程计划表.XLS</p></div><div class="weui-cell__ft">下载</div>
+	            </a>
+	           -->
+	        </div>
+	        
+			<div class="weui-btn-area">
+				<a href="javascript:;" class="weui-btn weui-btn_primary readed" style="display:none">我已阅读</a>
+			</div>
+			
+		</div>
+		<script>
+			
+			$(function(){
+				$.showLoading();
+				var wid = $.getPara("wid"),xh = $.getPara("xh")
+				$.ajax({
+					url:"../tstz/queryViewDataDisplay.do",
+					data:{"WID":wid,"xh":xh},
+					success:function(data){
+						if(data.errcode == "0" || data.errcode == "100"){
+							$("#TZBT").html(data.TZBT)
+							$("#FBR").html(data.FBR)
+							$("#FBSJ").html(data.FBSJ)
+							$("#TZNR").html(data.TZNR)
+							var $file = $("#TZFJ").empty()
+							if(data.TZFJ && $.isArray(data.TZFJ) && data.TZFJ.length>0){
+								$(".fj-title").show();
+								$.each(data.TZFJ,function(index,obj){
+									$file.append($("<a>",{"class":"weui-cell weui-cell_access","href":obj.downloadUrl,"target":"_blank"}).html('<div class="weui-cell__bd"><p>'+obj.originalName+'</p></div><div class="weui-cell__ft">下载</div>'))
+								})
+							}else{
+								$(".fj-title").hide();
+							}
+						}else{
+							$.alert(data.errmsg)
+						}
+					},
+					complete:function(){
+						$.hideLoading()
+					}
+				});
+				
+				$.ajax({
+					type:"get",
+					url:"../tstz/updateXslsbzt.do",
+					data:{"tsid":wid,"xh":xh},
+				});
+			})
+		</script>
+	</body>
+</html>

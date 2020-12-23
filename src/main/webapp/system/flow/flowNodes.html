@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>菜单管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#flow-manager").modelManager({
+					modelApi:[{
+					    "field": "lcId",
+					    "mappingField": "",
+					    "title": "流程名称",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "select",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "2",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "../../FlowMain/findFlowMainMessage.do",
+					      "valueKey": "lcId",
+					      "textKey": "mc",
+					      "dataField":"rows",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					  }, {
+						    "field": "jdId",
+						    "mappingField": "",
+						    "title": "节点ID",
+						    "defaultValue": "",
+						    "isRequired": "0",
+						    "valueType": "",
+						    "maxValue": "",
+						    "minValue": "",
+						    "maxSize": "",
+						    "minSize": "",
+						    "formType": "text",
+						    "isHidden": "0",
+						    "cols": "4",
+						    "visible": "1",
+						    "isOnlyread": "0",
+						    "sortable": "0",
+						    "search": "0",
+						    "searchType": "",
+						    "placeholder": "",
+						    "valueConfig": {
+						      "url": "",
+						      "valueKey": "value",
+						      "textKey": "text",
+						      "enable": 0,
+						      "list": [],
+						      "nextSelectField": "",
+						      "nextSelectUrl": "",
+						      "nextSelectQueryKey": "id"
+						    },
+						    "lbId": "T_"
+						},{
+					    "field": "mc",
+					    "mappingField": "",
+					    "title": "节点名称",
+					    "defaultValue": "",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "2",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "lcMc",
+					    "mappingField": "",
+					    "title": "流程名称",
+					    "defaultValue": "",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "jdCode",
+					    "mappingField": "",
+					    "title": "节点代码",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "jsCode",
+					    "mappingField": "",
+					    "title": "角色代码",
+					    "defaultValue": "",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "zt",
+					    "mappingField": "",
+					    "title": "状态",
+					    "defaultValue": "1",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "select",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [{"value":"1","text":"使用中"},{"value":"0","text":"未使用"}],
+					    },
+					    "lbId": "T_"
+					}],
+					listApi:"../../FlowMain/findFlowNodesListForPage.do",
+					addApi:"../../FlowMain/saveFlowNodes.do",
+					deleteApi:"../../FlowMain/delectFlowNodes.do",
+					editApi:"../../FlowMain/updateFlowNodes.do",
+					viewApi:"../../FlowMain/findFlowNodesListForPage.do",
+					viewDataField:"rows",
+					idKey:"jdId",
+					formatter:{
+						"pId":function(value,row,index){
+							if(row.pId == "-1"){
+								return "<一级菜单>"
+							}else{
+								return row.sjMc
+							}
+							
+						}
+					},
+					advSearchBtnText:""
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="flow-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

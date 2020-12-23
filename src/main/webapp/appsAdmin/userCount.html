@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户激活统计</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<!-- -->
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+		
+		<script type="text/javascript" src="../js/echarts4/echarts.minAll.js"></script>
+		<script type="text/javascript" src="../js/echarts4/macarons.js"></script>
+	</head>
+	<body>
+			
+			<div class="bgfff has-shadow" style="width:48%;height:450px;float:left;">
+				<!--<li class="list-group-item list-group-item-success">教师用户客户端激活统计</li>-->
+				<div id="class_echarts" style="width:100%;height:400px;padding-top:20px;"></div>
+			</div>
+			
+			<div class="bgfff has-shadow" style="width:48%;height:450px;float:right;margin-left:10px;">
+				<!--<li class="list-group-item list-group-item-success">学生用户客户端激活统计</li>-->
+				<div id="class_echarts2" style="width:100%;height:400px;padding-top:20px;"></div>
+			</div>
+		
+	</body>
+</html>
+<script language="javascript" type="text/javascript">
+		
+		//第一个图表
+		$.ajax({
+			url:"../appcount/getAppCountUserJzg.do",
+			suc:function(data){
+				if(data.usertjList){
+					option_data = data.usertjList;
+					//基于准备好的dom，初始化echarts图表
+					var myChart = echarts.init(document.getElementById('class_echarts'),'macarons');
+					var colors = ['#5793f3', '#d14a61', '#675bba'];
+					var option = {
+						color: colors,
+						title : {
+					        text: '教师用户客户端激活统计',
+					        subtext: '',
+					        x:'center'
+					    },
+					    tooltip: {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b}: {c} ({d}%)"
+					    },
+					    legend: {
+					        orient: 'vertical',
+					        x: 'left',
+					        data:['激活','未激活']
+					    },
+					    series: [
+					        {
+					            name:'学生客户端激活情况',
+					            type:'pie',
+					            radius: ['30%', '70%'],
+					            avoidLabelOverlap: false,
+					            
+					            labelLine: {
+					                normal: {
+					                    show: false
+					                }
+					            },
+					            data:option_data
+					        }
+					    ]
+					};
+					// 为echarts对象加载数据 
+					myChart.setOption(option);
+				}
+			}
+		})
+		
+		//第二个图表，展现全部问题量
+		$.ajax({
+			url:"../appcount/getAppCountUserBzks.do",
+			suc:function(data){
+				if(data.usertjList){
+					option_data = data.usertjList;
+					//基于准备好的dom，初始化echarts图表
+					var myChart2 = echarts.init(document.getElementById('class_echarts2'),'macarons');
+					var colors = [ '#675bba','#5793f3', '#d14a61'];
+					var option = {
+						color:colors,
+						title : {
+					        text: '学生用户客户端激活统计',
+					        subtext: '',
+					        x:'center'
+					    },
+						tooltip: {
+					        trigger: 'item',
+					        formatter: "{a} <br/>{b}: {c} ({d}%)"
+					    },
+					    legend: {
+					        orient: 'vertical',
+					        x: 'left',
+					        data:['激活','未激活']
+					    },
+					    series: [
+					        {
+					            name:'访问来源',
+					            type:'pie',
+					            radius: ['30%', '70%'],
+					            avoidLabelOverlap: true,
+					            labelLine: {
+					                normal: {
+					                    show: false
+					                }
+					            },
+					           
+					            data:option_data
+					        }
+					    ]
+					};
+					// 为echarts对象加载数据 
+					myChart2.setOption(option);
+				}
+			}
+		})
+		
+</script>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.JSGNMapper">
+	<!-- 删除角色时，监测该角色是否有关联菜单
+	<select id="queryJSGNList" resultType="com.hrbwmxx.system.vo.JSGNCustom">
+		select t_js.jsid,t_js.mc jsmc, t_ejcd.sid  tid ,t_ejcd.mc  cdmc
+		from t_js 
+		inner join t_js_gn on  t_js.jsid=t_js_gn.jsid
+		inner join t_ejcd  on t_js_gn.gnId=t_ejcd.sid
+ 		<where>
+		  <if test="obj.jsId != null and obj.jsId!= ''">
+			and t_js.jsid =#{obj.jsId}
+		  </if>
+		  <if test="obj.tId != null and obj.tId != ''">
+			and t_js_gn.tid=#{obj.tId}
+		  </if>
+		</where>
+	</select>
+	 -->
+	<select id="queryJSGNList" resultType="com.hrbwmxx.system.vo.JSGNCustom">
+		select t_js.jsid,t_js.mc jsmc
+		from t_js 
+		inner join t_js_gn on  t_js.jsid=t_js_gn.jsid
+ 		<where>
+		  <if test="obj.jsId != null and obj.jsId!= ''">
+			and t_js.jsid =#{obj.jsId}
+		  </if>
+		  <if test="obj.tId != null and obj.tId != ''">
+			and t_js_gn.tid=#{obj.tId}
+		  </if>
+		</where>
+	</select>
+	<insert id="saveBatchJSGNList" parameterType="java.util.List">
+		 insert into t_js_gn  (jsid, tid) 
+		 values
+		 <foreach collection="list" item="item" separator=",">
+  	    	(#{item.jsId},#{item.tId})
+  	    </foreach>
+	</insert>
+	
+	<delete id="deleteJSGN">
+		delete from  t_js_gn  
+		<where>
+		  <if test="obj.jsId != null and obj.jsId!= ''">
+			and jsid =#{obj.jsId}
+		  </if>
+		  <if test="obj.tId != null and obj.tId != ''">
+			and tId=#{obj.tId}
+		  </if>
+		</where>
+	</delete>
+</mapper>

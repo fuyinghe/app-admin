@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.apps.apptongji.dao.AppCountMapper">
+	 <!-- 获取应用使用量 2018年7月2日开始统计 -->
+	 <select id="getAppCountApps" resultType="com.hrbwmxx.hrbu.apps.apptongji.modal.UserTJ">
+		select distinct tjb.value,app.name from 
+		t_app app
+		left join 
+		(
+		select count(*) as value,app_id from t_app_log log group by app_id
+		) tjb on app.link = tjb.app_id
+		where app.citycode = #{obj.citycode} and  value is not null
+	 </select>
+	 
+	 <!-- 获取应用使用量 2018年7月2日开始统计 -->
+	 <select id="getAppMonthCountApps" resultType="com.hrbwmxx.hrbu.apps.apptongji.modal.UserTJ">
+		select distinct tjb.value,app.name from 
+		t_app app
+		left join 
+		(
+		select count(*) as value,app_id 
+		from t_app_log log 
+		<![CDATA[  
+		where to_date(visit_date,'yyyy-MM-dd HH24:mi:ss') > sysdate - interval '30' day
+		]]>
+		group by app_id
+		) tjb on app.link = tjb.app_id
+		where app.citycode = #{obj.citycode} and  value is not null
+	 </select>
+  <!-- 应用访问趋势   公共应用 
+				惠普金融
+				交通出行
+				生活服务
+				智慧乡村
+				广告
+				便民服务
+	  -->
+	 <select id="getApptimes_ggyy" parameterType="java.lang.String" resultType="com.hrbwmxx.hrbu.apps.apptongji.modal.UserTJ">
+		select s.apptype, s.yf as name, nvl(t.value, '0') value
+			  from (select a.app_type as apptype, a.id as id, b.yf
+			          from (select id,app_type  from t_app_type order by px) a,
+			               (select distinct TO_CHAR(TO_DATE(#{obj.year} || '-01', 'yyyy-MM') +
+			                                        ROWNUM,
+			                                        'yyyy-MM') as yf
+			                  FROM dual
+			                CONNECT BY ROWNUM <![CDATA[<=]]> 
+			                           trunc(to_date('2018-12', 'yyyy-MM') -
+			                                 to_date('2018-01', 'yyyy-MM')) + 1
+			                 order by yf) b
+			         order by a.id, b.yf) s
+			  left join (select t_app.app_type_id as apptype,
+			                    substr(t_app_log.visit_date, 0, 7) yf,
+			                    count(1) value
+			               from t_app_log, t_app
+			              where t_app_log.app_id = t_app.link
+			                and t_app. citycode =#{obj.citycode}
+			              group by t_app.app_type_id, substr(t_app_log.visit_date, 0, 7)
+			              order by substr(t_app_log.visit_date, 0, 7)) t
+			    on s.yf = t.yf
+			   and s.id = t.apptype
+			 order by s.apptype, s.yf
+
+	 </select>
+	 
+	 
+	 <!-- 查时间 -->
+	 <select id="selectYearMethod" resultType="com.hrbwmxx.hrbu.apps.apptongji.modal.UserTJ">
+		    select distinct  substr(visit_date,0,4) as name  from t_app_log  order by  to_number(name)
+	 </select>
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+ 
+</mapper>

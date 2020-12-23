@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>菜单管理</title>
+		<link rel="stylesheet" href="../../css/global.css" />
+		<script type="text/javascript" src="../../js/lib.js"></script>
+		<script type="text/javascript" src="../../js/model.js" ></script>
+		<script>
+			$(function(){
+				$("#menu-manager").modelManager({
+					modelApi:[{
+					    "field": "pId",
+					    "mappingField": "sjMc",
+					    "title": "父级菜单",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "select",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "2",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "../../gn/findChildGNByKey.do?gnId=-1",
+					      "valueKey": "gnId",
+					      "textKey": "mc",
+					      "dataField":"rows",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					  },
+					  {
+					    "field": "mc",
+					    "mappingField": "",
+					    "title": "菜单名称",
+					    "defaultValue": "",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "2",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "tbMc",
+					    "mappingField": "",
+					    "title": "图标名称",
+					    "defaultValue": "fa fa-files-o",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "url",
+					    "mappingField": "",
+					    "title": "地址",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "12",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "ms",
+					    "mappingField": "",
+					    "title": "描述",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "textarea",
+					    "isHidden": "0",
+					    "cols": "12",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "px",
+					    "mappingField": "",
+					    "title": "排序",
+					    "defaultValue": "0",
+					    "isRequired": "1",
+					    "valueType": "int",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "zt",
+					    "mappingField": "",
+					    "title": "状态",
+					    "defaultValue": "1",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "select",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "1",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [{"value":"1","text":"使用中"},{"value":"0","text":"未使用"}],
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "dj",
+					    "mappingField": "",
+					    "title": "等级",
+					    "defaultValue": "1",
+					    "isRequired": "1",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "lb",
+					    "mappingField": "",
+					    "title": "类别",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},{
+					    "field": "dm",
+					    "mappingField": "",
+					    "title": "代码",
+					    "defaultValue": "",
+					    "isRequired": "0",
+					    "valueType": "",
+					    "maxValue": "",
+					    "minValue": "",
+					    "maxSize": "",
+					    "minSize": "",
+					    "formType": "text",
+					    "isHidden": "0",
+					    "cols": "4",
+					    "visible": "0",
+					    "isOnlyread": "0",
+					    "sortable": "0",
+					    "search": "0",
+					    "searchType": "",
+					    "placeholder": "",
+					    "valueConfig": {
+					      "url": "",
+					      "valueKey": "value",
+					      "textKey": "text",
+					      "enable": 0,
+					      "list": [],
+					      "nextSelectField": "",
+					      "nextSelectUrl": "",
+					      "nextSelectQueryKey": "id"
+					    },
+					    "lbId": "T_"
+					},],
+					listApi:"../../gn/findGNListForPage.do",
+					addApi:"../../gn/saveGN.do",
+					deleteApi:"../../gn/deleteGNByKey.do",
+					editApi:"../../gn/updateGn.do",
+					viewApi:"../../gn/findGNListForPage.do",
+					viewDataField:"rows",
+					idKey:"gnId",
+					formatter:{
+						"pId":function(value,row,index){
+							if(row.pId == "-1"){
+								return "<一级菜单>"
+							}else{
+								return row.sjMc
+							}
+							
+						}
+					},
+					advSearchBtnText:""
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div id="menu-manager" class="container-fluid has-shadow">
+			
+			
+		</div>
+	</body>
+</html>

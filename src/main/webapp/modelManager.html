@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Model Manager（2018）</title>
+		<link rel="stylesheet" href="css/global.css" />
+		<script type="text/javascript" src="js/lib.js"></script>
+		<script type="text/javascript" src="js/model.js" ></script>
+		<script>
+			var baseUrl = "/hrbu";
+			$(function(){
+				//初始化默认系统管理
+				//sysManager();
+				//初始化菜单
+				initMenu();
+				$("#leftmenu").height($(window).height());
+			});
+			
+			//系统管理
+			function sysManager(){
+				$("#main").modelManager({
+					modelApi:"modelSystem/queryModelMete.do", //模型接口
+					listApi:"modelSystem/queryListData.do", //列表接口
+					addApi:"modelSystem/addOneData.do", //增加接口
+					editApi:"modelSystem/updateOneData.do", //修改接口
+					deleteApi:"modelSystem/deleteOneData.do", //删除接口
+					viewApi:"modelSystem/queryViewDataDisplay.do", //查看接口
+					idKey:"WID",
+					method:"post",
+					addBtnText:"新增子系统分类",
+					search:false,
+					addModalTitle:"新增子系统",
+					deleteBtn:function(row,index){
+						return false;
+					}
+					//,
+					//oprateAdd:function(row,index){
+					//	return " <button type='button' class='btn btn-danger btn-xs momanager'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>管理模块</button>";
+					//},
+					//oprateEventsAdd:{
+					//	"click .momanager":function(e,value,row,index){
+					//		$("#main").modelManager('destroy');
+					//		//打开新模块
+					//		moManager(row.WID);
+					//	}
+					//}
+					//配置结束
+				})
+			}
+			//模块管理
+			var ejid = "";
+			function moManager(system_id){
+					ejid = system_id;
+					$("#main").modelManager({
+						modelApi:"modelMo/queryModelMete.do", //模型接口
+						listApi:"modelMo/queryListData.do?MO_GUISHU="+system_id, //列表接口
+						addApi:"modelMo/addOneData.do?MO_GUISHU="+system_id, //增加接口
+						editApi:"modelMo/updateOneData.do", //修改接口
+						deleteApi:"modelMo/deleteOneData.do", //删除接口
+						viewApi:"modelMo/queryViewDataDisplay.do", //查看接口
+						idKey:"WID",
+						method:"post",
+						addBtnText:"新增模块",
+						search:false,
+						pageSize:100,
+						viewBtn:function(row,index){return false},
+						deleteBtn:function(row,index){return false},
+						addModalTitle:"新增模块",
+						viewModalTitle:"查看模块信息",
+						editModalTitle:"更新模块配置",
+						oprateAdd:function(row,index){
+							var addstr=" ";
+							addstr = addstr +" <button type='button' class='btn btn-danger btn-xs deletemo'><span class='glyphicon glyphicon-trash' aria-hidden='true'></span>删除</button>";
+							//addstr = addstr +" <button type='button' class='btn btn-danger btn-xs copymo'><span class='glyphicon glyphicon-th-large' aria-hidden='true'></span>克隆</button>";
+							addstr = addstr +" <button type='button' class='btn btn-danger btn-xs moItemManager'><span class='glyphicon glyphicon-align-justify' aria-hidden='true'></span>属性</button>";
+							addstr = addstr +"    <button type='button' class='btn btn-info btn-xs createTable' title='创建数据库表'><span class='glyphicon glyphicon-asterisk' aria-hidden='true'></span></button>";
+							return addstr;
+						},
+						oprateEventsAdd:{
+							"click .moItemManager":function(e,value,row,index){
+								$("#main").modelManager('destroy');
+								//打开新模块
+								moItemManager(row.WID);
+							},
+							"click .deletemo":function(e,value,row,index){
+								$.confirm("确定删除当前模块？",function(){
+									$.ajax({
+										url:"modelMo/deleteOneData.do",
+										data:"WID="+row.WID,
+										success:function(data){
+											if(data.errcode=="0"){
+												$.alert(data.errmsg,"success",function(){
+													$(".table").bootstrapTable("refresh");
+												});
+											}else{
+												$.alert(data.errmsg,"warning");
+											}
+										}
+									});
+								},function(){},false)
+							},
+							
+							"click .copymo":function(e,value,row,index){
+								$.confirm("确定复制当前模块配置？",function(){
+									$.ajax({
+										url:"modelMo/copyMo.do",
+										data:"moid="+row.WID,
+										success:function(data){
+											if(data.errcode=="0"){
+												$.alert(data.errmsg,"success",function(){
+													$(".table").bootstrapTable("refresh");
+												});
+											}else{
+												$.alert(data.errmsg,"warning");
+											}
+										}
+									});
+								},function(){},false)
+							},
+							"click .createTable":function(e,value,row,index){
+								$.confirm("确定要为当前模型创建数据表吗？",function(){
+									$.ajax({
+										url:"modelMo/createTable.do",
+										data:"moid="+row.WID,
+										success:function(data){
+											if(data.errcode=="0"){
+												$.alert(data.errmsg,"success");
+											}else{
+												$.alert(data.errmsg,"warning");
+											}
+										}
+									});
+								},function(){},false)
+							}
+							
+						}
+						//,
+						//btnAddList:[
+						//	{"class":" btn btn-default glyphicon glyphicon-arrow-left",
+						//	"text" : "返回（1级）",
+						//	"css" : "",
+						//	"events":{
+						//		"click" : function(){
+						//			$("#main").modelManager('destroy');
+						//			sysManager();
+						//		}
+						//	}
+						//	}
+						//]
+						//配置结束
+					})
+			}
+			
+			//模块属性项管理
+			var sjid="";
+			var copys="";
+			function moItemManager(mo_id){
+					sjid = mo_id;
+					$("#main").modelManager({
+						modelApi:"modelMoColumn/queryModelMete.do", //模型接口
+						listApi:"modelMoColumn/queryListData.do?GUISHU="+mo_id, //列表接口
+						addApi:"modelMoColumnExtends/addOneData.do?GUISHU="+mo_id, //增加接口
+						editApi:"modelMoColumn/updateOneData.do", //修改接口
+						deleteApi:"modelMoColumn/deleteOneData.do", //删除接口
+						viewApi:"modelMoColumn/queryViewDataDisplay.do", //查看接口
+						addModelApi:"modelMoColumnExtends/queryModelMete.do", //自定义增加模型
+						
+						idKey:"WID",
+						method:"post",
+						addBtnText:"新增属性",
+						search:false,
+						addModalTitle:"新增属性",
+						viewBtn:function(row,index){return false},
+						editModalTitle:"更新属性配置",
+						pageSize:100,
+						checkbox:true,
+						oprateAdd:function(row,index){
+							var addstr="   <button type='button' class='btn btn-info btn-xs addColumn' title='创建数据库字段'><span class='glyphicon glyphicon-asterisk' aria-hidden='true'></span></button>";
+							return addstr;
+						},
+						oprateEventsAdd:{
+							"click .addColumn":function(e,value,row,index){
+								$.confirm("确定创建数据库字段？",function(){
+									$.ajax({
+										url:"modelMoColumn/createMoColumn.do?WID="+row.WID,
+										type:"post",
+										success: function(data) {
+											if(data.errcode=="0"){
+												$.alert(data.errmsg, "success", function() {});
+											}else{
+												$.alert(data.errmsg, "warning", function() {})
+											}
+										}
+									});
+								},function(){},false)
+							}//click end
+						},
+						btnAddList:[
+							{"class":" btn btn-default glyphicon glyphicon-menu-left",
+							"text" : "返回模块",
+							"css" : "",
+							"events":{
+								"click" : function(){
+									$("#main").modelManager('destroy');
+									moManager(ejid);
+								}
+							}
+							},
+							{"class":" btn btn-info glyphicon glyphicon-copy brand-primary copyspan",
+							"text" : "复制属性",
+							"css" : "",
+							"events":{
+								"click" : function(){
+									//var checkboxs = $(".container-fluid").modelManager("getSelections");
+									//$.map($(".container-fluid").modelManager("getSelections"),function(obj){return obj.WID}).toString();
+									var checkboxs = $.map($("#main").modelManager("getSelections"),function(obj){return obj.WID}).join(",");
+									if(checkboxs.length>0){
+										$.confirm("确定要复制所选属性吗?",function(){
+											setTimeout(function(){
+												//将数据存储到cookie中
+												//$.setCookie("ids",checkboxs);
+												//将所选选项放入临时存储中
+												copys = checkboxs;
+												//更新按钮上的复制量
+												$(".copyspan").html("复制属性（"+checkboxs.split(",").length+"）");
+												$.alert("成功复制模块属性数据", "success", function() {});
+												
+											});
+										},false);
+									}else{
+										$.alert("请选择要复制的数据", "warning", function() {})
+									}		
+								}
+							}
+							},
+							{"class":" btn btn-success glyphicon glyphicon-paste pastespan",
+							"text" : "粘贴属性",
+							"css" : "",
+							"events":{
+								"click" : function(){
+									//从cookie中取出复制所选的值
+									//var ids = $.getCookie("ids");
+									//从临时存储中取出复制属性ID
+									var ids = copys;
+									//只要临时存储中有值，就可以像后台发起粘贴请求，否则被视为未复制
+									if(ids.length>1){
+										$.confirm("确定要粘贴属性吗?",function(){
+											setTimeout(function(){
+												$.ajax({
+													url:"modelMoColumn/PasteColumns.do?ids="+ids+"&moid="+mo_id,
+													type:"post",
+													success: function(data) {
+														if(data.errcode=="0"){
+															$.alert(data.errmsg, "success", function() {
+																//$.setCookie("ids","");
+																copys = "";//清空临时存储
+																$(".copyspan").html("复制属性");
+																$(".table").bootstrapTable("refresh");
+															});
+														}else{
+															$.alert(data.errmsg, "warning", function() {})
+														}
+													}
+												});	
+											});
+										},false);
+									}else{
+										$.alert("您还没有复制属性数据，不可使用粘贴属性数据", "warning", function() {})
+									}		
+								}
+							}
+							},
+							{"class":" btn btn-danger glyphicon glyphicon glyphicon-trash",
+							"text" : "批量删除",
+							"css" : "",
+							"events":{
+								"click" : function(){
+									var checkboxs = $.map($("#main").modelManager("getSelections"),function(obj){return obj.WID}).join(",");
+									if(checkboxs.length>0){
+										$.confirm("确定要删除所选属性吗?",function(){
+											setTimeout(function(){
+												$.ajax({
+													url:"modelMoColumn/deleteColumns.do?ids="+checkboxs,
+													type:"post",
+													success: function(data) {
+														if(data.errcode=="0"){
+															$.alert(data.errmsg, "success", function() {
+																$(".table").bootstrapTable("refresh");
+															});
+														}else{
+															$.alert(data.errmsg, "warning", function() {})
+														}
+													}
+												});	
+											});
+										},false);
+									}else{
+										$.alert("请先选择要删除的数据项", "warning", function() {})
+									}		
+								}
+							}
+							},
+							{"class":" btn btn-success glyphicon glyphicon-paste pastespan",
+							"text" : "查看模块ID",
+							"css" : "",
+							"events":{
+								"click" : function(){
+									//查看模块ID
+									$.alert("当前模块ID为:"+mo_id, "warning", function() {})
+											
+								}
+							}
+							}
+						]
+						//配置结束
+					})
+					
+					setTimeout(function(){
+						if(copys.length>0){
+							$(".copyspan").html("复制属性（"+copys.split(",").length+"条）");
+						}
+					},1000)
+					
+			}
+			
+			//模型菜单
+			function initMenu(){
+				
+				$("#leftmenu").modelManager({
+					modelApi:"modelSystemMenu/queryModelMete.do", //模型接口
+					listApi:"modelSystemMenu/queryListData.do?STATE=1", //列表接口
+					idKey:"WID",
+					method:"get",
+					search:false,
+					oprate:true,
+					addBtn:false,
+					showRefresh:false,
+					showColumns:false,
+					pageSize:100,
+					viewBtn:function(row,index){return false;},
+					editBtn:function(row,index){return false;},
+					deleteBtn:function(row,index){return false;},
+					oprateAdd:function(row,index){
+						return " <button type='button' class='btn btn-primary btn-xs mmanager'><span class='glyphicon glyphicon-cog' aria-hidden='true'></span>管理</button>";
+					},
+					oprateEventsAdd:{
+						"click .mmanager":function(e,value,row,index){
+							$("#main").modelManager('destroy');
+							//右侧打开新模块
+							$("#main").html("");
+							moManager(row.WID);
+						}
+					}
+				});
+				//增加分类按钮
+				$("#sysbut").click(function(){
+					$("#main").modelManager('destroy');
+					sysManager();
+				});
+				//增加文档下拉菜单事件
+				$("#xlmemu_qdwd").click(function(){
+					window.open("js/model/index.html");
+				});
+				$("#xlmemu_tyjk").click(function(){
+					window.open("document/doc.html");
+				});
+				$("#xlmemu_api").click(function(){
+					window.open("testApi.html");
+				});
+				$("#xlmemu_columnhelp").click(function(){
+					window.open("column_help.html");
+				});
+				$("#xlmemu_xxbz").click(function(){
+					window.open("mo_xxbz.html");
+				});
+				
+				
+			}
+
+			
+		</script>
+	</head>
+	<body>
+		
+		<div id="leftmenu" class="col-sm-2 container-fluid has-shadow">
+			<!-- 
+			<div class="btn-group col-sm-6">
+				<button class=" btn btn-info sysbut">
+					<span class="glyphicon glyphicon-th-large"></span> 管理
+				</button>
+			</div>
+			 -->
+			<!-- Split button -->
+			<div class="btn-group col-sm-12">
+			  <button type="button" class="btn btn-info col-sm-6 glyphicon-th-large">工具包</button>
+			  <button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			    <span class="caret"></span>
+			    <span class="sr-only">Toggle Dropdown</span>
+			  </button>
+			  <ul class="dropdown-menu xlmemu">
+			  	<li id="xlmemu_qdwd"><a href="#">前端开发文档</a></li>
+			    <li id="xlmemu_tyjk"><a href="#">后端文档</a></li>
+			    <li id="xlmemu_columnhelp"><a href="#">字段配置说明</a></li>
+			    <li id="xlmemu_api"><a href="#">api调试工具</a></li>
+			    <li id="sysbut"><a href="#">分类管理</a></li>
+			    <li id="xlmemu_xxbz"><a href="#">信息标准设置</a></li>
+			  </ul>
+			</div>
+			
+		</div>
+		<div id="main" class="col-sm-10 container-fluid has-shadow">
+			<img id="welcome" alt="" src="img/xxx.png" width="100%">
+		</div>
+		
+	</body>
+</html>

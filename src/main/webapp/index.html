@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="css/global.css" />
+		<link rel="stylesheet" href="css/index.css" />
+		<script type="text/javascript" src="js/lib.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
+		<title>码上城市管理平台</title>
+	</head>
+
+	<body>
+		<div class="index-header">
+			<div class="logo pull-left pl15 pt15"><img src="img/logo.jpg"></div>
+			<div class="login-info pull-right pt30 pr30">
+				<strong>欢迎 <span id="user-info" class=""></span><a href="javascript:;" id="changePass">[修改密码]</a> [<a href="Login/logout.do">退出</a>]</strong>
+			</div>
+		</div>
+		<div class="index-container">
+			<div class="index-sidebar pull-left">
+				<ul class="sidebar-menu">
+					<li class="header text-center">导航</li>
+					
+				</ul>
+
+			</div>
+			<div class="index-content">
+				<div class="index-tabs has-shadow" id="page-tab">
+					<div class="tab-left" id="page-prev"><span class="glyphicon glyphicon-backward"></span></div>
+					<nav id="page-tab-content" class="tab-list">
+						<div id="menu-list">
+							<a data-url="main.html" data-value="首页" class="active main">首页</a>
+						</div>
+					</nav>
+					<div class="tab-right" id="page-next"><span class="glyphicon glyphicon-forward"></span></div>
+					<div class="tab-close dropdown">
+						<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+							<span class="name">关闭操作</span>
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="dropdownMenu1">
+							<li role="presentation">
+								<a class="close-all-tabs" role="menuitem" tabindex="-1">关闭所有标签</a>
+							</li>
+							<li role="separator" class="divider"></li>
+							<li role="presentation">
+								<a class="close-other-tabs" role="menuitem" tabindex="-1">关闭其他标签</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="index-tab-content" id="page-content">
+					<iframe class="iframe-content active main" data-url="main.html" data-value="首页" src="main.html"></iframe>
+				</div>
+				<div class="index-footer text-center">
+					copyright &copy; 码上城市
+				</div>
+			</div>
+		</div>
+		
+			<div id="changeMyPassModal" class="modal fade" tabindex="-1" role="dialog">
+			<div class="modal-dialog modal-sm" role="document">
+				<div class="modal-content">
+					<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+						<h4 class="modal-title" id="myLargeModalLabel">修改密码</h4>
+					</div>
+					<div class="modal-body form-horizontal">
+						<div class="form-group">
+							<label class="col-sm-12">原密码</label>
+							<div class="col-sm-12 has-feedback">
+								<input type="password" required="required" class="form-control" name="passWord">
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label class="col-sm-12">新密码</label>
+							<div class="col-sm-12 has-feedback">
+								<input type="password" required="required" class="form-control" name="newPasword">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-12">确认密码</label>
+							<div class="col-sm-12 has-feedback">
+								<input type="password"  required="required" class="form-control" name="newPasword2">
+							</div>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+						<button type="button" class="btn btn-success save">确认修改</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>

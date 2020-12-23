@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.framework.fj.dao.FJCSMapper">
+	<select id="queryFJCSByField" resultType="com.hrbwmxx.framework.fj.model.FJCS">
+		<include refid="queryFJCSListPage_filed"/>
+		<include refid="queryFJCSListPage_condition"/>
+	</select>
+	<select id="queryFJCSListPage" resultType="com.hrbwmxx.framework.fj.model.FJCS">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryFJCSListPage_filed"/>
+		<include refid="queryFJCSListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryFJCSListPageCount" resultType="com.hrbwmxx.framework.fj.model.FJCS">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryFJCSListPage_filed"/>
+		<include refid="queryFJCSListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<sql id="queryFJCSListPage_filed">
+		select fjcsid, fjdm, fjmc, rksj, ms, zt
+	</sql>
+	<sql id="queryFJCSListPage_condition">
+	  	from t_fj_cs
+		 <where>
+		 	<if test="obj.fjdm!=null">
+		 		fjdm=#{obj.fjdm}
+		 	</if>
+		 	<if test="obj.zt!=null">
+		 		zt=#{obj.zt}
+		 	</if>
+		 </where>
+	</sql>
+	<insert id="saveFJCS">
+		 insert into t_fj_cs
+   			(fjcsid, fjdm, fjmc, rksj, ms, zt)
+ 		values
+   		(#{obj.fjcsId}, #{obj.fjdm}, #{obj.fjmc}, sysdate, #{obj.ms}, #{obj.zt}) 
+	
+	</insert>
+	<update id="updateFJCS">
+		update t_fj_cs 
+	</update>
+</mapper>

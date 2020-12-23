@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>通知管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<link rel="stylesheet" href="../js/umeditor/themes/default/css/umeditor.min.css" />
+		<script type="text/javascript" src="../js/lib_zdy.js"></script>
+		<script type="text/javascript" src="../js/model_zdy.js" ></script>
+		<script type="text/javascript" src="../js/umeditor/umeditor.min.js" ></script>
+	</head>
+	<body>
+		<div class="main container-fluid bgfff has-shadow">
+			
+		</div>
+		<script>
+		var modelData = [{
+			field:"TZBT",formType:"text",title:"通知标题",mappingField:"",minSize:1,maxSize:50,cols:12,visible:1,isRequired:1,valueConfig:{}},
+				{field:"FBR",formType:"text",title:"发布人",mappingField:"",cols:12,visible:1,isRequired:0,isHidden:1,valueConfig:{}},
+				{field:"FBSJ",formType:"text",title:"发布时间",mappingField:"",cols:12,visible:1,isRequired:0,isHidden:1,valueConfig:{}},
+				{field:"SFTS",formType:"text",title:"推送状态",mappingField:"",cols:12,visible:1,isRequired:0,isHidden:1,valueConfig:{list:[{text:"未推送",value:"0"},{text:"已推送",value:"1"}]}},
+				{field:"TSRS",formType:"text",title:"推送人数",mappingField:"",cols:12,visible:1,isRequired:0,isHidden:1,valueConfig:{}},
+				{field:"YDRS",formType:"text",title:"阅读人数",mappingField:"",cols:12,visible:1,isRequired:0,isHidden:1,valueConfig:{}},
+				{field:"TZNR",formType:"editor",title:"通知内容",mappingField:"",cols:12,visible:0,isRequired:0,valueConfig:{}},
+				{field:"TZBJ",formType:"advSelect",title:"通知范围",mappingField:"BJMC",cols:12,visible:0,isRequired:1,valueConfig:{url:"../jgtstz/queryJgbm.do",dataField:"rows",textKey:"bmmc",valueKey:"bmdm",conditionKey:"bmmc"}},
+				{field:"TZFJ",formType:"file",title:"附件",mappingField:"",cols:12,maxValue:2048000000,visible:0,isRequired:0,valueConfig:{url:"../Attachment/attachmentUpload.do?attachType=demo"}},	
+			],searchModelData = [
+				{field:"TZBT",formType:"text",title:"通知标题",mappingField:"",cols:4,visible:1,isRequired:1,search:2,valueConfig:{}},
+				{field:"FBR",formType:"text",title:"发布人",mappingField:"",cols:4,visible:1,isRequired:0,search:2,valueConfig:{}},
+				{field:"SFTS",formType:"select",title:"推送状态",mappingField:"",cols:4,visible:1,isRequired:0,search:2,valueConfig:{list:[{"text":"已推送","value":"1"},{"text":"未推送","value":"0"}]}},
+			]
+			
+			
+			$(function(){
+				$.publicModel(true);
+				var $readModal = $.model.createModal({
+					"hasSaveBtn":false,
+					"title":"通知推送阅读情况",
+					"class":"read-modal"
+				})
+				$readModal.find(".modal-body")
+				.append($("<h3>",{"class":"readed text-success"}).html("已阅教工(<span class='readed-count'></span>人)"))
+				.append($("<table>",{"class":"table table-bordered readed-table"}).append($("<thead>")).append($("<tbody>")))
+				.append($("<h3>",{"class":"unread text-danger"}).html("未阅读教工(<span class='unread-count'></span>人)"))
+				.append($("<table>",{"class":"table table-bordered unread-table"}).append($("<thead>")).append($("<tbody>")))
+				.find("table.table thead").html('<tr><th>教工号</th><th>姓名</th><th>是否阅读</th><th>阅读时间</th></tr>')
+				
+				var $main = $(".main").modelManager({
+					method:"post",
+					idKey:"WID",
+					modelApi:modelData,
+					searchModelApi:searchModelData,
+					listApi:"../jgtstz/queryListData.do",
+					addApi:"../jgtstz/addOneData.do",
+					viewApi:"../jgtstz/queryViewDataDisplay.do",
+					addBtnText:"发布通知",
+					advSearchBtnText:"",
+					editBtn:false,
+					deleteBtn:false,
+					oprateAdd:function(row,index){
+						var html = "";
+						if(row["SFTS"] == "0" ){
+							html += ' <button class="btn btn-xs btn-primary push"><span class="glyphicon glyphicon-share-alt"></span> 推送</button>'
+						}else if(row["SFTS"] == "1"){
+							html += ' <button class="btn btn-xs btn-info read"><span class="glyphicon glyphicon-eye-open"></span> 阅读情况</button>'
+						}
+						if(true){
+							html += ' <button class="btn btn-xs btn-danger delete-notice"><span class="glyphicon glyphicon-remove"></span> 删除</button>'
+						}
+						
+						return html;
+					},
+					oprateEventsAdd:{
+						"click .delete-notice":function(e,value,row,index){
+							$.confirm("确定删除当前通知？",function(){
+								$.ajax({
+									url:"../jgtstz/updateTszt.do",
+									data:{"wid":row.WID,"userid":""},
+									suc:function(data){
+										$.alert(data.errmsg,"success")
+										$main.modelManager("refreshList")
+									},
+									hasAlert:true,
+								});
+							},false)
+						},
+						
+						"click .read":function(e,value,row,index){
+							$readModal.modal("show").find("tbody").empty();
+							//已读
+							$.ajax({
+								url:"../jgtstz/queryYdjg.do",
+								data:{"tsid":row.WID},
+								suc:function(data){
+									$readModal.find(".readed-count").html(data.totalCount)
+									var $tbody = $readModal.find("table.readed-table tbody")
+									$.each(data.rows,function(index,obj){
+										$tbody.append($("<tr>").html('<td>'+obj.jgdm+'</td><td>'+obj.xm+'</td><td><span class="label label-success">已阅读</span></td><td>'+(obj.ydsj||"")+'</td>'))
+									})
+								},
+								hasAlert:true,
+								loadingContainer:$("body")
+							});
+							//未读
+							$.ajax({
+								url:"../jgtstz/queryWdjg.do",
+								data:{"tsid":row.WID},
+								suc:function(data){
+									$readModal.find(".unread-count").html(data.totalCount)
+									var $tbody = $readModal.find("table.unread-table tbody")
+									$.each(data.rows,function(index,obj){
+										$tbody.append($("<tr>").html('<td>'+obj.jgdm+'</td><td>'+obj.xm+'</td><td><span class="label label-danger">未阅读</span></td><td>'+(obj.ydsj||"")+'</td>'))
+									})
+								},
+								hasAlert:true,
+								loadingContainer:$("body")
+							});
+						},
+						"click .push":function(e,value,row,index){
+							$.confirm("是否推送该通知？",function(){
+								$.ajax({
+									url:"../jgtstz/saveJglsb.do",
+									data:{"wid":row.WID},
+									suc:function(data){
+										$.alert("推送成功","success")
+										$main.modelManager("refreshList")
+									},
+									hasAlert:true,
+								});
+							},false)
+							
+						}
+					},
+					onModelLoaded:function(obj){
+					
+					}
+				})
+			})
+			
+		</script>
+	</body>
+</html>

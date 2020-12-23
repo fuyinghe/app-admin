@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.GNMapper">
+	<sql id="findGNListForPage_field">
+ 		SELECT 
+			GN1.GNID gnId, 
+			GN1.MC mc,
+			GN1.PID pId,
+			GN1.URL url,
+			GN1.TBMC tbMc,
+			GN1.MS ms,
+			GN1.PX px,
+			GN1.ZT zt,
+			GN1.DJ dj,
+			GN1.LB lb,
+			GN1.DM dm,
+			GN2.MC SJMC
+	</sql>
+	<sql id="findGNListForPage_condition">
+		FROM T_GN gn1 LEFT JOIN T_GN gn2 ON GN1.PID = GN2.GNID
+		WHERE 1 = 1
+		<if test="gn.mc != null and gn.mc != ''">
+			AND GN1.mc like concat(concat('%',#{gn.mc}),'%')
+		</if>
+		<if test="gn.dj != null and gn.dj != ''">
+			AND gn1.dj = #{gn.dj} 
+		</if>
+		<if test="gn.pId != null and gn.pId != ''">
+			AND gn1.pId = #{gn.pId} 
+		</if>
+		<if test="gn.gnId != null and gn.gnId != ''">
+			AND gn1.gnId = #{gn.gnId} 
+		</if>
+		ORDER BY gn1.pId
+	</sql>
+	<select id="findGNListForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findGNListForPage_field"/>
+		<include refid="findGNListForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findGNOne" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="findGNListForPage_field"/>
+		<include refid="findGNListForPage_condition"/>
+	</select>
+	<select id="findGNListForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findGNListForPage_condition"/>
+	</select>
+	<update id="updateGn">
+		UPDATE T_GN t
+		<set>
+			<if test="gn.mc != null and gn.mc != ''">
+				t.MC = #{gn.mc},
+			</if>
+			<if test="gn.pId != null and gn.pId != ''">
+				t.PID = #{gn.pId},
+			</if>
+			<if test="gn.url != null and gn.url != ''">
+				t.URL = #{gn.url},
+			</if>
+			<if test="gn.tbMc != null and gn.tbMc != ''">
+				t.TBMC = #{gn.tbMc},
+			</if>
+			<if test="gn.ms != null and gn.ms != ''">
+				t.MS = #{gn.ms},
+			</if>
+			<if test="gn.px != null and gn.px != ''">
+				t.PX = #{gn.px},
+			</if>
+			<if test="gn.zt != null and gn.zt != ''">
+				t.ZT = #{gn.zt},
+			</if>
+			<if test="gn.dj != null and gn.dj != ''">
+				t.DJ = #{gn.dj},
+			</if>
+			<if test="gn.lb != null and gn.lb != ''">
+				t.LB = #{gn.lb},
+			</if>
+			<if test="gn.dm != null and gn.dm != ''">
+				t.DM = #{gn.dm},
+			</if>
+		</set>
+		WHERE t.GNID = #{gn.gnId}
+	</update>
+	<!--  -->
+	<select id="findGnListByPid" resultType="com.hrbwmxx.system.vo.GNCustom">
+		SELECT 
+			GN1.GNID gnId, 
+			GN1.MC mc,
+			GN1.PID pId,
+			GN1.URL url,
+			GN1.TBMC tbMc,
+			GN1.MS ms,
+			GN1.PX px,
+			GN1.ZT zt,
+			GN1.DJ dj,
+			GN1.LB lb,
+			GN1.DM dm
+		FROM T_GN GN1 WHERE GN1.DJ = #{gn.dj}
+	</select>
+	<!--  -->
+	<insert id="saveGN">
+		INSERT INTO T_GN (
+			GNID,
+			MC,
+			PID,
+			URL,
+			TBMC,
+			MS,
+			PX,
+			ZT,
+			DJ,
+			LB,
+			DM
+		)
+		VALUES
+		(
+			#{gn.gnId},
+			#{gn.mc},
+			#{gn.pId},
+			#{gn.url},
+			#{gn.tbMc},
+			#{gn.ms},
+			#{gn.px},
+			#{gn.zt},
+			#{gn.dj},
+			#{gn.lb},
+			#{gn.dm}
+		)
+	</insert>
+	<!--  -->
+	<select id="findChildGNByKey" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="findChildGNListFroPage_field"/>
+		<include refid="findChildGNListFroPage_condition"/>
+	</select>
+	<!--  -->
+	<delete id="deleteGNByKey">
+		delete from T_GN WHERE GNID = #{gn.gnId}
+	</delete>
+	
+	<sql id="findChildGNListFroPage_field">
+		SELECT 
+			GN1.GNID gnId, 
+			GN1.MC mc,
+			GN1.PID pId,
+			GN1.URL url,
+			GN1.TBMC tbMc,
+			GN1.MS ms,
+			GN1.PX px,
+			GN1.ZT zt,
+			GN1.DJ dj,
+			GN1.LB lb,
+			GN1.DM dm,
+			GN2.MC sjMc
+	</sql>
+	<sql id="findChildGNListFroPage_condition">
+		FROM T_GN gn1 LEFT JOIN T_GN gn2 ON GN1.PID = GN2.GNID
+		WHERE gn1.ZT = '1'
+		<if test="gn.gnId != null and gn.gnId != ''">
+			AND GN1.pId = #{gn.gnId}
+		</if>
+	</sql>
+	<select id="findChildGNListFroPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findChildGNListFroPage_field"/>
+		<include refid="findChildGNListFroPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findChildGNByKeyForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findChildGNListFroPage_condition"/>
+	</select>
+	
+	<!-- 获取登录用户菜单 -->
+	<select id="findGNList" resultType="com.hrbwmxx.system.vo.GNCustom">
+		SELECT 
+			GN.GNID,
+			GN.PID,
+			GN.MC,
+			GN.LB,
+			GN.URL
+		FROM T_GN gn  
+		LEFT JOIN T_JS_GN jsgn ON gn.gnid = jsgn.gnid
+		LEFT JOIN T_JS js ON jsgn.jsid = js.jsid
+		WHERE  gn.ZT = '1' 
+		AND js.jsid in (select jsid from t_yh_js where YHID = #{gn.userId})
+		AND gn.pId != '-1'
+		ORDER BY GN.PID , gn.PX ASC
+	</select> 
+	
+	<!-- 查询一个角色下的一级菜单 -->
+	<select id="findFirstGNList" resultType="com.hrbwmxx.system.vo.GNCustom">
+		SELECT 
+			GN.GNID,
+			GN.PID,
+			GN.MC,
+			GN.LB,
+			GN.URL
+		FROM T_GN gn WHERE GN.GNID IN (
+					SELECT  DISTINCT GNt.PID
+					FROM T_GN gnt  
+					LEFT JOIN T_JS_GN jsgn ON gnt.gnid = jsgn.gnid
+					LEFT JOIN T_JS js ON jsgn.jsid = js.jsid
+					WHERE  gnt.ZT = '1' 
+					AND js.jsid in (select jsid from t_yh_js where YHID = #{gn.userId})
+					) 
+		ORDER BY GN.PID , gn.PX ASC
+	</select>
+</mapper>

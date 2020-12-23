@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<!--基础库-->
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		
+		<!--模型库-->
+		<script type="text/javascript" src="../js/model.js"></script>
+		
+		<!--editor组件-->
+	    <link href="../js/umeditor/themes/default/css/umeditor.min.css" type="text/css" rel="stylesheet">
+	    <script type="text/javascript" charset="utf-8" src="../js/umeditor/umeditor.min.js"></script>
+	    
+		<title>失物招领审核</title>
+	</head>
+	<body>
+		<script>
+		$(function() {
+			$(".swzlsh").modelManager(
+							{
+								method : "post",
+								idKey : "ID",
+								modelApi : "../swzladmin/queryModelMete.do",
+								listApi : "../swzladmin/queryListData.do",
+								deleteApi : "../swzladmin/deleteOneData.do",
+								viewApi : "../swzladmin/queryViewData.do",
+								viewApi : "../swzladmin/queryViewDataImger.do",
+								addBtn:false,
+								viewBtn:function(row,index){
+									return true;
+								},
+								oprateAdd:function(row,index){
+									var addstr=" ";
+									addstr = addstr +" <button type='button' class='btn btn-info btn-xs shenhe'><span class='glyphicon glyphicon-align-justify' aria-hidden='true'></span>通过</button>";
+									return addstr;
+								},
+								oprateEventsAdd:{
+									"click .shenhe":function(e,value,row,index){
+										$.confirm("确定将该信息审核通过吗？",function(){
+											$.ajax({
+												url:"../swzladmin/updateOneData.do",
+												data:"ID="+row.ID+"&STATE=1",
+												success:function(data){
+													if(data.errcode=="0"){
+														$.alert(data.errmsg,"success",function(){
+															$(".table").bootstrapTable("refresh");
+														});
+													}else{
+														$.alert(data.errmsg,"warning");
+													}
+												}
+											});
+										},function(){},false)
+									}
+								},
+								formatter : {
+	 								PIC : function(value, row, index) {
+	 									var _html='';
+	 									var showbaseurl = '/app-admin/Attachment/attachmentDownload.do?attachId=';
+	 									var _pics = row.PIC.split(",");
+	 									for(var p=0;p<_pics.length;p++){
+	 										_html+="<a href='"+showbaseurl+_pics[p]+"' target='_blank' title='下载' ><img class='showimg' src='"+showbaseurl+_pics[p]+"' width=30 height=30></a>";
+	 									}
+	 									return _html;
+	 								}
+								}
+							});
+			//页面提示信息
+			function tips(){
+				if(!$(".fixed-table-toolbar")) {
+					tips();
+					return;
+				}
+				var tipstr = 
+					'<div class="columns columns-right btn-group pull-left">'+
+						'失物招领信息是用户通过客户端进行提交的，默认为未审核信息，审核后的信息将会在客户端中显示！！'+
+					'</div>';
+				$(".fixed-table-toolbar").prepend(tipstr);
+			}
+			setTimeout(tips,100);
+			
+		})
+		</script>
+		<div class="container-fluid has-shadow swzlsh">
+			
+		</div>
+	</body>
+</html>
