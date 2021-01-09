@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.apps.jgxxts.dao.JgxxtsMapper">
+<!-- 返回带分页通知公告数据-->
+	<select id="queryJgxxtsPage"  resultType="com.hrbwmxx.hrbu.apps.jgxxts.vo.TSTZCustom">
+		<!-- 框架-分页头 -->
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="query_where" />
+		<include refid="query_order" />
+		<!-- 框架-分页尾 -->
+		<include refid="PageMapper.pageFoot" />
+    </select>
+    <!-- 返回查询总条数 -->
+	<select id="queryJgxxtsPageCount" resultType="java.lang.Integer">
+		<!-- 框架-分页统计 -->
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+		<include refid="query_where" />
+	</select>
+    <sql id="query_field">
+		select wid,tzbt,fbsj
+	</sql>
+	
+	<sql id="query_condition">
+		FROM  t_tstz 
+	</sql>	
+	<sql id="query_where">
+		where wid in (select tsid from t_tstz_jglsb where t_tstz_jglsb.jgdm=#{jgdm})
+	</sql>
+	<sql id="query_order">
+		ORDER BY fbsj desc
+	</sql>
+	
+	<select id="queryJggltzts" resultType="com.hrbwmxx.hrbu.apps.jgxxts.vo.TSTZCustom">
+	select * from v_gljgtzts where jgdm=#{obj.jgdm} and wid=#{obj.wid}
+	</select>
+	
+	<update id="updateJglsbzt">
+	  update t_tstz_jglsb set zt='1' , ydsj=#{obj.ydsj} where jgdm=#{obj.jgdm}  and tsid=#{obj.tsid}
+	</update>
+	<select id="queryJglsbzt" resultType="com.hrbwmxx.hrbu.apps.jgxxts.vo.Jglsb">
+	  select * from t_tstz_jglsb where jgdm=#{obj.jgdm} and tsid=#{obj.tsid}
+	</select>
+	<select id="queryTsBjRy" resultType="com.hrbwmxx.hrbu.apps.jgxxts.vo.TsTz" >
+		select * from T_TSTZ where  state &lt; 2
+		  <if test="obj.wid !=null and obj.wid !=''">
+		  	and wid = #{obj.wid} 
+		  </if>
+	</select>	
+	<update id="updateYdrs">
+	  update t_tstz set ydrs=#{obj.ydrs} where wid=#{obj.wid}
+	</update>
+	
+</mapper>

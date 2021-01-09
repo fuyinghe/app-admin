@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.modelManager.dao.MOMapper">
+	
+	<!-- 检查模块是否有配置属性 -->
+	<select id="checkMoItems" parameterType="java.lang.String" resultType="int">
+		<if test="moid !=null and moid !=''">
+			select count(*) 
+			from mo_column 
+			where  state!=2 and guishu = #{moid}
+		</if>
+	</select>
+	<!-- 删除模块配置属性 -->
+	<update id="deleteMo" parameterType="java.lang.String">
+		<if test="moid !=null and moid !=''">
+			update mo_sys set state = 2
+			where wid = #{moid}
+		</if>
+	</update>
+	
+	
+	<!-- 更新表单数据 -->
+	<select id="checkTableName" resultType="int">
+		<if test="tableName !=null and tableName !=''">
+			select count(*) 
+			from dba_tables 
+			where owner = '${owner}' and  table_name = #{tableName}
+		</if>
+	</select>
+	
+	<!-- 创建表 -->
+	<update id="createTable">
+		create table ${tableName}
+		(
+		  STATE    INTEGER default 0
+		)
+	</update>
+	<!-- 复制一个模块配置模型 -->
+	<insert id="copyMOPro">
+	insert into mo_sys
+  (wid,
+   mo_name,
+   mo_table,
+   mo_guishu,
+   mo_des,
+   mo_px,
+   state,
+   mo_pages,
+   mo_isgroup,
+   zdy_px,
+   mo_lx,
+   sys_lx,
+   mo_key,
+   mo_foreign) select sys_guid(),
+          mo_name||'-复制',
+          mo_table,
+          mo_guishu,
+          mo_des,
+          mo_px,
+          state,
+          mo_pages,
+          mo_isgroup,
+          zdy_px,
+          mo_lx,
+          sys_lx,
+          mo_key,
+          mo_foreign
+     from mo_sys t
+    where wid = #{moid}
+	</insert>
+	<!-- 复制某个模块对应的模型数据属性 error -->
+	<insert id="copyMOItem">
+	select sys_uuid() from dual;
+	</insert>
+</mapper>

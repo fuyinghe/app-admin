@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.hrbwmxx.framework.security.dao.SecurityManagementMapper">
+	
+	<select id="findUserEntity" parameterType="String" resultType="com.hrbwmxx.framework.security.user.UserEntity" >
+		select  userinfo.id,
+				userinfo.ACCOUNT_NO as username,
+				userinfo.PASSWORD as password,
+				userinfo.PHOTO_ADDRESS as picture,
+				userinfo.id as jobNumber, 
+				userinfo.USER_NAME as name,
+        		userinfo.id as personId,
+				sys_dept.id as deptId,
+				sys_dept.deptName as deptName
+				from t_tphp_sys_user userinfo
+		 		left join sys_dept on userinfo.dept_id = sys_dept.id
+		    where userinfo.ACCOUNT_NO = #{username}
+		    and userinfo.STATE = 1
+		    
+		   
+	</select>
+	
+	<select id="findUserEntityByQuickLogin" parameterType="String" resultType="com.hrbwmxx.framework.security.user.UserEntity" >
+		SELECT u.id
+			   ,'Y' as quickLoginFlag
+			   ,u.username
+			   ,u.quickPassword as loginPassword
+			   ,u.loginFailureCount
+			   ,u.isLockOut
+			   ,u.activeFlag
+			   ,u.createdTimestamp
+			   ,u.createdBy
+			   ,u.modifiedTimestamp
+			   ,u.modifiedBy
+			   ,u.recActiveFlag
+		  FROM sys_user u
+		 WHERE username = #{username}
+		   and recActiveFlag = 'Y'
+	</select>
+
+</mapper>

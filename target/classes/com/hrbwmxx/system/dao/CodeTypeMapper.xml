@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.CodeTypeMpper">
+	
+	<sql id="queryCodeTypeListPage_filed">
+		select id, px, mc, dm, state, fhdm 
+	</sql>
+	<sql id="queryCodeTypeListPage_condition">
+		from t_codetype  
+		<where>
+			 <![CDATA[ state < 2 ]]>
+		  <if test="obj.id != null and obj.id!= ''">
+			and id =#{obj.id}
+		  </if>
+		  <if test="obj.mc != null and obj.mc != ''">
+			and mc like '%'||#{obj.mc}||'%'
+		  </if>
+		  <if test="obj.dm != null and obj.dm != ''">
+			and dm  =#{obj.dm}
+		  </if>
+		  <if test="obj.fhdm != null and obj.fhdm != ''">
+			and fhdm  =#{obj.fhdm}
+		  </if>
+		</where>
+		order by px
+	</sql>
+	
+	
+	<!-- 分页查询 -->
+	<select id="queryCodeTypeListPage" resultType="com.hrbwmxx.system.vo.CodeTypeCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryCodeTypeListPage_filed"/>
+		<include refid="queryCodeTypeListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryCodeTypeListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryCodeTypeListPage_condition"/>
+	</select>
+	
+	
+	<!--单条查询  -->
+	 <select id="queryCodeTypeFieldById" resultType="com.hrbwmxx.system.vo.CodeTypeCustom">
+		<include refid="queryCodeTypeListPage_filed"/>
+		<include refid="queryCodeTypeListPage_condition"/>
+	</select> 
+	<!-- 添加 -->
+	<insert id="saveCodeTypeValue" >
+		insert into t_codetype
+		  (id, px, mc, dm, state, fhdm)
+		values
+		  (#{id,jdbcType=VARCHAR},
+		   #{px,jdbcType=VARCHAR},
+		   #{mc,jdbcType=VARCHAR},
+		   #{dm,jdbcType=VARCHAR},
+		   #{state,jdbcType=VARCHAR},
+		   #{fhdm,jdbcType=VARCHAR})
+	   
+	</insert>
+	<!-- 修改 -->
+	<update id="updateCodeTypeValue">
+		update t_codetype 
+		<set>
+			<if test="dm!=null">
+		   		 dm=#{dm},
+		    </if>
+		    <if test="mc!=null">
+		   		 mc=#{mc},
+		    </if>
+		    <if test="state!=null">
+		    	 state=#{state},
+		    </if>
+		    <if test="px!=null">
+		    	 px=#{px},
+		    </if>
+		    <if test="fhdm!=null">
+		    	 fhdm=#{fhdm},
+		    </if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+	<!-- 删除 -->
+	<update id="deleteCodeTypeValueById">
+		update t_codetype 
+		<set>
+		  state='2'
+		</set>
+		<where>
+			id=#{string}
+		</where>
+	</update>
+
+</mapper>

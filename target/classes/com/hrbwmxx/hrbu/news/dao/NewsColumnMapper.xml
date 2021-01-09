@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.news.dao.NewsColumnMapper">
+    
+	<sql id="query_field">
+		  <![CDATA[  
+		     SELECT           
+  s.lmid as "id" ,        
+  s.mc as "columnName",        
+  s.jb as "level",       
+  s.xh as "orderNumber",      
+  s.zt as "state",  
+  s.fbzt as "releaseState",     
+  s.sjlmid as "prentid",  
+  s.url as "url",
+    DECODE(s.sjlmid, '0', '无', (select mc from T_LM p where p.lmid=s.sjlmid))  as "prentName"     
+	        ]]>  
+	</sql>
+	<sql id="query_condition">
+		  FROM  T_LM s 
+        <where>
+			<if test="obj.id!=null and obj.id!=''">
+				and s.lmid=#{obj.id}
+			</if>
+			<if test="obj.columnName!=null and obj.columnName!=''">
+				and s.mc like CONCAT(CONCAT('%',#{obj.columnName}),'%')
+			</if>
+			<if test="obj.state!=null and obj.state!=''">
+				and s.zt = #{obj.state}
+			</if>
+			<if test="obj.level!=null and obj.level!=''">
+				and s.jb = #{obj.level}
+			</if>
+			<if test="obj.prentid!=null">
+				and s.sjlmid=#{obj.prentid}
+			</if>
+			<if test="obj.releaseState!=null">
+				and s.fbzt=#{obj.releaseState}
+			</if>
+		</where>
+		order by s.fbzt ,s.jb , s.xh asc,s.sjlmid asc
+	</sql>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryNewsColumnById" resultType="com.hrbwmxx.hrbu.news.vo.NewsColumnCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 保存数据 -->
+	<insert id="saveNewsColumnData"   >
+	
+		INSERT INTO T_LM
+                (lmid, mc,jb,xh,zt,sjlmid,fbzt,url)
+           VALUES
+  				(#{id,jdbcType=VARCHAR}, 
+  				#{columnName,jdbcType=VARCHAR}, 
+  				#{level,jdbcType=VARCHAR}, 
+  				#{orderNumber,jdbcType=VARCHAR}, 
+  				#{state,jdbcType=VARCHAR}, 
+  				#{prentid,jdbcType=VARCHAR},
+  				#{releaseState,jdbcType=VARCHAR},
+  				#{url,jdbcType=VARCHAR})
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateNewsColumnData" >
+	
+		UPDATE T_LM
+			<set>
+				<if test="columnName != null and columnName != ''">
+				  mc = #{columnName,jdbcType=VARCHAR},
+				</if>
+				<if test="level != null and level != ''">
+				  jb = #{level,jdbcType=VARCHAR},
+				</if>
+				<if test="orderNumber != null and orderNumber != ''">
+				  xh = #{orderNumber,jdbcType=VARCHAR},
+				</if>
+				<if test="state != null and state != ''">
+				  zt = #{state,jdbcType=VARCHAR},
+				</if>
+				<if test="prentid != null ">
+				  sjlmid = #{prentid,jdbcType=VARCHAR},
+				</if>
+				<if test="releaseState != null ">
+				  fbzt = #{releaseState,jdbcType=VARCHAR},
+				</if>
+				<if test="url != null ">
+				  url = #{url,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE lmid= #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteNewsColumnDataById">
+		DELETE FROM T_LM   WHERE lmid = #{id}
+	</delete>
+	<select id="queryNewsColumnList" resultType="com.hrbwmxx.hrbu.news.vo.NewsColumnCustom">
+        <include refid="query_field"/>
+        <include refid="query_condition"/>
+	</select>
+	 <select id="queryNewsColumnListPage" resultType="com.hrbwmxx.hrbu.news.vo.NewsColumnCustom">
+	 	<include refid="PageMapper.pageHead"/>
+	 	<include refid="query_field"/>
+        <include refid="query_condition"/>
+        <include refid="PageMapper.pageFoot"/>
+	 </select>
+	 
+	<select id="queryNewsColumnListCount" resultType="int">
+	   <include refid="PageMapper.countHead"/>
+       <include refid="query_condition"/>
+	</select>
+	 
+	
+</mapper>

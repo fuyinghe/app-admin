@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.JSMapper">
+	<select id="queryJSListPage" resultType="com.hrbwmxx.system.vo.JSCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryJSListPage_filed"/>
+		<include refid="queryJSListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryJSListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryJSListPage_condition"/>
+	</select>
+	
+	<sql id="queryJSListPage_filed">
+		select jsid, mc, xh, ymid,jsdm, zt 
+	</sql>
+	<sql id="queryJSListPage_condition">
+		from t_js
+		<where>
+		  <if test="obj.jsId != null and obj.jsId!= ''">
+			and jsid =#{obj.jsId}
+		  </if>
+		  <if test="obj.mc != null and obj.mc != ''">
+			and mc like concat(concat('%',#{obj.mc}),'%')
+		  </if>
+			and zt = '1'
+		</where>
+	</sql>
+	<select id="queryJSList" resultType="com.hrbwmxx.system.vo.JSCustom">
+	   <include refid="queryJSListPage_filed"/>
+		<include refid="queryJSListPage_condition"/>
+	</select>
+	
+	<insert id="saveJS" >
+		 insert into t_js
+	   	(jsid, mc,ymid,jsdm, zt,xh)
+	 	values
+	   (#{jsId,jdbcType=VARCHAR}, 
+	   #{mc,jdbcType=VARCHAR},
+	   #{ymId,jdbcType=VARCHAR},
+	   #{jsDm,jdbcType=VARCHAR}, 
+	   #{zt,jdbcType=CHAR},
+	   #{xh,jdbcType=INTEGER})
+	</insert>
+	<update id="updateJS">
+		update t_js 
+		<set>
+		    <if test="mc!=null">
+		   		 mc=#{mc},
+		    </if>
+		    <if test="xh!=null">
+		    	xh=#{xh},
+		    </if>
+		    <if test="zt!=null">
+		    	zt=#{zt},
+		    </if>
+		     <if test="ymId!=null">
+		    	ymId=#{ymId},
+		    </if>
+		    <if test="jsDm != null">
+		    	jsdm = #{jsDm},
+		    </if>
+		</set>
+		<where>
+			jsid=#{jsId}
+		</where>
+	</update>
+	
+	<!-- 用户选择角色field -->
+	<sql id="findJsListForPage_field">
+		SELECT JS.JSID, JS.MC, JS.XH, JS.YMID, JS.ZT 
+	</sql>
+	<!-- 已选角色condition -->
+	<sql id="findJsListForPage_condition">
+		FROM T_JS js LEFT JOIN T_YH_JS yhjs ON JS.JSID = YHJS.JSID
+					 LEFT JOIN T_YH yh ON yhjs.YHID = yh.YHID 
+		WHERE YH.YHID = #{yh.yhId}
+		<if test="yh.jsMc != null and yh.jsMc != ''">
+		    ANd js.mc like concat(concat('%',#{yh.jsMc}),'%')
+		</if>
+	</sql>
+	<!-- 未选角色condition -->
+	<sql id="findUnSelectJsListForPage_condition">
+		FROM T_JS JS WHERE JS.JSID NOT IN (
+			SELECT JS.JSID 
+			FROM T_JS js LEFT JOIN T_YH_JS yhjs ON JS.JSID = YHJS.JSID
+					     LEFT JOIN T_YH yh ON yhjs.YHID = yh.YHID 
+		    WHERE YH.YHID = #{yh.yhId}
+		) 
+		<if test="yh.jsMc != null and yh.jsMc != ''">
+		   AND js.mc like concat(concat('%',#{yh.jsMc}),'%')
+		</if>
+	</sql>
+	<!-- 已选角色分页 -->
+	<select id="findJsListForPage" resultType="com.hrbwmxx.system.vo.JSCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findJsListForPage_field"/>
+		<include refid="findJsListForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<!-- 用户已选角色总记录数 -->
+	<select id="findJsListForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findJsListForPage_condition"/>
+	</select>
+	<!-- 用户未选角色分页 -->
+	<select id="findUnselectRoleListByyhIdForPage" resultType="com.hrbwmxx.system.vo.JSCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findJsListForPage_field"/>
+		<include refid="findUnSelectJsListForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<!-- 用户未选角色总记录数 -->
+	<select id="findUnselectRoleListByyhIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findUnSelectJsListForPage_condition"/>
+	</select>
+	<!--  给用户添加未选角色 -->
+	<insert id="addUnSelectRole">
+		INSERT INTO T_YH_JS 
+			(YHID, JSID)
+		VALUES(
+			#{yh.yhId},
+			#{js.jsId}
+		)
+	</insert>
+	<!-- 删除用户已选角色 -->
+	<delete id="deleteSelectedRole">
+		DELETE FROM T_YH_JS WHERE YHID = #{yh.yhId} AND JSID = #{js.jsId}
+	</delete>
+	<sql id="findSelectdeYhByJsIdForPage_field">
+		SELECT YH.USERNAME ,YH.SF,YH.XM ,YH.YHID
+	</sql>
+	<sql id="findSelectdeYhByJsIdForPage_condition">
+		FROM T_YH yh  LEFT JOIN T_YH_JS yhjs ON YH.YHID = YHJS.YHID
+					  LEFT JOIN T_JS js ON yhjs.JSID = js.JSID
+		WHERE  JS.JSID = #{js.jsId}
+		<if test="js.yhMc != null and js.yhMc != ''">
+			AND yh.xm like concat(concat('%',#{js.yhMc}),'%')
+		</if>
+	</sql>
+	<sql id="findUnseleteYhByJsIdForPage_condition">
+		FROM T_YH YH WHERE YHID NOT IN(
+			SELECT YH.YHID FROM T_YH yh  LEFT JOIN T_YH_JS yhjs ON YH.YHID = YHJS.YHID
+										 LEFT JOIN T_JS js ON yhjs.JSID = js.JSID
+			WHERE  JS.JSID = #{js.jsId}
+		)
+		<if test="js.yhMc != null and js.yhMc != ''">
+			AND yh.xm like concat(concat('%',#{js.yhMc}),'%')
+		</if>
+	</sql>
+	<select id="findSelectdeYhByJsIdForPage" resultType="com.hrbwmxx.system.vo.YHCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findSelectdeYhByJsIdForPage_field"/>
+		<include refid="findSelectdeYhByJsIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findSelectdeYhByJsIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findSelectdeYhByJsIdForPage_condition"/>
+	</select>
+	
+	<select id="findUnseleteYhByJsIdForPage" resultType="com.hrbwmxx.system.vo.YHCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findSelectdeYhByJsIdForPage_field"/>
+		<include refid="findUnseleteYhByJsIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findUnseleteYhByJsIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findUnseleteYhByJsIdForPage_condition"/>
+	</select>
+	
+	<sql id="findSelectGNByJsIdForPage_field">
+		SELECT GN.MC,GN.GNID,GN.DM,GN.LB,GN.DJ ,GN2.MC SJMC
+	</sql>
+	<sql id="findSelectGNByJsIdForPage_condition">
+		FROM T_GN gn LEFT JOIN T_JS_GN jsgn ON GN.GNID =JSGN.GNID
+					 LEFT JOIN T_JS js ON jsgn.JSID = js.JSID
+					 LEFT JOIN T_GN gn2 ON gn.PID = gn2.GNID
+		WHERE js.JSID = #{js.jsId} AND gn.PID != '-1'
+		<if test="js.mc != null and js.mc != ''">
+		   AND gn.mc like concat(concat('%',#{js.mc}),'%')
+		</if>
+		<if test="js.pId != null and js.pId != ''">
+		   AND gn.pId like concat(concat('%',#{js.pId}),'%')
+		</if>
+	</sql>
+	<select id="findSelectGNByJsIdForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findSelectGNByJsIdForPage_field"/>
+		<include refid="findSelectGNByJsIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findSelectGNByJsIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findSelectGNByJsIdForPage_condition"/>
+	</select>
+	
+	<sql id="findUnSelectGNByJsIdForPage_field">
+		SELECT GN.MC,GN.GNID,GN.DM,GN.LB,GN.DJ ,GN2.MC SJMC
+	</sql>
+	<sql id="findUnSelectGNByJsIdForPage_condition">
+		FROM T_GN gn LEFT JOIN T_GN gn2 ON gn.PID = gn2.GNID
+		WHERE gn.GNID NOT IN (
+			SELECT GN.GNID FROM T_GN gn LEFT JOIN T_JS_GN jsgn ON GN.GNID =JSGN.GNID
+										LEFT JOIN T_JS js ON jsgn.JSID = js.JSID
+			WHERE js.JSID = #{js.jsId} 
+		) AND gn.PID != '-1'
+		<if test="js.pId != null and js.pId != ''">
+		   AND gn.pId like concat(concat('%',#{js.pId}),'%')
+		</if>
+		<if test="js.mc != null and js.mc != ''">
+		   AND gn.mc like concat(concat('%',#{js.mc}),'%')
+		</if>
+	</sql>
+	<select id="findUnSelectGNByJsIdForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findUnSelectGNByJsIdForPage_field"/>
+		<include refid="findUnSelectGNByJsIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findUnSelectGNByJsIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findUnSelectGNByJsIdForPage_condition"/>
+	</select>
+	<insert id="addUnSelectMenu">
+		insert into T_JS_GN
+		(GNID, JSID)
+		VALUES(
+			#{gn.gnId},
+			#{js.jsId}
+		)
+	</insert>
+	<!-- 删除角色已选菜单 -->
+	<delete id="deleteSelectMenu">
+		DELETE FROM T_JS_GN WHERE GNID = #{gn.gnId} AND JSID = #{js.jsId}
+	</delete>
+	
+	<select id="findJSListByZGRYKey" resultType="com.hrbwmxx.system.model.JS">
+		SELECT JS.* FROM T_JS JS LEFT JOIN T_YH_JS YHJS ON JS.JSID = YHJS.JSID
+								 LEFT JOIN T_ZGRY ZG ON YHJS.YHID = ZG.ZGH
+		WHERE ZG.ZGH = #{zgry.zgh}
+	</select>
+	<!--用户角色，用于登录使用  -->
+	<select id="findJSListByYhid" resultType="com.hrbwmxx.system.model.JS">
+		SELECT JS.* FROM T_JS JS LEFT JOIN T_YH_JS YHJS ON JS.JSID = YHJS.JSID
+								 LEFT JOIN T_YH YH ON YHJS.YHID = YH.YHID
+		WHERE YH.YHID = #{obj.yhId}
+	</select>
+	
+</mapper>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.IAppManageMapper">
+	
+	<sql id="queryAppListPage_filed">
+		select ap.id, 
+		       ap.name, 
+		       ap.link, 
+		       ap.state, 
+		       ap.open_type, 
+		       ap.sys_type, 
+		       ap.weight, 
+		       ap.need_login, 
+		       ap.icon, 
+		       ap.citycode,
+		       ap.firstplace, 
+			   ap.secondplace, 
+			   ap.thirdplace, 
+			   ap.adplace, 
+			   ap.omit,
+			   ap.urltype,
+			   ap.app_type_id as app_type_id,
+			   ay.app_type as  app_type, 
+			   ap.ispay,
+			   ap.paytype,
+			   pay.mc as paytypemc,
+		       spt.mc as sysname,
+		       opt.mc as openname,
+		       cit.mc as cityname,
+		       urlt.mc as urltypename,
+		       ap.apple,
+		       ap.adr,
+		       ap.wx,
+		       ap.attachId
+	</sql>
+	<sql id="queryAppListPage_condition">
+		 from t_app ap
+		  left join (select dm, mc, bzdm
+		               from t_code cd
+		              where cd.fhdm = 'app_systype') spt
+		    on ap.sys_type = spt.bzdm
+		    left join (select dm, mc, bzdm
+		               from t_code cd
+		              where cd.fhdm = 'app_opentype') opt
+		    on ap.open_type = opt.bzdm
+		    left join (select dm, mc, bzdm
+		               from t_code cd
+		              where cd.fhdm = 'app_urltype') urlt
+		    on ap.urltype = urlt.bzdm
+		    left join (select dm, mc, bzdm
+		               from t_code cd
+		              where  cd.fhdm = 'city' or cd.sjdm = 'city') cit
+		    on ap.citycode = cit.bzdm
+		    left join (select id ,app_type  from t_app_type  ) ay
+		    on ap.app_type_id = ay.id
+		    left join (select dm ,mc  from t_pay_type  ) pay
+		    on ap.paytype = pay.dm
+		<where>
+			 <![CDATA[ ap.omit = 1 ]]>
+		  <if test="obj.id != null and obj.id!= ''">
+			and ap.id =#{obj.id}
+		  </if>
+		  <if test="obj.name != null and obj.name != ''">
+			and ap.name like '%'||#{obj.name}||'%'
+		  </if>
+		  <if test="obj.app_type_id != null and obj.app_type_id != ''">
+			and ap.app_type_id  =#{obj.app_type_id}
+		  </if>
+		  <if test="obj.sys_type != null and obj.sys_type != ''">
+			and ap.sys_type  =#{obj.sys_type}
+		  </if>
+		  <if test="obj.open_type != null and obj.open_type != ''">
+			and ap.open_type  =#{obj.open_type}
+		  </if>
+		</where>
+		order by ap.weight  desc
+	</sql>
+	
+	
+	<!-- 分页查询 -->
+	<select id="queryAppListPage" resultType="com.hrbwmxx.system.vo.AppManageCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryAppListPage_filed"/>
+		<include refid="queryAppListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryAppListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryAppListPage_condition"/>
+	</select>
+	
+	
+	<!-- 单条查询  -->
+	 <select id="queryAppValueOne" resultType="com.hrbwmxx.system.vo.AppManageCustom">
+		<include refid="queryAppListPage_filed"/>
+		<include refid="queryAppListPage_condition"/>
+	</select> 
+	<!-- 添加 -->
+	<insert id="saveAppValue" >
+		insert into t_app
+		  (id, name, link, apple,adr,wx,state, open_type, app_type_id, sys_type,firstplace,secondplace,thirdplace,adplace,omit, weight, need_login, icon, citycode,urltype,attachId,ispay,paytype)
+		values
+		  (#{id,jdbcType=VARCHAR},
+		   #{name,jdbcType=VARCHAR},
+		   #{link,jdbcType=VARCHAR},
+		   #{apple,jdbcType=VARCHAR},
+		   #{adr,jdbcType=VARCHAR},
+		   #{wx,jdbcType=VARCHAR},
+		   #{state,jdbcType=VARCHAR},
+		   #{open_type,jdbcType=VARCHAR},
+		   #{app_type_id,jdbcType=VARCHAR},
+		   #{sys_type,jdbcType=VARCHAR},
+		   #{firstplace,jdbcType=VARCHAR},
+		   #{secondplace,jdbcType=VARCHAR},
+		   #{thirdplace,jdbcType=VARCHAR},
+		   #{adplace,jdbcType=VARCHAR},
+		   #{omit,jdbcType=VARCHAR},
+		   #{weight,jdbcType=VARCHAR},
+		   #{need_login,jdbcType=VARCHAR},
+		   #{icon,jdbcType=VARCHAR},
+		   #{citycode,jdbcType=VARCHAR},
+		   #{urltype,jdbcType=VARCHAR},
+		   #{attachId,jdbcType=VARCHAR},
+		   #{ispay,jdbcType=VARCHAR},
+		   #{paytype,jdbcType=VARCHAR})
+	</insert>
+	<!-- 修改 -->
+	<update id="updateAppValue">
+	
+		update t_app t
+		  <set>
+			  <if test="obj.name != null and obj.name != ''">
+				 name =#{obj.name,jdbcType=VARCHAR},
+			  </if>
+			   <if test="obj.link != null and obj.link != ''">
+				 link =#{obj.link,jdbcType=VARCHAR},
+			  </if>
+			   <if test="obj.apple != null and obj.apple != ''">
+				 apple =#{obj.apple,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.adr != null and obj.adr != ''">
+				 adr =#{obj.adr,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.wx != null and obj.wx != ''">
+				 wx =#{obj.wx,jdbcType=VARCHAR},
+			  </if>
+			   <if test="obj.state != null and obj.state != ''">
+				 state =#{obj.state,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.open_type != null and obj.open_type!= ''">
+				 open_type =#{obj.open_type,jdbcType=VARCHAR},
+			  </if>
+			   <if test="obj.app_type_id != null and obj.app_type_id!= ''">
+				 app_type_id =#{obj.app_type_id,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.sys_type != null and obj.sys_type!= ''">
+				 sys_type =#{obj.sys_type,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.weight != null and obj.weight!= ''">
+				 weight =#{obj.weight,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.need_login != null and obj.need_login!= ''">
+				 need_login =#{obj.need_login,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.icon != null and obj.icon!= ''">
+				 icon =#{obj.icon,jdbcType=VARCHAR},
+			  </if>
+			  <if test="obj.citycode != null and obj.citycode!= ''">
+				 citycode =#{obj.citycode,jdbcType=VARCHAR},
+			  </if> 
+			  <if test="obj.firstplace != null and obj.firstplace!= ''">
+				 firstplace =#{obj.firstplace,jdbcType=VARCHAR},
+			  </if> 
+			  <if test="obj.secondplace != null and obj.secondplace!= ''">
+				 secondplace =#{obj.secondplace,jdbcType=VARCHAR},
+			  </if> 
+			  <if test="obj.thirdplace != null and obj.thirdplace!= ''">
+				 thirdplace =#{obj.thirdplace,jdbcType=VARCHAR},
+			  </if> 
+			  <if test="obj.adplace != null and obj.adplace!= ''">
+				 adplace =#{obj.adplace,jdbcType=VARCHAR},
+			  </if>  
+			  <if test="obj.urltype != null and obj.urltype!= ''">
+				 urltype =#{obj.urltype,jdbcType=VARCHAR},
+			  </if> 
+			   <if test="obj.attachId != null and obj.attachId != ''">
+				 attachId =#{obj.attachId,jdbcType=VARCHAR},
+			  </if> 
+			  <if test="obj.ispay != null and obj.ispay != ''">
+				 ispay =#{obj.ispay,jdbcType=VARCHAR},
+			  </if> 
+			   <if test="obj.paytype != null and obj.paytype != ''">
+				 paytype =#{obj.paytype,jdbcType=VARCHAR},
+			   </if>
+			    <if test="obj.paytype== null or obj.paytype == ''">
+				 paytype =''
+			   </if>
+		  </set>
+		  
+		<where>
+			id=#{obj.id,jdbcType=VARCHAR}
+		</where>
+	</update>
+	
+	<!-- 删除 -->
+	<update id="deleteAppValue">
+		update t_app 
+		<set>
+		  omit='0'
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update> 
+	
+	<!-- 删除城市权限 -->
+	<update id="updateAppCityValue">
+		update t_app 
+		<set>
+		  citycode=''
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update> 
+
+
+</mapper>

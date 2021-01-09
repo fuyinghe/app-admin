@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.news.dao.NewsMapper">
+   
+	<sql id="query_field">
+		select nrid as id,
+		      nr.lmid as columnid,
+		      bt as title,
+		      nr.zt as state,
+		      ly as source,
+		      zdzt as topState,
+		      zdxh as topOrderNumber,
+		      wjlj1 as filePath,
+		      wj1   as pic,
+		      wjlj2 as attachmentPath,
+		      wj2 as attachmentfile,
+		      bjsj as editTime,
+		      bjyhid as editUserid,
+		      fbsj as publishTime,
+		      fbyhid as publishUserid,
+		      lm.mc as columnName,
+		      llcs as readTimes,
+		      (select username from t_yh where t_yh.yhid= nr.bjyhid) as editUser,
+		      (select username from t_yh where t_yh.yhid= nr.fbyhid) as  publishUser
+	</sql>
+	<sql id="query_condition">
+		FROM t_nr nr left join t_lm lm on nr.lmid=lm.lmid 
+		 <where>
+			<if test="obj.id!=null and obj.id!=''">
+				 and nr.nrid=#{obj.id}
+			</if>
+			<if test="obj.columnid!=null and obj.columnid!=''">
+				 and nr.lmid=#{obj.columnid}
+			</if>
+			<if test="obj.title!=null and obj.title!=''">
+				  and nr.bt like CONCAT(CONCAT('%',#{obj.title}),'%')
+			</if>
+			<if test="obj.state!=null and obj.state!=''">
+				 and nr.zt=#{obj.state}
+			</if>
+		</where> 
+		ORDER BY zdzt desc,zdxh asc,bjsj desc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryNewsListPage" resultType="com.hrbwmxx.hrbu.news.vo.NewsCustom">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryNewsForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryNewsById" resultType="com.hrbwmxx.hrbu.news.vo.NewsCustom">
+		<include refid="query_field" />
+		 <include refid="query_condition"/>
+	</select>
+	<!-- 保存数据 -->
+	<insert id="saveNewsData"  >
+		INSERT INTO T_NR
+		   (nrid,lmid,bt,zt,ly,
+            zdzt,zdxh,wjlj1,wj1,
+            wjlj2,wj2,bjsj,
+            bjyhid,fbsj,fbyhid)
+			VALUES
+				(#{id,jdbcType=VARCHAR},#{columnid,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{source,jdbcType=VARCHAR},
+  				#{topState,jdbcType=VARCHAR},#{topOrderNumber,jdbcType=VARCHAR},#{filePath,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR}, 
+  				#{attachmentPath,jdbcType=VARCHAR},#{attachmentfile,jdbcType=VARCHAR},#{editTime,jdbcType=VARCHAR},
+  				#{editUserid,jdbcType=VARCHAR},#{publishTime,jdbcType=VARCHAR},#{publishUserid,jdbcType=VARCHAR}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateNewsData" >
+		UPDATE T_NR
+			<set>
+				<if test="columnid != null and columnid != ''">
+				  lmid = #{columnid,jdbcType=VARCHAR},
+				</if>
+				<if test="title != null and title != ''">
+				 bt = #{title,jdbcType=VARCHAR},
+				</if>
+				<if test="state != null and state != ''">
+				  zt = #{state,jdbcType=VARCHAR} ,
+				</if>
+				<if test="source != null">
+				 ly = #{source,jdbcType=VARCHAR} ,
+				</if>
+				<if test="topState != null and topState != ''">
+				  zdzt = #{topState,jdbcType=VARCHAR},
+				</if>
+				<if test="topOrderNumber!= null">
+				  zdxh = #{topOrderNumber,jdbcType=VARCHAR},
+				</if>
+				<if test="filePath != null ">
+				   wjlj1= #{filePath,jdbcType=VARCHAR},
+				</if>
+				<if test="pic!= null">
+				  wj1 = #{pic,jdbcType=VARCHAR},
+				</if>
+			
+				<if test="attachmentPath != null">
+				  wjlj2= #{attachmentPath,jdbcType=VARCHAR},
+				</if>
+				<if test="attachmentfile != null">
+				  wj2 = #{attachmentfile,jdbcType=VARCHAR},
+				</if>
+				<if test="editTime != null and editTime != ''">
+				  bjsj = #{editTime,jdbcType=VARCHAR},
+				</if>
+				
+				<if test="editUserid != null and editUserid != ''">
+				  bjyhid = #{editUserid,jdbcType=VARCHAR},
+				</if>
+				<if test="publishTime != null">
+				  fbsj = #{publishTime,jdbcType=VARCHAR},
+				</if>
+				<if test="publishUserid != null">
+				  fbyhid = #{publishUserid,jdbcType=VARCHAR},
+				</if>
+				<if test="readTimes != null and readTimes != ''">
+				  llcs = #{readTimes,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE nrid = #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteNewsDataById">
+		DELETE FROM T_nr   WHERE nrid = #{id}
+	</delete>
+	<select id="queryNewsList" resultType="com.hrbwmxx.hrbu.news.vo.NewsCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据columnid查询 已经发布的 -->
+	<select id="queryNewsByNewsColumnid" resultType="com.hrbwmxx.hrbu.news.vo.NewsCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		where nr.lmid = #{newsColumnid}  and nr.zt='1' 
+		ORDER BY zdxh,xh asc
+	</select>
+	
+</mapper>

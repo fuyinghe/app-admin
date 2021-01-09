@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.YHMapper">
+	<select id="queryYHListPage" resultType="com.hrbwmxx.system.vo.YHCustom">
+		<include refid="PageMapper.pageHead" />
+		<include refid="queryYHListPage_field" />
+		<include refid="queryYHListPage_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<select id="queryYHListPageCount" resultType="java.lang.Integer" >
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryYHListPage_condition" />
+	</select>
+	<sql id="queryYHListPage_field">
+	   select YH.yhid,
+			  YH.username,
+			  YH.password,
+			  YH.xm,
+			  YH.sf,
+			  YH.xh,
+			  YH.zt,
+			  YH.token,
+			  ss.jsmcs jsMcList,
+			  ss.jsids jsidList
+	</sql>
+	<sql id="queryYHListPage_condition">
+		FROM T_YH yh LEFT JOIN (
+				SELECT YHJS.YHID YHID, WM_CONCAT(JS.MC) jsmcs ,WM_CONCAT(JS.JSID) jsids  
+				FROM T_YH_JS yhjs LEFT JOIN T_JS js ON YHJS.JSID = js.JSID
+				GROUP BY YHJS.YHID
+		) ss ON YH.YHID = SS.YHID
+		<where>
+		  <if test="obj.yhId !=null and obj.yhId !=''">
+		  	and YH.yhid = #{obj.yhId}
+		  </if>
+		  <if test="obj.xm != null and obj.xm !=''">
+		    and YH.xm like concat(concat('%',#{obj.xm}),'%')
+		  </if>
+		  <if test="obj.userName != null and obj.userName != ''">
+		  	and YH.userName like concat(concat('%',#{obj.userName}),'%')
+		  </if>
+		  <if test="obj.token!=null and obj.token!=''">
+			and YH.token=#{obj.token}
+		  </if>
+		</where>
+	</sql>
+	<select id="queryYH" resultType="com.hrbwmxx.system.vo.YHCustom">
+		 select yhid,
+			    username,
+			    password,
+			    xm,
+			    sf,
+			    xh,
+			    zt,
+			    token
+			 FROM 
+				t_yh
+			<where>
+				t_yh.zt=1
+			  <if test="obj.userName!=null and obj.userName!=''">
+			   and t_yh.username =#{obj.userName}
+			  </if>
+			  <if test="obj.passWord!=null and obj.passWord!=''">
+			   and t_yh.password =#{obj.passWord}
+			  </if>
+			  <if test="obj.xm!=null and obj.xm!=''">
+			  	and  t_yh.xm=#{obj.xm}
+			  </if>	
+			  <if test="obj.sf!=null and obj.sf!=''">
+			  	and  t_yh.sf=#{obj.sf}
+			  </if>
+			  <if test="obj.token!=null and obj.token!=''">
+			  	and  t_yh.token=#{obj.token}
+			  </if>
+			  <if test="obj.yhId!=null and obj.yhId!=''">
+				and t_yh.yhid=#{obj.yhId}
+			  </if>		
+			</where>
+			ORDER BY
+				t_yh.xh
+	</select>
+	<select id="querySfByUserName" resultType="java.lang.String">
+		 select sf
+			 FROM 
+				t_yh
+			<where>
+				t_yh.zt=1
+			 <if test="obj==null and obj==''">
+			   and t_yh.username =-1
+			 </if>
+			 <if test="obj!=null and obj!=''">
+			   and t_yh.username =#{obj}
+			 </if>
+			</where>
+	</select>
+	<select id="queryYHByField" resultType="com.hrbwmxx.system.vo.YHCustom">
+	   <include refid="queryYHListPage_field" />
+	   <include refid="queryYHListPage_condition" />
+	</select>
+	
+	<insert id="saveYH">
+		insert into t_yh
+		 (yhid,
+		  userName,
+		  password,
+		  xm,
+		  xh,
+		  zt
+		) values
+		(#{obj.yhId,jdbcType=VARCHAR},
+		 #{obj.userName,jdbcType=VARCHAR},
+		 #{obj.passWord,jdbcType=VARCHAR},
+		 #{obj.xm,jdbcType=VARCHAR},
+		 #{obj.xh,jdbcType=VARCHAR},
+		 #{obj.zt,jdbcType=VARCHAR}
+		)
+	</insert>
+	<insert id="synchronizationYH" >
+		insert into t_yh
+		 (yhid,
+		  username,
+		  password,
+		  xm,
+		  sf,
+		  xh,
+		  zt
+		) values
+		(#{obj.yhId,jdbcType=VARCHAR},
+		 #{obj.userName,jdbcType=VARCHAR}, 	
+		 #{obj.passWord,jdbcType=VARCHAR},
+		 #{obj.xm,jdbcType=VARCHAR},
+		 #{obj.sf,jdbcType=VARCHAR},
+		 #{obj.xh,jdbcType=VARCHAR},
+		 #{obj.zt,jdbcType=VARCHAR}
+		)
+	</insert>
+	<update id="updateYH">
+		update t_yh
+		<set>
+			<if test="obj.userName!=null and obj.userName != ''">
+		 		username=#{obj.userName},
+		 	</if>
+		 	<if test="obj.passWord != null and obj.passWord != ''">
+		 		password = #{obj.passWord},
+		 	</if>
+		 	<if test="obj.xm!=null">
+		 		xm=#{obj.xm},
+		 	</if>
+		 	<if test="obj.sf!=null">
+		 		sf=#{obj.sf},
+		 	</if>
+		 	<if test="obj.xh!=null">
+		 		xh=#{obj.xh},
+		 	</if>
+		 	<if test="obj.zt!=null">
+		 		zt=#{obj.zt},
+		 	</if>
+		 	<if test="obj.token!=null">
+		 		token=#{obj.token},
+		 	</if>
+		</set>
+		<where>
+			yhid=#{obj.yhId}
+		</where>
+	</update>
+	<!-- 根据oa返回用户名进行更新token -->
+	<update id="updateYhTokenByUserName">
+		update t_yh
+		<set>
+		 	<if test="obj.passWord != null and obj.passWord != ''">
+		 		password = #{obj.passWord},
+		 	</if>
+		 	<if test="obj.xm!=null">
+		 		xm=#{obj.xm},
+		 	</if>
+		 	<if test="obj.sf!=null">
+		 		sf=#{obj.sf},
+		 	</if>
+		 	<if test="obj.xh!=null">
+		 		xh=#{obj.xh},
+		 	</if>
+		 	<if test="obj.zt!=null">
+		 		zt=#{obj.zt},
+		 	</if>
+		 	<if test="obj.token!=null">
+		 		token=#{obj.token},
+		 	</if>
+		</set>
+		<where>
+			username=#{obj.userName}
+		</where>
+	</update>
+	<!-- 删除用户 -->
+	<delete id="deleteYH">
+		DELETE FROM T_YH WHERE YHID = #{obj.yhId}
+	</delete>
+	
+	
+	<sql id="findSelectedMenuByYhIdForPage_field">
+		SELECT GN.MC,GN.GNID,GN.DM,GN.LB,GN.DJ 
+	</sql>
+	<sql id="findSelectedMenuByYhIdForPage_condition">
+		FROM T_GN gn LEFT JOIN T_YH_GN yhgn ON GN.GNID =yhgn.GNID
+					 LEFT JOIN T_YH YH ON yhgn.YHID = yh.YHID
+		WHERE yh.YHID = #{yh.yhId}
+		<if test="yh.gnMc != null and yh.gnMc != ''">
+		   AND gn.mc like concat(concat('%',#{yh.gnMc}),'%')
+		</if>
+	</sql>
+	<select id="findSelectedMenuByYhIdForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findSelectedMenuByYhIdForPage_field"/>
+		<include refid="findSelectedMenuByYhIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findSelectedMenuByYhIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findSelectedMenuByYhIdForPage_condition"/>
+	</select>
+	<sql id="findUnSelectMenuByYhIdForPage_field">
+		SELECT GN.MC,GN.GNID,GN.DM,GN.LB,GN.DJ 
+	</sql>
+	<sql id="findUnSelectMenuByYhIdForPage_condition">
+		FROM T_GN gn WHERE gn.GNID NOT IN (
+			SELECT GN.GNID FROM T_GN gn
+			LEFT JOIN T_YH_GN yhgn ON GN.GNID =yhgn.GNID
+					 LEFT JOIN T_YH yh ON yhgn.YHID = yh.YHID
+			WHERE yh.YHID = #{yh.yhId}
+		)
+		<if test="yh.gnMc != null and yh.gnMc != ''">
+		   AND gn.mc like concat(concat('%',#{yh.gnMc}),'%')
+		</if>
+	</sql>
+	<select id="findUnSelectMenuByYhIdForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="findUnSelectMenuByYhIdForPage_field"/>
+		<include refid="findUnSelectMenuByYhIdForPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="findUnSelectMenuByYhIdForCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="findUnSelectMenuByYhIdForPage_condition"/>
+	</select>
+	<insert id="addUnSelectMenu">
+		INSERT　INTO T_YH_GN
+			(GNID, YHID)
+		VALUES(
+			#{gn.gnId},
+			#{yh.yhId}
+		)
+	</insert>
+	<!-- 删除角色已选菜单 -->
+	<delete id="deleteSelectMenu">
+		DELETE FROM T_YH_GN WHERE GNID = #{gn.gnId} AND YHID = #{yh.yhId}
+	</delete>
+	<!-- // 根据用户ID 删除用户角色中间表 -->
+	<delete id="deleteYHJS">
+		DELETE FROM T_YH_JS WHERE YHID = #{yh.yhId}
+	</delete>
+	
+	<!-- 修改密码 -->
+	<update id="updatePassWord">
+		update T_YH set PASSWORD =#{newPass} where PASSWORD=#{oldPass} and YHID=#{yhId}
+	</update>
+	<!-- 登录判断账号密码 -->
+	<select id="VerifitPass" resultType="java.lang.String">
+		select password from T_YH where YHID=#{userId,jdbcType=VARCHAR}
+		and zt=1
+	</select>
+	<!-- 修改密码-->
+	<update id="UpdatePassWord" parameterType="java.lang.String">
+		update T_YH set password=#{passWord,jdbcType=VARCHAR}
+	    where YHID = #{userId,jdbcType=VARCHAR}
+	</update>
+</mapper>

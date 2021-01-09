@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.framework.attachment.dao.AttachmentMapper">
+
+	<select id="queryAttachmentConfig" resultType="java.util.Map">
+		select ATTACH_KEY,SAVEPATH,MAXFILESIZE,ALLOWEXT from t_attachment_config 
+		where ATTACH_KEY = #{attachId}
+	</select>
+
+	<insert id="insertAttachment">
+		insert into T_ATTACHMENT 
+		(ID,OWNERID,SAVENAME,CONTENTTYPE,FILENAME,ATTACHTYPE,CREATOR,CREATETIME,FILESIZE)
+		values
+		(
+		#{attachment.ID,jdbcType=VARCHAR},
+		#{attachment.OWNERID,jdbcType=VARCHAR},
+		#{attachment.SAVENAME,jdbcType=VARCHAR},
+		#{attachment.CONTENTTYPE,jdbcType=VARCHAR},
+		#{attachment.FILENAME,jdbcType=VARCHAR},
+		#{attachment.ATTACHTYPE,jdbcType=VARCHAR},
+		#{attachment.CREATOR,jdbcType=VARCHAR},
+		#{attachment.CREATETIME,jdbcType=VARCHAR},
+		#{attachment.FileSize,jdbcType=VARCHAR}
+		)
+	</insert>
+	
+	<select id="getAttachment" resultType="com.hrbwmxx.framework.attachment.modal.Attachment">
+		select * from t_attachment where id = #{attachmentId}
+	</select>
+	
+	<delete id="deleteAttachment">
+		delete from t_attachment where id = #{attachmentId}
+	</delete>
+	
+	<select id="queryAttachments" resultType="java.util.Map">
+		select ID,OWNERID,CONTENTTYPE,FILENAME,CREATETIME,FILESIZE
+		from t_attachment 
+		where OWNERID = #{ownerId}
+	</select>
+	
+</mapper>

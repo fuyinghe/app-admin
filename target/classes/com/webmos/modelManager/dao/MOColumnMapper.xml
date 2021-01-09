@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.modelManager.dao.MOColumnMapper">
+	
+	<!-- 获取字段属性信息 -->
+	<select id="getColumnItem" resultMap="columnInfo">
+		<if test="columnObj.columnId !=null and columnObj.columnId !=''">
+			select t.WID,
+			       t.COLUMN_EN,
+			       t.COLUMN_CN,
+			       t.C_TYPE,
+			       t.C_LEN,
+			       t.C_DEFAULT,
+			       mo.mo_table
+			  from mo_column t
+			  left join mo_sys mo on t.guishu = mo.wid
+			  where t.wid=#{columnObj.columnId}
+		</if>
+	</select>
+	<resultMap type="com.webmos.modelManager.model.ColumnProperty" id="columnInfo">
+		<id column="WID" property="columnId"/>
+		<result column="COLUMN_EN" property="columnEn"/>
+		<result column="COLUMN_CN" property="columnCn"/>
+		<result column="C_TYPE" property="columnType"/>
+		<result column="C_LEN" property="columnLength"/>
+		<result column="C_DEFAULT" property="columnDefault"/>
+		<result column="mo_table" property="tableName"/>
+	</resultMap>
+	<!-- 获取字段是否存在 -->
+	<select id="countColumnName" resultType="int">
+		<if test="columnObj.columnId !=null and columnObj.columnId !=''">
+			select COUNT(*) 
+			from User_Tab_Columns 
+			where table_name=#{columnObj.tableName} 
+			AND COLUMN_NAME=#{columnObj.columnEn}
+		</if>
+	</select>
+	<!-- 
+	createColumn 添加字段
+	前端触发某一个属性的添加字段方法，在数据库表中创建相应字段；
+	columnType:如下
+	<option value="1">varchar2</option>
+	<option value="2">number</option>
+	<option value="3">date-varchar19</option>
+	<option value="4">number(11,2)</option>
+	<option value="5">date</option>
+	<option value="6">CLOB大字段</option>
+	-->
+	<sql id="create_columnSQL">
+		alter 
+	 	table ${columnObj.tableName} 
+	 	add ${columnObj.columnEn} 
+	</sql>
+	<sql id="create_columnType_DefaultSQL">
+		<if test="columnObj.columnType==1">
+	 		varchar2(${columnObj.columnLength}) 
+	 		<if test="columnObj.columnDefault !=null and columnObj.columnDefault !=''">
+	 			default '${columnObj.columnDefault}'
+	 		</if>
+	 	</if>
+	 	<if test="columnObj.columnType==2">
+	 		number
+	 		<if test="columnObj.columnDefault !=null and columnObj.columnDefault !=''">
+	 			default ${columnObj.columnDefault}
+	 		</if>
+	 	</if>
+	 	<if test="columnObj.columnType==3">
+	 		varchar2(19)
+	 		<if test="columnObj.columnDefault !=null and columnObj.columnDefault !=''">
+	 			default '${columnObj.columnDefault}'
+	 		</if>
+	 	</if>
+	 	<if test="columnObj.columnType==4">
+	 		number(11,2) 
+	 		<if test="columnObj.columnDefault !=null and columnObj.columnDefault !=''">
+	 			default ${columnObj.columnDefault}
+	 		</if>
+	 	</if>
+	 	<if test="columnObj.columnType==5">
+	 		date
+	 	</if>
+	 	<if test="columnObj.columnType==6">
+	 		clob<!-- 默认值无效 -->
+	 	</if>
+	</sql>
+	 <update id="createColumn" parameterType="com.webmos.modelManager.model.ColumnProperty">
+	 	<include refid="create_columnSQL"/>
+	 	<include refid="create_columnType_DefaultSQL"/>
+	 </update>
+	 <!-- 为字段增加描述信息 -->
+	 <update id="createColumnComment">
+		<!-- 增加备注，用中文描述来代替，如果后续模型修改，这个字段是不会自动变更的 -->
+	 	<if test="columnObj.columnCn != null and columnObj.columnCn !=''">
+	 		comment on column ${columnObj.tableName}.${columnObj.columnEn} is '${columnObj.columnCn}'
+	 	</if>
+	</update>
+	
+	<!-- 粘贴属性 -->
+	<update id="pasteColumns" parameterType="java.lang.String">
+		insert into mo_column
+  		(WID,COLUMN_EN,COLUMN_CN,C_TYPE,C_LEN,C_ISNULL,C_DEFAULT,C_PX,V_TYPE,V_MAX,V_MIN,V_MAXLEN,V_MINLEN,V_DISPLAYWIDTH,V_ISHIDE,V_ISBROWSE,V_ISREADONLY,V_ISDISABLED,V_PROMPT,V_SELECTRANGE,V_SIGNATURE,V_CALCULATE,V_CHARMASK,GUISHU,CTIME,ADD_USER,FL_JB,STATE,V_GROUPNAME,V_MUSTINPUT,V_ISEXP,V_ISIMP,V_ISORDER,IS_UPDATE,V_LAYOUT,ISCONMIT,CHECKTYPE,Q_STATE,NEXTSELECTFIELD,NEXTSELECTURL,NEXTSELECTQUERYKEY,Q_TYPE,ISKEY)
+  		(select sys_guid(),
+          COLUMN_EN,COLUMN_CN,C_TYPE,C_LEN,C_ISNULL,C_DEFAULT,C_PX,V_TYPE,V_MAX,V_MIN,V_MAXLEN,V_MINLEN,V_DISPLAYWIDTH,V_ISHIDE,V_ISBROWSE,V_ISREADONLY,V_ISDISABLED,V_PROMPT,V_SELECTRANGE,V_SIGNATURE,V_CALCULATE,V_CHARMASK,'${moid}',CTIME,ADD_USER,FL_JB,STATE,V_GROUPNAME,V_MUSTINPUT,V_ISEXP,V_ISIMP,V_ISORDER,IS_UPDATE,V_LAYOUT,ISCONMIT,CHECKTYPE,Q_STATE,NEXTSELECTFIELD,NEXTSELECTURL,NEXTSELECTQUERYKEY,Q_TYPE,ISKEY
+     		from mo_column
+    		where wid in (
+    			<foreach item="item" index="key" collection="ids"  open=" " separator=" , " close=" ">
+				'${item}'
+				</foreach>
+    		)
+    	)
+	</update>
+	
+	<!-- 批量删除信息 -->
+	<delete id="deleteCheckColumns" parameterType="java.lang.String">
+		update mo_column set state=2 where wid in (
+			<foreach item="item" index="key" collection="ids"  open=" " separator=" , " close=" ">
+			'${item}'
+			</foreach>
+		)
+	</delete>
+</mapper>

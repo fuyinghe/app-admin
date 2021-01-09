@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.IAppTypeMapper">
+	
+	<sql id="queryAppType_filed">
+		select id, app_type, des, px, state 
+	</sql>
+	<sql id="queryAppType_condition">
+		from t_app_type  t
+		<where>
+			<![CDATA[ t.state <2 ]]>
+		  <if test="obj.id != null and obj.id!= ''">
+			and id =#{obj.id}
+		  </if>
+		  <if test="obj.app_type != null and obj.app_type != ''">
+			and app_type like '%'||#{obj.app_type}||'%'
+		  </if>
+		</where>
+		order by px  desc
+	</sql>
+	
+	
+	<!-- 分页查询 -->
+	<select id="queryAppTypeListPage" resultType="com.hrbwmxx.system.vo.AppTypeCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryAppType_filed"/>
+		<include refid="queryAppType_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryAppTypeListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryAppType_condition"/>
+	</select>
+	
+	
+	<!-- 单条查询  -->
+	 <select id="queryAppTypeValueOne" resultType="com.hrbwmxx.system.vo.AppTypeCustom">
+		<include refid="queryAppType_filed"/>
+		<include refid="queryAppType_condition"/>
+	</select> 
+	
+	<!-- 添加 -->
+	<insert id="saveAppTypeValue" >
+		insert into t_app_type
+		  (id, app_type, des, px, state)
+		values
+		  (#{id,jdbcType=VARCHAR},
+		   #{app_type,jdbcType=VARCHAR},
+		   #{des,jdbcType=VARCHAR},
+		   #{px,jdbcType=VARCHAR},
+		   #{state,jdbcType=VARCHAR})
+	   
+	</insert>
+	<!-- 修改 -->
+	<update id="updateAppTypeValue">
+		update t_app_type 
+		<set>
+			<if test="app_type!=null and app_type != ''">
+		   		 app_type=#{app_type},
+		    </if>
+		    <if test="des!=null and des != ''">
+		   		 des=#{des},
+		    </if>
+		    <if test="px!=null and px != ''">
+		    	 px=#{px},
+		    </if>
+		    <if test="state!=null and state != ''">
+		    	 state=#{state},
+		    </if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+   <!-- 删除 -->
+	<update id="deleteAppTypeValue">
+		update t_app_type 
+		<set>
+		  state='2'
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update> 
+
+</mapper>

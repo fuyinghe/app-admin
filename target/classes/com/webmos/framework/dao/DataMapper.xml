@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webmos.framework.dao.DataMapper">
+
+	<!-- 查询功能列表数据 -->
+	<select id="queryDataList" parameterType="java.util.List"  resultType="java.util.Map">
+		<include refid="PageMapper.pageHead" />
+		<include refid="queryListPage_field" />
+		<include refid="queryListPage_condition_from" />
+		<include refid="queryListPage_condition_dmbfrom" />
+		<include refid="queryListPage_condition_where" />
+		<include refid="queryListPage_orderBy" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 查询功能列表总条数 -->
+	<select id="queryDataCount" parameterType="java.util.List"  resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryListPage_condition_from" />
+		<include refid="queryListPage_condition_where" />
+	</select>
+	<!-- 
+		返回字段为动态字段，由servic中从数据库或者配置文件中取出
+	 -->
+	<sql id="queryListPage_field">
+		select ${dataModel.notHiddenColumns}
+		<!-- 拼接代码表额外的返回字段 -->
+		<foreach item="codesqlItem" index="key" collection="codeSqls"  open=" " separator=" " close=" ">
+			<if test="codesqlItem.dmb_sqlcode !=null and codesqlItem.dmb_sqlcode !=''">
+				,${codesqlItem.model_field}_table.text AS "${codesqlItem.model_field}Name"
+			</if>
+		</foreach>
+	</sql>
+	<sql id="queryListPage_condition_from">
+		from ${dataModel.tableName}
+	</sql>
+	<!-- 
+		left join 
+		(select dm as value,mc as text from t_zxbz_mz where t_zxbz_mz.sfsy=1 order by t_zxbz_mz.px) mzdm_table
+		on mzdm=mzdm_table.value
+	 -->
+	<sql id="queryListPage_condition_dmbfrom">
+		<!-- 拼接代码表关联关系 -->
+		<foreach item="codesqlItem" index="key" collection="codeSqls"  open=" " separator=" " close="">
+			<if test="codesqlItem.dmb_sqlcode !=null and codesqlItem.dmb_sqlcode !=''">
+				left join 
+				(${codesqlItem.dmb_sqlcode}) ${codesqlItem.model_field}_table
+				on ${codesqlItem.model_field}=${codesqlItem.model_field}_table.value
+			</if>
+		</foreach>
+	</sql>
+	<!-- 
+		组装查询数据主体信息
+		table：为模块设置中配置内容，在service中传递过来的
+		查询条件是根据模块属性中的值与前端用户传入的值进行安全校验，检验后的结果以list集合的方式传入；
+		查询的类型，根据模型中设置的字段属性类型，来决定用“like”还是“=”进行查询
+		如果是select下拉菜单，基本上都是以固定值的方式传到后台进行查询，所以基本使用“=”进行查询
+		如果是text类型，用户在查询时输入的是字符的简称或者片段，后台一般使用“立刻”方式进行查询
+	 -->
+	<sql id="queryListPage_condition_where">
+		<!-- 拼装where条件 -->
+		<where>
+			<![CDATA[ STATE < 2 ]]>
+			<foreach item="item" index="key" collection="dataModel.advancedSearchList"  open=" " separator=" " close="">
+				<if test="item.query_Value != null and item.query_Value !=''">
+					<!-- 
+					如果为test查询类型，前端毕竟是输入框，使用like进行查询 
+					新老模型查询类型代码值对应 0=text 1=select
+					-->
+					<if test="item.query_type == 'text'.toString()">
+						and ${item.column_en} like '%'||#{item.query_Value}||'%'
+					</if>
+					<if test="item.query_type == 'radio'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<if test="item.query_type == 'checkbox'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<!-- 如果为select查询类型，前端毕竟是选择框，使用=号赋值-->	
+					<if test="item.query_type == 'select'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<if test="item.query_type == 'advSelect'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<if test="item.query_type == 'linSelect'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<if test="item.query_type == 'datetime'.toString()">
+						and ${item.column_en} = #{item.query_Value}
+					</if>
+					<if test="item.query_type == 'date'.toString()">
+						and ${item.column_en} like '%'||#{item.query_Value}||'%'
+					</if>
+					<if test="item.query_type == 'time'.toString()">
+						and ${item.column_en} like '%'||#{item.query_Value}||'%'
+					</if>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<!--
+		 排序sql片段 排序方式一（追加排序）
+		 如果用户在前端触发了自定义排序条件，则先按照用户的触发的字段先排序
+		如果模块中设置自定义条件，始终在用户触发的排序条件之后进行排序
+		如果用户在前端未触发自定义排序条件，则默认为模块设置的排序条件进行排序；
+		如果模块中未设置，用户未触发，则无排序规则；
+	-->
+	<sql id="queryListPage_orderBy">
+		<!--   如果dataModel中用户传入的排序字段或者排序方式其中任意一个值不存在，都不进行排序-->
+		<if test="dataModel.orderBy_column !=null and dataModel.orderBy_column !=''" >
+			<if test="dataModel.orderBy_ascdesc !=null and dataModel.orderBy_ascdesc !=''" >
+				order by ${dataModel.orderBy_column} ${dataModel.orderBy_ascdesc}
+			</if>
+		</if>
+		<!-- 追加组装模块中设置的自定义排序 -->
+		<if test="dataModel.customOrderBy !=null and dataModel.customOrderBy !=''" >
+			<!-- 用户点击过排序，将模块定义的排序条件追加到后面 -->
+			<if test="dataModel.orderBy_column !=null and dataModel.orderBy_column !=''" >
+				<if test="dataModel.orderBy_ascdesc !=null and dataModel.orderBy_ascdesc !=''" >
+					,${dataModel.customOrderBy}
+				</if>
+			</if>
+			<!-- 用户未点击过排序，以模块定义排序条件为主条件 -->
+			<if test="dataModel.orderBy_column ==null or dataModel.orderBy_column ==''" >
+				<if test="dataModel.orderBy_ascdesc ==null or dataModel.orderBy_ascdesc ==''" >
+					order by ${dataModel.customOrderBy}
+				</if>
+			</if>
+		</if>
+	</sql>
+	
+	<!-- 查询一条数据 -->
+	<select id="queryDataView"  resultType="java.util.Map">
+		<include refid="queryForm_field" />
+		<include refid="queryForm_condition" />
+	</select>
+	<sql id="queryForm_field">
+	   select ${dataModel.fromColumns}
+	</sql>
+	<sql id="queryForm_condition">
+		from ${dataModel.tableName}
+		<where>
+		<![CDATA[ STATE < 2 ]]> and ${dataModel.table_key} = #{dataModel.table_key_value ,jdbcType=VARCHAR}
+		</where>
+	</sql>
+	<!-- 查询一条clob -->
+	<select id="queryDataClob"  resultType="java.lang.String">
+		<include refid="queryForm_field" />
+		<include refid="queryForm_condition" />
+	</select>
+	
+	<!-- 
+		查询一条数据
+		该数据中的代码将被转换为显示值
+	 -->
+	 <!-- 
+		样例代码
+		select 
+		xh,xbdm,xm,mzdm,zzmm,xbdm_table.text as xbdm_display,mzdm_table.text mzdm_display
+		from 
+		t_xs_jbxx
+		left join 
+		(select DM AS VALUE,MC AS TEXT from t_zxbz_xb  WHERE t_zxbz_xb.SFSY=1 AND DM IN (2,1) ORDER BY t_zxbz_xb.PX) xbdm_table
+		on xbdm=xbdm_table.value
+		left join 
+		(select dm as value,mc as text from t_zxbz_mz where t_zxbz_mz.sfsy=1 order by t_zxbz_mz.px) mzdm_table
+		on mzdm=mzdm_table.value
+	 -->
+	<select id="queryDataViewDisplay" parameterType="java.util.List"  resultType="java.util.Map">
+		select 
+		${dataModel.fromColumns}
+		<!-- 拼接代码表额外的返回字段 -->
+		<foreach item="codesqlItem" index="key" collection="codeSqls"  open=" " separator=" " close=" ">
+			<if test="codesqlItem.dmb_sqlcode !=null and codesqlItem.dmb_sqlcode !=''">
+				,${codesqlItem.model_field}_table.text AS "${codesqlItem.model_field}Name"
+			</if>
+		</foreach>
+		from 
+		${dataModel.tableName}
+		<!-- 拼接代码表关联关系 -->
+		<foreach item="codesqlItem" index="key" collection="codeSqls"  open=" " separator=" " close="">
+			<if test="codesqlItem.dmb_sqlcode !=null and codesqlItem.dmb_sqlcode !=''">
+				left join 
+				(${codesqlItem.dmb_sqlcode}) ${codesqlItem.model_field}_table
+				on ${codesqlItem.model_field}=${codesqlItem.model_field}_table.value
+			</if>
+		</foreach>
+		<!-- 查询单条信息的主键 -->
+		<where>
+			<![CDATA[ STATE < 2 ]]> and ${dataModel.table_key} = #{dataModel.table_key_value ,jdbcType=VARCHAR}
+		</where>
+	</select>
+	
+	
+	<!-- 新增一条数据 -->
+	<insert id="addOneData" parameterType="java.util.List">
+		insert into ${dataModel.tableName} 
+		<foreach item="field_item" index="index" collection="dataModel.formModel"  open="(" separator="," close=")">
+			${field_item.field}
+		</foreach>
+		values
+		<foreach item="field_item" index="index" collection="dataModel.formModel"  open="(" separator="," close=")">
+			#{field_item.column_value}
+		</foreach>
+	</insert>
+	
+	
+	<!-- 删除一条数据 伪删除，只改变数据状态 -->
+	<update id="deleteOneData">
+		<if test="dataModel.table_key_value !=null and dataModel.table_key_value !=''">
+			update ${dataModel.tableName} set state = 2 
+			where ${dataModel.table_key} = #{dataModel.table_key_value ,jdbcType=VARCHAR}
+		</if>
+	</update>
+	
+	
+	<!-- 更新表单数据 -->
+	<update id="updateOneData" parameterType="java.util.List">
+		<if test="dataModel.table_key_value !=null and dataModel.table_key_value !=''">
+			update ${dataModel.tableName} set 
+			<foreach item="field_item" index="key" collection="dataModel.formModel"  open=" " separator="," close=" ">
+				${field_item.field} = #{field_item.column_value}
+			</foreach>
+			where ${dataModel.table_key} = #{dataModel.table_key_value ,jdbcType=VARCHAR}
+		</if>
+	</update>
+	
+	<!-- 获取附件信息 -->
+	<select id="queryAttachments" resultType="com.hrbwmxx.framework.attachment.modal.Attachment">
+		select ID,OWNERID,CONTENTTYPE,FILENAME,FILESIZE,CREATETIME
+		from t_attachment 
+		where OWNERID in (#{ownerId})
+	</select>
+	
+</mapper>

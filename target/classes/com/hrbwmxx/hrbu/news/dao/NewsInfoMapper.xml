@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.news.dao.NewsInfoMapper">
+   
+	<sql id="query_field">
+		select 
+		      id as id,
+		      title as title,
+		      intro as intro,
+		      context as context,
+		      user_id as userId,
+		      pic as pic,
+		      to_char(to_date(release_date ,'yyyy-MM-dd hh24:mi:ss'),'yyyy-mm-dd') as releaseDate,
+		      read_times as readTimes,
+		      state as state,
+		      top_state as  topState,
+		      top_order_num as topOrderNumber,
+		      (select username from t_yh where t_yh.yhid= user_id) as publishUser,
+		      (select xm from t_yh where t_yh.yhid= user_id) as publishUserName
+	</sql>
+	<sql id="query_condition">
+		FROM t_news_info
+		 <where>
+			<if test="obj.id!=null and obj.id!=''">
+				 and id=#{obj.id}
+			</if>
+			<if test="obj.title!=null and obj.title!=''">
+				  and title like CONCAT(CONCAT('%',#{obj.title}),'%')
+			</if>
+				 <!-- and state='Y' -->
+		</where> 
+		ORDER BY top_state desc,top_order_num asc,release_date desc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryNewsInfoListPage" resultType="com.hrbwmxx.hrbu.news.vo.NewsInfoCustom">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryNewsInfoForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryNewsInfoById" resultType="com.hrbwmxx.hrbu.news.vo.NewsInfoCustom">
+		<include refid="query_field" />
+		 <include refid="query_condition"/>
+	</select>
+	<!-- 查询全部数据 -->
+	<select id="queryNewsInfoList" resultType="com.hrbwmxx.hrbu.news.vo.NewsInfoCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 修改数据阅读次数 -->
+	<update id="updateNewsInfoForTimes" >
+		UPDATE T_NEWS_INFO
+			<set>
+				<if test="readTimes != null and readTimes != ''">
+				  read_times = #{readTimes,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 修改发布信息 -->
+	<update id="cancelOrPublishNewsInfo" >
+		UPDATE T_NEWS_INFO
+			<set>
+				<if test="releaseDate != null and releaseDate !=''">
+				   release_date= #{releaseDate,jdbcType=VARCHAR},
+				</if>
+				<if test="state != null and state !=''">
+				  state= #{state,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 保存数据 -->
+	<insert id="saveNewsInfo"  >
+		INSERT INTO T_NEWS_INFO
+		   (id,title,intro,context,
+		    user_id,pic,release_date,
+		    read_times,state,
+            top_state,top_order_num)
+			VALUES
+				(#{id,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{intro,jdbcType=VARCHAR},#{context,jdbcType=VARCHAR},
+				#{userId,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR},#{releaseDate,jdbcType=VARCHAR},
+				#{readTimes,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
+				#{topState,jdbcType=VARCHAR},#{topOrderNumber,jdbcType=VARCHAR}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateNewsInfo" >
+		UPDATE T_NEWS_INFO
+			<set>
+				<if test="title != null and title != ''">
+				 title = #{title,jdbcType=VARCHAR},
+				</if>
+				<if test="intro != null and intro != ''">
+				  intro = #{intro,jdbcType=VARCHAR} ,
+				</if>
+				<if test="context != null and context != ''">
+				 context = #{context,jdbcType=VARCHAR} ,
+				</if>
+				<if test="userId != null and userId != ''">
+				  user_id = #{userId,jdbcType=VARCHAR},
+				</if>
+				<if test="pic !=  null ">
+				  pic = #{pic,jdbcType=VARCHAR},
+				</if>
+				<if test="releaseDate != null and releaseDate !=''">
+				   release_date= #{releaseDate,jdbcType=VARCHAR},
+				</if>
+				<if test="readTimes != null and readTimes !=''">
+				  read_times = #{readTimes,jdbcType=VARCHAR},
+				</if>
+				<if test="state != null and state !=''">
+				  state = #{state,jdbcType=VARCHAR},
+				</if>
+				<if test="topState != null and topState !=''">
+				  top_state= #{topState,jdbcType=VARCHAR},
+				</if>
+				<if test="topOrderNumber != null and topOrderNumber != ''">
+				  top_order_num = #{topOrderNumber,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteNewsInfoById">
+		DELETE FROM T_NEWS_INFO   WHERE id = #{id}
+	</delete>
+</mapper>

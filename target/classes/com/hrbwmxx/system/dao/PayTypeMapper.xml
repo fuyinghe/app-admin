@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.PayTypeMpper">
+	
+	<sql id="queryPayTypeListPage_filed">
+		select id, px, mc, dm, state
+	</sql>
+	<sql id="queryPayTypeListPage_condition">
+		from t_pay_type  
+		<where>
+		    state = '1'
+		  <if test="obj.id != null and obj.id!= ''">
+			and id =#{obj.id}
+		  </if>
+		  <if test="obj.mc != null and obj.mc != ''">
+			and mc like '%'||#{obj.mc}||'%'
+		  </if>
+		  <if test="obj.dm != null and obj.dm != ''">
+			and dm  =#{obj.dm}
+		  </if>
+		</where>
+		order by px
+	</sql>
+	
+	
+	<!-- 分页查询 -->
+	<select id="queryPayTypeListPage" resultType="com.hrbwmxx.system.vo.PayTypeCustom">
+		<include refid="PageMapper.pageHead"/>
+		<include refid="queryPayTypeListPage_filed"/>
+		<include refid="queryPayTypeListPage_condition"/>
+		<include refid="PageMapper.pageFoot"/>
+	</select>
+	<select id="queryPayTypeListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead"/>
+		<include refid="queryPayTypeListPage_condition"/>
+	</select>
+	
+	
+	<!--单条查询  -->
+	 <select id="queryPayTypeFieldById" resultType="com.hrbwmxx.system.vo.PayTypeCustom">
+		<include refid="queryPayTypeListPage_filed"/>
+		<include refid="queryPayTypeListPage_condition"/>
+	</select> 
+	<!-- 添加 -->
+	<insert id="savePayTypeValue" >
+		insert into t_pay_type
+		  (id, px, mc, dm, state)
+		values
+		  (#{id,jdbcType=VARCHAR},
+		   #{px,jdbcType=VARCHAR},
+		   #{mc,jdbcType=VARCHAR},
+		   #{dm,jdbcType=VARCHAR},
+		   #{state,jdbcType=VARCHAR})
+	   
+	</insert>
+	<!-- 修改 -->
+	<update id="updatePayTypeValue">
+		update t_pay_type 
+		<set>
+			<if test="dm!=null">
+		   		 dm=#{dm},
+		    </if>
+		    <if test="mc!=null">
+		   		 mc=#{mc},
+		    </if>
+		    <if test="state!=null">
+		    	 state=#{state},
+		    </if>
+		    <if test="px!=null">
+		    	 px=#{px},
+		    </if>
+		</set>
+		<where>
+			id=#{id}
+		</where>
+	</update>
+	<!-- 删除 -->
+	<update id="deletePayTypeValueById">
+		update t_pay_type 
+		<set>
+		  state='0'
+		</set>
+		<where>
+			id=#{string}
+		</where>
+	</update>
+
+</mapper>

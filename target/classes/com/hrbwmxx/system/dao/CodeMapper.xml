@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.CodeMapper">
+
+	<select id="queryCityCodeForAPP" parameterType="java.lang.String"
+		resultType="com.hrbwmxx.system.vo.CodeCustom">
+		select s.mc||t.mc as smc ,t.bzdm,t.sjdm as sjdm ,t.sjz as
+		sjz
+		from t_code t
+		left join (select bzdm,mc from t_code ) s on t.sjz=s.bzdm
+		where t.fhdm in ('city','area') and t.state =1 order by t.bzdm
+	</select>
+	<select id="selectCityCodeVaule"  resultType="com.hrbwmxx.system.vo.CodeCustom">
+		select dm,dmlx,(select f.mc from t_code f where f.dm in (select t.sjz from t_code t where t.dm=t_code.sjz))||(select t.mc from t_code t where t.dm=t_code.sjz)||mc as mc,
+		px,state,fhdm,sjdm,sjz,bzdm,(select t.mc from t_code t where t.dm=t_code.sjz) as xmc,
+		(select f.mc from t_code f where f.dm in (select t.sjz from t_code t where t.dm=t_code.sjz)) as smc
+		from t_code
+		where  fhdm in ('city','area','province') and state='1' order by px 
+	</select>
+
+	<!-- 代码表 -->
+	<sql id="queryCodeListPage_filed">
+		select c.dm, c.dmlx, c.mc, c.px, c.state, c.fhdm,
+		c.sjdm, c.sjz, c.bzdm ,t.mc as lxmc ,t.fhdm as lxfhdm
+	</sql>
+	<sql id="queryCodeListPage_condition">
+		from t_code c
+		left join t_codetype t on c.dmlx = t.dm
+		<where>
+		    <![CDATA[ c.state <2 ]]>
+			<if test="obj.dm != null and obj.dm!= ''">
+				and c.dm =#{obj.dm}
+			</if>
+			<if test="obj.mc != null and obj.mc != ''">
+				and c.mc like '%'||#{obj.mc}||'%'
+			</if>
+			<if test="obj.dmlx !=null and obj.dmlx !=''">
+				and c.dmlx =#{obj.dmlx,jdbcType=VARCHAR}
+			</if>
+			<if test="obj.fhdm !=null and obj.fhdm !=''">
+				and c.fhdm =#{obj.fhdm,jdbcType=VARCHAR}
+			</if>
+			<if test="obj.sjdm !=null and obj.sjdm !=''">
+				and c.sjdm =#{obj.sjdm,jdbcType=VARCHAR}
+			</if>
+			<if test="obj.sjz !=null and obj.sjz !=''">
+				and c.sjz =#{obj.sjz,jdbcType=VARCHAR}
+			</if>
+		</where>
+		order by c.px
+	</sql>
+	<!-- 根据FHDM,SJDM,SJZ,查询状态为使用的CODE信息请勿动 -->
+	<select id="queryCodeValueByObj" parameterType="java.lang.String"
+		resultType="com.hrbwmxx.system.vo.CodeCustom">
+		<include refid="queryCodeValueByObj_filed" />
+		<include refid="queryCodeValueAll_condition" />
+	</select>
+	<sql id="queryCodeValueByObj_filed">
+		select dm,
+		dmlx,
+		mc,
+		px,
+		state,
+		fhdm,
+		sjdm,
+		sjz,
+		bzdm
+	</sql>
+	<sql id="queryCodeValueAll_condition">
+		from t_code t
+		<where>
+		<![CDATA[ t.state =1 ]]>
+			<if test="obj.fhdm !=null and obj.fhdm !=''">
+				and t.fhdm =#{obj.fhdm,jdbcType=VARCHAR}
+			</if>
+			<if test="obj.sjdm !=null and obj.sjdm !=''">
+				and t.sjdm =#{obj.sjdm,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</sql>
+	<!-- 查询城市代码 -->
+	<select id="queryCityCodeValueByObj" parameterType="java.lang.String"
+		resultType="com.hrbwmxx.system.vo.CodeCustom">
+		<include refid="PageMapper.pageHead" />
+		<include refid="queryCityCodeValueByObj_filed" />
+		<include refid="queryCityCodeValueAll_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<select id="queryCityCodeValueByObjCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead" />
+		<include refid="queryCityCodeValueAll_condition" />
+	</select>
+	<sql id="queryCityCodeValueByObj_filed">
+		select s.mc as smc ,t.bzdm,t.mc as xmc ,t.sjdm as sjdm
+		,t.sjz as sjz
+	</sql>
+	<sql id="queryCityCodeValueAll_condition">
+		from t_code t
+		left join (select bzdm,mc from t_code ) s on t.sjz=s.bzdm
+		<where>
+			t.fhdm in ('city','area') and <![CDATA[ t.state =1 ]]>
+			<if test="obj.xmc != null and obj.xmc != ''">
+				and t.mc like '%'||#{obj.xmc}||'%'
+			</if>
+		</where>
+		order by t.bzdm
+	</sql>
+	<!-- 代码表 -->
+	<sql id="selectCodeValueByObj_filed">
+		select count(*)
+	</sql>
+	<sql id="selectCodeValueByObj_condition">
+		from t_code t
+		<where>
+			dm = #{str}
+		</where>
+	</sql>
+	<!-- 代码类型 -->
+	<sql id="selectTypeValue_filed">
+		select id, px, mc, dm, state, fhdm
+	</sql>
+	<sql id="selectTypeValue_condition">
+		from t_codetype
+		<where>
+			state = '1'
+			<if test="dmlx != null and dmlx!= ''">
+				and dm =#{dmlx}
+			</if>
+		</where>
+	</sql>
+
+	<!-- 分页查询 -->
+	<select id="queryCodeListPage" resultType="com.hrbwmxx.system.vo.CodeCustom">
+		<include refid="PageMapper.pageHead" />
+		<include refid="queryCodeListPage_filed" />
+		<include refid="queryCodeListPage_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<select id="queryCodeListPageCount" resultType="java.lang.Integer">
+		<include refid="PageMapper.countHead" />
+		<include refid="queryCodeListPage_condition" />
+	</select>
+
+
+	<!--单条查询 -->
+	<select id="queryCodeByField" resultType="com.hrbwmxx.system.vo.CodeCustom">
+		<include refid="queryCodeListPage_filed" />
+		<include refid="queryCodeListPage_condition" />
+	</select>
+
+	<!--标准代码是否重复 -->
+	<select id="selectCodeValueByObj" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		<include refid="selectCodeValueByObj_filed" />
+		<include refid="selectCodeValueByObj_condition" />
+	</select>
+
+	<!-- 下拉 -->
+	<select id="selectTypeValueForCode" parameterType="java.lang.String"
+		resultType="com.hrbwmxx.system.vo.CodeTypeCustom">
+		<include refid="selectTypeValue_filed" />
+		<include refid="selectTypeValue_condition" />
+	</select>
+
+
+	<!-- 代码类型信息 -->
+	<select id="selectTypeValue" parameterType="java.lang.String"
+		resultType="com.hrbwmxx.system.vo.CodeTypeCustom">
+		<include refid="selectTypeValue_filed" />
+		<include refid="selectTypeValue_condition" />
+	</select>
+
+	<!-- 添加 -->
+	<insert id="saveCode">
+		insert into t_code
+		(dm, dmlx, mc, px, state, fhdm, sjdm, sjz, bzdm)
+		values
+		(#{dm,jdbcType=VARCHAR},
+		#{dmlx,jdbcType=VARCHAR},
+		#{mc,jdbcType=VARCHAR},
+		#{px,jdbcType=VARCHAR},
+		#{state,jdbcType=VARCHAR},
+		#{fhdm,jdbcType=VARCHAR},
+		#{sjdm,jdbcType=VARCHAR},
+		#{sjz,jdbcType=VARCHAR},
+		#{bzdm,jdbcType=VARCHAR})
+	</insert>
+
+	<!-- 修改 -->
+	<update id="updateCode">
+		UPDATE T_CODE
+		<set>
+			<if test="dmlx!=null">
+				dmlx=#{dmlx},
+			</if>
+			<if test="mc!=null">
+				mc=#{mc},
+			</if>
+			<if test="px!=null">
+				px=#{px},
+			</if>
+			<if test="state!=null">
+				state=#{state},
+			</if>
+			<if test="fhdm!=null">
+				fhdm=#{fhdm},
+			</if>
+			<if test="sjdm!=null">
+				sjdm=#{sjdm},
+			</if>
+			<if test="sjz!=null">
+				sjz=#{sjz},
+			</if>
+			<if test="bzdm!=null">
+				bzdm=#{bzdm},
+			</if>
+
+		</set>
+		<where>
+			dm=#{dm}
+		</where>
+	</update>
+
+
+	<!-- 删除 -->
+	<update id="deleteCode">
+		UPDATE T_CODE
+		<set>
+			state='2'
+		</set>
+		<where>
+			dm=#{string}
+		</where>
+	</update>
+
+
+
+</mapper>

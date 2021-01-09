@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.system.dao.LoginMapper">
+	
+	<!-- 
+	校验用户名与密码是否正确
+	userName：wangzhi
+	userPassword：d553d148479a268914cecb77b2b88e6a
+	 -->
+	<select id="loginCheck" resultType="com.hrbwmxx.system.model.Login">
+		  select 
+		  u.yhid as userId,
+		  u.username as userName,
+		  u.xm as userNick
+		  from t_yh u 
+		  where u.zt=1 and u.username=#{login.userName} and u.password=#{login.userPassword}
+	</select>
+	
+	<!-- 微信用openId登录 -->
+	<select id="loginCheck_sso" resultType="com.hrbwmxx.system.model.Login">
+		  select 
+		  u.yhid as userId,
+		  u.username as userName,
+		  u.xm as userNick
+		  from t_yh u 
+		  where u.zt=1 and u.openid=#{openIdorUserId} or u.username=#{openIdorUserId}
+	</select>
+	
+	<!-- 存储token -->
+	<insert id="insertToken">
+		insert into t_accesstoken 
+		(USER_ID,ACCESS_TOKEN,CREATETIME)
+		values
+		(#{userId},#{accessToken},#{createTime})
+	</insert>
+	
+	<!-- 获取token -->
+	<select id="queryUserToken" resultType="java.lang.String">
+		select ACCESS_TOKEN from t_accesstoken where USER_ID=#{userId}
+	</select>
+	<!-- 获取userId -->
+	<select id="queryUserId" resultType="java.lang.String">
+		select USER_ID from t_accesstoken where ACCESS_TOKEN=#{accessToken}
+	</select>
+	
+	<delete id="removeToken">
+	delete from t_accesstoken where ACCESS_TOKEN = #{accessToken}
+	</delete>
+	
+</mapper>
