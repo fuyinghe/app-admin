@@ -229,20 +229,23 @@ public class NewsInfoServiceImpl implements INewsInfoService {
 				info.setId(obj.getId());
 				info = newsInfoMapper.queryNewsInfoById(info);
 				//判断下图片是否为空  (如为空,查原图片是否为空,不为空则删)
-				if ("".equals(obj.getPic()) || null == obj.getPic()) {
-					if (!"".equals(info.getPic())) {
+				if ("".equals(obj.getPic()) && null == obj.getPic()) {
+					if (!"".equals(info.getPic()) && info.getPic()!= null ) {
 						//删除原图片
 						deletePicOrAttachmentfile(info.getPic());
 					}
 				}else {
-					//不为空,判断下是否与原来的相同
-					if(!obj.getPic().equals(info.getPic())) {
-						//删除原图片
-						deletePicOrAttachmentfile(info.getPic());
-						//改新图片状态
-						newsFileService.updateFileStateByIds(obj.getPic(), "1");
-					}
-				}
+					//原来的是否为空
+					if (info.getPic()!= null && !"".equals(info.getPic())) {
+						//不为空,判断下是否与原来的相同
+						if(!obj.getPic().equals(info.getPic())) {
+							//删除原图片
+							deletePicOrAttachmentfile(info.getPic());
+							//改新图片状态
+							newsFileService.updateFileStateByIds(obj.getPic(), "1");
+						}
+					 }
+				   }
 				//修改内容
 				newsInfoMapper.updateNewsInfo(obj);
 			}else{

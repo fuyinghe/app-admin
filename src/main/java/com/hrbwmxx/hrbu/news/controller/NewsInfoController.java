@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hrbwmxx.framework.model.Page;
 import com.hrbwmxx.framework.model.Result;
-import com.hrbwmxx.hrbu.news.entity.NewsInfo;
 import com.hrbwmxx.hrbu.news.service.INewsInfoService;
 import com.hrbwmxx.hrbu.news.vo.NewsInfoCustom;
 

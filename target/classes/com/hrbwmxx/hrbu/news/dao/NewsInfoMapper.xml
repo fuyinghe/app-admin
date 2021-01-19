@@ -17,6 +17,8 @@
 		      state as state,
 		      top_state as  topState,
 		      top_order_num as topOrderNumber,
+		      type_id as typeId,
+		      (select name from t_news_type  where  t_news_type.id= type_id) as typeName,
 		      (select username from t_yh where t_yh.yhid= user_id) as publishUser,
 		      (select xm from t_yh where t_yh.yhid= user_id) as publishUserName
 	</sql>
@@ -86,12 +88,12 @@
 		INSERT INTO T_NEWS_INFO
 		   (id,title,intro,context,
 		    user_id,pic,release_date,
-		    read_times,state,
+		    read_times,state,type_id,
             top_state,top_order_num)
 			VALUES
 				(#{id,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{intro,jdbcType=VARCHAR},#{context,jdbcType=VARCHAR},
 				#{userId,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR},#{releaseDate,jdbcType=VARCHAR},
-				#{readTimes,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},
+				#{readTimes,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},#{typeId,jdbcType=VARCHAR},
 				#{topState,jdbcType=VARCHAR},#{topOrderNumber,jdbcType=VARCHAR}) 
 	</insert>
 	<!-- 修改数据 -->
@@ -127,6 +129,9 @@
 				</if>
 				<if test="topOrderNumber != null and topOrderNumber != ''">
 				  top_order_num = #{topOrderNumber,jdbcType=VARCHAR},
+				</if>
+				<if test="typeId != null and typeId != ''">
+				  type_id = #{typeId,jdbcType=VARCHAR},
 				</if>
 			</set>
 		WHERE id = #{id}

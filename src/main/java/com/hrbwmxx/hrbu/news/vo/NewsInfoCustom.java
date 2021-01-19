@@ -8,9 +8,9 @@ import com.hrbwmxx.hrbu.news.entity.NewsInfo;
 
 public class NewsInfoCustom  extends NewsInfo{
 
-	private static final long serialVersionUID = 1L;
 	private String publishUser;//出版作者
 	private String publishUserName;//出版作者
+	private String typeName;//出版作者
 	private List<Map<String, String>> list_file_pic;//图片
 	public String getPublishUser() {
 		return publishUser;
@@ -30,8 +30,12 @@ public class NewsInfoCustom  extends NewsInfo{
 	public void setList_file_pic(List<Map<String, String>> list_file_pic) {
 		this.list_file_pic = list_file_pic;
 	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getTypeName() {
+		return typeName;
 	}
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+	
 	
 }

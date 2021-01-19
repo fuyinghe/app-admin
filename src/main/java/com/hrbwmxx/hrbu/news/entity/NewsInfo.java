@@ -19,6 +19,7 @@ public class NewsInfo {
 	private String state;//新闻状态(发布状态:N不发布,Y发布)
 	private String topState;//置顶状态；N:不置顶；Y:置顶
 	private String topOrderNumber;//置顶序号
+	private String typeId; //新闻类型
 	
 	public String getId() {
 		return id;
@@ -87,6 +88,12 @@ public class NewsInfo {
 	}
 	public void setTopOrderNumber(String topOrderNumber) {
 		this.topOrderNumber = topOrderNumber;
+	}
+	public String getTypeId() {
+		return typeId;
+	}
+	public void setTypeId(String typeId) {
+		this.typeId = typeId;
 	}
 	
 	
