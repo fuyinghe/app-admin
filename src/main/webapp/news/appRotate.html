@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>轮播图片管理</title>
+		<link rel="stylesheet" href="../css/global.css" />
+		<script type="text/javascript" src="../js/lib.js"></script>
+		<script type="text/javascript" src="../js/model.js" ></script>
+		<link rel="stylesheet" href="../js/umeditor/themes/default/css/umeditor.min.css" />
+        <script type="text/javascript" src="../js/umeditor/umeditor.custom.js" ></script>
+	</head>
+	
+	<body>
+		<div id="manage-content" class="container-fluid has-shadow"></div>
+<script>
+	
+			$("#manage-content").modelManager({
+				modelApi:[
+					{field:"name",title:"名称",visible:1,formType:"text",search:2,cols:6	},
+					{field:"linkType",title:"应用类型",visible:1,defaultValue:0,formType:"select",search:0,cols:6,valueConfig:{list:[{text:"顶部幻灯",value:"1"},{text:"底部广告",value:"2"},{text:"应用",value:"3"}]}},
+					{field:"openType",title:"打开类型",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"内部",value:"1"},{text:"外部",value:"0"}]}},
+					
+					{field:"needLogin",title:"需要登录",visible:1,defaultValue:"0",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"需要",value:"1"},{text:"不需要",value:"0"}]}},
+					{field:"apple",title:"苹果上架",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+					{field:"adr",title:"安卓上架",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+					{field:"wx",title:"公众号上架",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
+
+					{field:"sort",title:"排序",visible:0,defaultValue:"0",formType:"text",isOnlyread:0 , search:0,cols:6},
+					{field:"cityCode",title:"城市授权",visible:0,formType:"text",isOnlyread:1 ,isHidden:1, search:0,cols:4},
+					{field:"state",title:"状态",visible:1,formType:"select",isHidden:1,cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
+					
+					{field:"link",title:"访问链接",visible:0,formType:"text",search:0,cols:12},
+					{field:"attachId",title:"图标链接",mappingField:"list_file_pic",cols:12,visible:0,formType:"img",maxSize:1,search:0,isRequired:0,valueConfig:{url:"../NewsFileService/serverUpload.do"}},
+					
+				 ],
+				idKey:"id",
+				listApi:"../rotate/queryRotatePicListPage.do",
+				addApi:"../rotate/saveRotatePic.do",
+				deleteApi:"../rotate/delRotatePic.do",
+				editApi:"../rotate/updateRotatePic.do",
+				viewApi:"../rotate/queryRotatePicById.do",
+				viewDataField:"custom",
+				advSearchBtnText:"",
+				/* btnGroupInline:true, */
+				/* viewBtn:function(row,index){
+					if(row.state == "N"){
+						return false;
+					}else{
+						return true;
+					}
+				}, */
+				editBtn:function(row,index){
+					if(row.state == "1"){
+						return false;
+					}else{
+						return true;
+					}
+				},
+				deleteBtn:function(row,index){
+					if(row.state == "1"){
+						return false;
+					}else{
+						return true;
+					}
+				},
+				formatter:{
+					"title":function(value,row,index){
+						return $.formatLength(value,20)
+					},
+					"state":function(value,row,index){
+						switch(row.state){
+							case "1":
+								return '<span class="text-success">已发布</span>'
+							break;
+							case "0":
+								return '<span class="text-danger">编辑中</span>'
+							break;
+							default:
+								return "-"
+						}
+					}
+				},
+				oprateAdd:function(row,index){
+					var html = ""
+					if(row.state == "0"){
+						html += ' <button class="btn btn-primary btn-xs push"><span class="glyphicon glyphicon-saved"></span> 发布</button>'
+					}else{
+						html += ' <button class="btn btn-danger btn-xs pull"><span class="glyphicon glyphicon-repeat"></span> 撤回</button>'
+					}
+					return html;
+				},
+				oprateEventsAdd:{
+					"click button.push":function(e,value,row,index){
+						$.confirm("确定发布当前应用？",function(){
+							$.ajax({
+								url:"../rotate/publishRotatePic.do",
+								data:{
+									"id":row.id
+								},
+								suc:function(data){
+									$.alert(data.errmsg,"success",function(){
+										$("#manage-content").modelManager("refreshList")
+									})
+								}
+							});
+						},false)
+					},
+					"click button.pull":function(e,value,row,index){
+						$.confirm("确定撤回当前应用？",function(){
+							$.ajax({
+								url:"../rotate/cancelRotatePic.do",
+								data:{
+									"id":row.id
+								},
+								suc:function(data){
+									$.alert(data.errmsg,"success",function(){
+										$("#manage-content").modelManager("refreshList")
+									})
+								}
+							});
+						},false)
+					}
+				}
+			})
+				
+</script>
+	</body>
+</html>
