@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>轮播图片管理</title>
+		<title>富裕广告图片管理</title>
 		<link rel="stylesheet" href="../css/global.css" />
 		<script type="text/javascript" src="../js/lib.js"></script>
 		<script type="text/javascript" src="../js/model.js" ></script>
@@ -17,7 +17,7 @@
 			$("#manage-content").modelManager({
 				modelApi:[
 					{field:"name",title:"名称",visible:1,formType:"text",search:2,cols:6	},
-					{field:"linkType",title:"应用类型",visible:1,defaultValue:0,formType:"select",search:0,cols:6,valueConfig:{list:[{text:"顶部幻灯",value:"1"},{text:"底部广告",value:"2"},{text:"应用",value:"3"}]}},
+					{field:"linkType",title:"应用类型",visible:1,defaultValue:0,formType:"select",search:0,cols:6,valueConfig:{list:[{text:"顶部幻灯",value:"1"},{text:"底部广告",value:"2"},{text:"热门服务",value:"3"}]}},
 					{field:"openType",title:"打开类型",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"内部",value:"1"},{text:"外部",value:"0"}]}},
 					
 					{field:"needLogin",title:"需要登录",visible:1,defaultValue:"0",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"需要",value:"1"},{text:"不需要",value:"0"}]}},
@@ -25,7 +25,7 @@
 					{field:"adr",title:"安卓上架",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
 					{field:"wx",title:"公众号上架",visible:1,defaultValue:"1",formType:"select",search:0,cols:6,valueConfig:{list:[{text:"是",value:"1"},{text:"否",value:"0"}]}},
 
-					{field:"sort",title:"排序",visible:0,defaultValue:"0",formType:"text",isOnlyread:0 , search:0,cols:6},
+					{field:"sort",title:"排序",visible:1,defaultValue:"0",formType:"text",isOnlyread:0 , search:0,cols:6},
 					{field:"cityCode",title:"城市授权",visible:0,formType:"text",isOnlyread:1 ,isHidden:1, search:0,cols:4},
 					{field:"state",title:"状态",visible:1,formType:"select",isHidden:1,cols:4,valueConfig:{list:[{text:"使用中",value:"1"},{text:"已停用",value:"0"}]}},
 					

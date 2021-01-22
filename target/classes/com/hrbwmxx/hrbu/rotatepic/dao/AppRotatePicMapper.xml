@@ -35,7 +35,7 @@
 				  and state =#{obj.state}
 			</if>	 <!-- and state='Y' -->
 		</where> 
-		order by sort desc
+		order by sort desc,inktype asc
 	</sql>
 	<!-- 分页查询，返回list数据 -->
 	<select id="queryRotatePicListPage" resultType="com.hrbwmxx.hrbu.rotatepic.vo.AppRotatePicCustom">
