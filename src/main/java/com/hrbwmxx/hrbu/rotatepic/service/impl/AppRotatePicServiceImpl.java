@@ -137,10 +137,10 @@ public class AppRotatePicServiceImpl implements IAppRotatePicService{
 						if(!obj.getAttachId().equals(info.getAttachId())) {
 							//删除原图片
 							deletePicOrAttachmentfile(info.getAttachId());
-							//改新图片状态
-							newsFileService.updateFileStateByIds(obj.getAttachId(), "1");
 						}
 					}
+					//改新图片状态
+					newsFileService.updateFileStateByIds(obj.getAttachId(), "1");
 				}
 				picMapper.updateRotatePic(obj);
 			}

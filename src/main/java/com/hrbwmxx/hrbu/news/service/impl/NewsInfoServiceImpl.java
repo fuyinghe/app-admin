@@ -241,10 +241,10 @@ public class NewsInfoServiceImpl implements INewsInfoService {
 						if(!obj.getPic().equals(info.getPic())) {
 							//删除原图片
 							deletePicOrAttachmentfile(info.getPic());
-							//改新图片状态
-							newsFileService.updateFileStateByIds(obj.getPic(), "1");
 						}
 					 }
+					//改新图片状态
+					newsFileService.updateFileStateByIds(obj.getPic(), "1");
 				   }
 				//修改内容
 				newsInfoMapper.updateNewsInfo(obj);
