@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hrbwmxx.hrbu.news.dao.NewsTypeNHMapper">
+   
+	<sql id="query_field">
+		select 
+		      id as id,
+		      name as name,
+		      pic as pic,
+		      state as state,
+		      px as px
+	</sql>
+	<sql id="query_condition">
+		FROM t_news_type_nh
+		 <where>
+			<if test="obj.id!=null and obj.id!=''">
+				 and id=#{obj.id}
+			</if>
+			<if test="obj.name!=null and obj.name!=''">
+				  and name like CONCAT(CONCAT('%',#{obj.name}),'%')
+			</if>
+			<if test="obj.state!=null and obj.state!=''">
+				  and state =#{obj.state}
+			</if>	 <!-- and state='Y' -->
+		</where> 
+		ORDER BY px asc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryNewsTypeListPage" resultType="com.hrbwmxx.hrbu.news.vo.NewsTypeNHCustom">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryNewsTypeForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryNewsTypeById" resultType="com.hrbwmxx.hrbu.news.vo.NewsTypeNHCustom">
+		<include refid="query_field" />
+		 <include refid="query_condition"/>
+	</select>
+	<!-- 查询全部数据 -->
+	<select id="queryNewsTypeList" resultType="com.hrbwmxx.hrbu.news.vo.NewsTypeNHCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 修改发布信息 -->
+	<update id="cancelOrPublishNewsType" >
+		UPDATE t_news_type_nh
+			<set>
+				<if test="state != null and state !=''">
+				  state= #{state,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 保存数据 -->
+	<insert id="saveNewsType"  >
+		INSERT INTO t_news_type_nh
+		   (id,name,pic,state,px)
+		VALUES
+		   (#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR},#{state,jdbcType=VARCHAR},#{px,jdbcType=VARCHAR}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateNewsType" >
+		UPDATE t_news_type_nh
+			<set>
+				<if test="name != null and name != ''">
+				 name = #{name,jdbcType=VARCHAR},
+				</if>
+				<if test="pic !=  null ">
+				  pic = #{pic,jdbcType=VARCHAR},
+				</if>
+				<if test="px != null and px !=''">
+				   px= #{px,jdbcType=VARCHAR},
+				</if>
+				<if test="state != null and state !=''">
+				  state = #{state,jdbcType=VARCHAR},
+				</if>
+			</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="deleteNewsTypeById">
+		DELETE FROM t_news_type_nh   WHERE id = #{id}
+	</delete>
+</mapper>

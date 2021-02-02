@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hrbwmxx.hrbu.rotatepic.dao.AppRotatePicNHMapper">
+<sql id="query_field">
+		select 
+		    id as id,
+			name as name,
+			link as link,
+			state as state,
+			linktype as linkType,
+			opentype as openType,
+			sort as sort,
+			needlogin as needLogin,
+			citycode as cityCode,
+			attachid as attachId,
+			apple as apple,
+			adr as adr,
+			wx as wx
+			
+			<!-- ,(select mc from t_code where t_code.fhdm = 'app_opentype' and t_code.bzdm = opentype ) as openName,
+			(select mc from t_code where t_code.bzdm = citycode and (t_code.fhdm = 'city' or t_code.sjdm = 'city')) as cityName -->
+
+	</sql>
+	<sql id="query_condition">
+		FROM t_app_nh
+		 <where>
+			<if test="obj.id!=null and obj.id!=''">
+				 and id=#{obj.id}
+			</if>
+			<if test="obj.name!=null and obj.name!=''">
+				  and name like CONCAT(CONCAT('%',#{obj.name}),'%')
+			</if>
+			<if test="obj.state!=null and obj.state!=''">
+				  and state =#{obj.state}
+			</if>	 <!-- and state='Y' -->
+		</where> 
+		order by linktype asc,sort desc
+	</sql>
+	<!-- 分页查询，返回list数据 -->
+	<select id="queryRotatePicListPage" resultType="com.hrbwmxx.hrbu.rotatepic.vo.AppRotatePicNHCustom">
+		<include refid="PageMapper.pageHead" />
+		<!-- 待处理数据 -->
+		<include refid="query_field" />
+		<include refid="query_condition" />
+		<include refid="PageMapper.pageFoot" />
+	</select>
+	<!-- 返回查询总条数 -->
+	<select id="queryRotatePicForCount" resultType="java.lang.Integer">
+		
+		<include refid="PageMapper.countHead"/>
+		<!-- 待处理数据 -->
+		<include refid="query_condition" />
+	</select>
+	<!-- 根据主键查询一条详细数据 -->
+	<select id="queryRotatePicById" resultType="com.hrbwmxx.hrbu.rotatepic.vo.AppRotatePicNHCustom">
+		<include refid="query_field" />
+		 <include refid="query_condition"/>
+	</select>
+	<!-- 查询全部数据 -->
+	<select id="queryRotatePicList" resultType="com.hrbwmxx.hrbu.rotatepic.vo.AppRotatePicNHCustom">
+		<include refid="query_field" />
+		<include refid="query_condition" />
+	</select>
+	<!-- 保存数据 -->
+	<insert id="saveRotatePic"  >
+		INSERT INTO t_app_nh
+		   (id,name,link,state,linktype,opentype,sort,needlogin,citycode,attachid,apple,adr,wx)
+		VALUES
+		   (#{id,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{link,jdbcType=VARCHAR},
+		   #{state,jdbcType=NUMERIC},#{linkType,jdbcType=NUMERIC},#{openType,jdbcType=NUMERIC},
+		   #{sort,jdbcType=NUMERIC},#{needLogin,jdbcType=NUMERIC},#{cityCode,jdbcType=VARCHAR},
+		   #{attachId,jdbcType=VARCHAR},#{apple,jdbcType=VARCHAR},#{adr,jdbcType=VARCHAR},
+		   #{wx,jdbcType=VARCHAR}) 
+	</insert>
+	<!-- 修改数据 -->
+	<update id="updateRotatePic" >
+	UPDATE t_app_nh
+	  <set>
+			<if test="name != null and name != ''">
+				name =#{name,jdbcType=VARCHAR},
+			</if>
+			<if test="link != null and link != ''">
+				link =#{link,jdbcType=VARCHAR},
+			</if>
+			<if test="state != null and state != ''">
+				state =#{state,jdbcType=NUMERIC},
+			</if>
+			<if test="linkType != null and linkType != ''">
+				linktype =#{linkType,jdbcType=NUMERIC},
+			</if>
+			<if test="openType != null and openType!= ''">
+				opentype =#{openType,jdbcType=NUMERIC},
+			</if>
+			<if test="sort != null and sort !=''">
+				sort =#{sort,jdbcType=NUMERIC},
+			</if>
+			<if test="needLogin != null and needLogin!= ''">
+				needlogin =#{needLogin,jdbcType=NUMERIC},
+			</if>
+			<if test="cityCode != null and cityCode!= ''">
+				citycode =#{cityCode,jdbcType=VARCHAR},
+			</if>
+			<if test="attachId != null and attachId != ''">
+				attachid =#{attachId,jdbcType=VARCHAR},
+			</if>
+			<if test="apple != null and apple != ''">
+				apple =#{apple,jdbcType=VARCHAR},
+			</if>
+			<if test="adr != null and adr != ''">
+				adr =#{adr,jdbcType=VARCHAR},
+			</if>
+			<if test="wx != null and wx != ''">
+				wx =#{wx,jdbcType=VARCHAR}
+			</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	<!-- 根据Id删除数据 -->
+	<delete id="delRotatePic">
+		DELETE FROM t_app_nh   WHERE id = #{id}
+	</delete>
+
+
+</mapper>
