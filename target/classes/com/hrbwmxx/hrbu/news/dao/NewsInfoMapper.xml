@@ -28,6 +28,9 @@
 			<if test="obj.id!=null and obj.id!=''">
 				 and id=#{obj.id}
 			</if>
+			<if test="obj.typeId!=null and obj.typeId!=''">
+				 and type_id=#{obj.typeId}
+			</if>
 			<if test="obj.title!=null and obj.title!=''">
 				  and title like CONCAT(CONCAT('%',#{obj.title}),'%')
 			</if>
