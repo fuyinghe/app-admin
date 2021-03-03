@@ -88,7 +88,8 @@ public class FileUploadServiceImpl implements FileUploadService{
 		//1.3判断是否是图片，拼凑下载路径(下载路径为当前应用访问地址)
 		
 		map_request.put("size",file.getSize()+"");
-		map_request.put("downloadUrl", properties.getProperty("serverPath")+PropertiesUtil.SEPARATOR+map_request.get("code")+PropertiesUtil.SEPARATOR+map_request.get("name"));
+		//map_request.put("downloadUrl", properties.getProperty("serverPath")+PropertiesUtil.SEPARATOR+map_request.get("code")+PropertiesUtil.SEPARATOR+map_request.get("name"));
+		map_request.put("downloadUrl", map_request.get("url"));
 		map_request.put("state",Constant.SYS_STATE_0+"");//是否启用Y/N
 		map_request.put("attachId",attachId);//是否启用Y/N
 	
