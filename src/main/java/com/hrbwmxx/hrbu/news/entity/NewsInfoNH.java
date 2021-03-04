@@ -20,7 +20,14 @@ public class NewsInfoNH {
 	private String topState;//置顶状态；N:不置顶；Y:置顶
 	private String topOrderNumber;//置顶序号
 	private String typeId; //新闻类型
+	private String homePages; //是否首页(首页状态:0不发布,1发布)
 	
+	public String getHomePages() {
+		return homePages;
+	}
+	public void setHomePages(String homePages) {
+		this.homePages = homePages;
+	}
 	public String getId() {
 		return id;
 	}

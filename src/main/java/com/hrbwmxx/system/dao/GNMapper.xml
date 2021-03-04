@@ -32,7 +32,7 @@
 		<if test="gn.gnId != null and gn.gnId != ''">
 			AND gn1.gnId = #{gn.gnId} 
 		</if>
-		ORDER BY gn1.pId
+		ORDER BY gn1.pId,gn1.px desc
 	</sql>
 	<select id="findGNListForPage" resultType="com.hrbwmxx.system.vo.GNCustom">
 		<include refid="PageMapper.pageHead"/>
