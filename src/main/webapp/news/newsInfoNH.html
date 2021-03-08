@@ -23,7 +23,7 @@
 					//{field:"id",title:"主键",visible:1,formType:"text",search:2,cols:4,isRequired:1,valueConfig:{}},
 					{field:"publishUser",title:"作者",formType:"text",isOnlyread:1,visible:1,search:0,cols:4,isRequired:0,valueConfig:{}},
 					{field:"readTimes",title:"阅读次数",formType:"text",defaultValue:"0",isHidden:0,isOnlyread:1,isRequired:0,visible:0,search:0,cols:4,valueConfig:{}},
-					{field:"homePages",title:"首页显示",cols:4,visible:1,formType:"select",search:0,isRequired:0,valueConfig:{list:[{text:"是",value:"0"},{text:"否",value:"1"},]}},
+					{field:"homePages",title:"首页显示",cols:4,visible:1,formType:"select",search:0,isRequired:0,valueConfig:{list:[{text:"首页",value:"0"},{text:"资讯",value:"1"},]}},
 					{field:"topState",title:"置顶状态",defaultValue:"N",cols:6,visible:1,formType:"select",search:0,isRequired:1,valueConfig:{list:[{text:"置顶",value:"Y"},{text:"不置顶",value:"N"}]}},
 					{field:"topOrderNumber",title:"置顶序号",formType:"text",defaultValue:"0",visible:0,search:0,cols:6,isRequired:0,valueConfig:{}},
 					{field:"typeId",title:"新闻类别",mappingField:"typeName",cols:6,visible:1,formType:"select",search:2,isRequired:1,valueConfig:{url:"../newsTypeNH/queryNewsTypeList.do?state=Y",dataField:"list","textKey":"name","valueKey":"id"}},
