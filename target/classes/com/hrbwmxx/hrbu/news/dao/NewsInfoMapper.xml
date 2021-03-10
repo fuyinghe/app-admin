@@ -18,6 +18,7 @@
 		      top_state as  topState,
 		      top_order_num as topOrderNumber,
 		      type_id as typeId,
+		      home_pages as homePages,
 		      (select name from t_news_type  where  t_news_type.id= type_id) as typeName,
 		      (select username from t_yh where t_yh.yhid= user_id) as publishUser,
 		      (select xm from t_yh where t_yh.yhid= user_id) as publishUserName
@@ -36,7 +37,7 @@
 			</if>
 				 <!-- and state='Y' -->
 		</where> 
-		ORDER BY top_state desc,top_order_num asc,release_date desc
+		ORDER BY home_pages asc,top_state desc,top_order_num asc,release_date desc
 	</sql>
 	<!-- 分页查询，返回list数据 -->
 	<select id="queryNewsInfoListPage" resultType="com.hrbwmxx.hrbu.news.vo.NewsInfoCustom">
@@ -92,12 +93,12 @@
 		   (id,title,intro,context,
 		    user_id,pic,release_date,
 		    read_times,state,type_id,
-            top_state,top_order_num)
+            top_state,top_order_num,home_pages)
 			VALUES
 				(#{id,jdbcType=VARCHAR},#{title,jdbcType=VARCHAR},#{intro,jdbcType=VARCHAR},#{context,jdbcType=VARCHAR},
 				#{userId,jdbcType=VARCHAR},#{pic,jdbcType=VARCHAR},#{releaseDate,jdbcType=VARCHAR},
 				#{readTimes,jdbcType=VARCHAR}, #{state,jdbcType=VARCHAR},#{typeId,jdbcType=VARCHAR},
-				#{topState,jdbcType=VARCHAR},#{topOrderNumber,jdbcType=VARCHAR}) 
+				#{topState,jdbcType=VARCHAR},#{topOrderNumber,jdbcType=VARCHAR},#{homePages,jdbcType=VARCHAR}) 
 	</insert>
 	<!-- 修改数据 -->
 	<update id="updateNewsInfo" >
@@ -135,6 +136,9 @@
 				</if>
 				<if test="typeId != null and typeId != ''">
 				  type_id = #{typeId,jdbcType=VARCHAR},
+				</if>
+				<if test="homePages != null and homePages != ''">
+				  home_pages = #{homePages,jdbcType=VARCHAR},
 				</if>
 			</set>
 		WHERE id = #{id}
